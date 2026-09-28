@@ -13,7 +13,7 @@ import urllib.request
 from datetime import datetime
 
 from news_engine import EconomicNewsEngine
-from strategy_ai_engine import AIStrategyEngine
+from strategy_ai_engine import AIStrategyEngine, MasterTradersCouncil
 from backtester import InstitutionalBacktester
 from send_line_alert import LineBotDispatcher
 from line_flex_generator import LineFlexService
@@ -202,17 +202,54 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
             self._set_headers(200)
             self.wfile.write(json.dumps(res).encode("utf-8"))
 
+        # 2.5 API: World-Class Master Traders Council & Macro Intelligence
+        elif path == "/api/ai/council":
+            symbol = query.get("symbol", ["XAUUSD"])[0].upper()
+            action = query.get("action", ["BUY"])[0].upper()
+            live_price = get_live_market_price(symbol)
+            is_gold = "XAU" in symbol
+            atr = 4.5 if is_gold else 180.0
+            
+            sl = round(live_price - (atr * 1.5), 2) if action == "BUY" else round(live_price + (atr * 1.5), 2)
+            tp = round(live_price + (atr * 3.5), 2) if action == "BUY" else round(live_price - (atr * 3.5), 2)
+            
+            macro_landscape = news_engine.evaluate_global_macro_landscape(symbol)
+            candles = get_real_klines(symbol, limit=25)
+            
+            council_eval = MasterTradersCouncil.evaluate(
+                symbol=symbol,
+                action=action,
+                current_price=live_price,
+                sl=sl,
+                tp=tp,
+                recent_candles=candles,
+                atr=atr,
+                macro_landscape=macro_landscape
+            )
+            
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "council": council_eval,
+                "macro_radar": macro_landscape,
+                "current_price": live_price,
+                "sl": sl,
+                "tp": tp
+            }, ensure_ascii=False).encode("utf-8"))
+
         # 3. API: Get Live News Calendar & Shock Matrix
         elif path == "/api/news":
             symbol = query.get("symbol", ["XAUUSD"])[0]
             news_status = news_engine.evaluate_news_filter(symbol)
+            macro_landscape = news_engine.evaluate_global_macro_landscape(symbol)
             payload = {
                 "calendar": news_engine.cached_calendar,
                 "filter_status": news_status,
-                "knowledge_base": news_engine.HISTORICAL_IMPACT_KNOWLEDGE_BASE
+                "knowledge_base": news_engine.HISTORICAL_IMPACT_KNOWLEDGE_BASE,
+                "macro_radar": macro_landscape
             }
             self._set_headers(200)
-            self.wfile.write(json.dumps(payload).encode("utf-8"))
+            self.wfile.write(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
 
         # 4. API: LINE Config
         elif path == "/api/line/config":

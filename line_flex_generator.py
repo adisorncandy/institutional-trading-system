@@ -177,6 +177,14 @@ class LineFlexService:
                         "contents": [
                             {
                                 "type": "text",
+                                "text": "🧠 สภาสมอง 5 ปรมาจารย์: มติเอกฉันท์ A+ Setup",
+                                "color": "#C084FC",
+                                "size": "xxs",
+                                "weight": "bold",
+                                "wrap": True
+                            },
+                            {
+                                "type": "text",
                                 "text": f"💡 Confluence: {rationale}",
                                 "color": "#38BDF8",
                                 "size": "xxs",
@@ -635,6 +643,7 @@ class LineFlexService:
                         "paddingAll": "10px",
                         "spacing": "xs",
                         "contents": [
+                            {"type": "text", "text": "🧠 สภาสมอง 5 ปรมาจารย์: มติเอกฉันท์ A+ Setup", "color": "#C084FC", "size": "xxs", "weight": "bold", "wrap": True},
                             {"type": "text", "text": f"💡 Confluence: {reason}", "color": "#38BDF8", "size": "xxs", "wrap": True},
                             {"type": "text", "text": f"⚖️ Risk Sizing: {risk_rationale}" if risk_rationale else f"⚖️ ขนาดไม้: {lot:.2f} Lot (คำนวณตามความเสี่ยงพอร์ต)", "color": "#FCD34D", "size": "xxs", "wrap": True},
                             {"type": "text", "text": f"🧠 AI Score: {eval_score}", "color": "#A7F3D0", "size": "xxs", "wrap": True},

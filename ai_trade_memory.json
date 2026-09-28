@@ -4,7 +4,7 @@
     "rsi_divergence_weight": 0.25,
     "volume_imbalance_weight": 0.25,
     "min_confidence_threshold": 88.0,
-    "target_rr_ratio": 2.050000000000002,
+    "target_rr_ratio": 2.0,
     "tp1_partial_pct": 75,
     "instant_breakeven_trigger": true
   },
@@ -284,7 +284,47 @@
       "timeClose": "15:21:20",
       "reason": "Institutional H4 Order Block + Daily Trend [\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34: Breakeven (\u0e01\u0e31\u0e19\u0e17\u0e38\u0e19\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08)]",
       "aiFeedback": "\ud83c\udfaf \u0e01\u0e33\u0e44\u0e23\u0e15\u0e32\u0e21\u0e40\u0e1b\u0e49\u0e32 (\ud83c\udf0a \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)): \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e1c\u0e25\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08 \u0e1b\u0e23\u0e31\u0e1a\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e19\u0e49\u0e33\u0e2b\u0e19\u0e31\u0e01 SMC +0.5%"
+    },
+    {
+      "id": 1790583685134,
+      "ticket": 246578,
+      "symbol": "XAUUSD",
+      "type": "BUY",
+      "style": "swing",
+      "styleName": "\ud83c\udf0a \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)",
+      "lot": 0.02,
+      "entry": 4157.42,
+      "exit": 4157.34,
+      "pnl": -0.16,
+      "pnlPct": -0.02,
+      "balance": 802.08,
+      "accountBalance": 802.08,
+      "win": false,
+      "timeOpen": "15:21:25",
+      "timeClose": "15:23:50",
+      "reason": "Institutional H4 Order Block + Daily Trend [\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34: Breakeven (\u0e01\u0e31\u0e19\u0e17\u0e38\u0e19\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08)]",
+      "aiFeedback": "\ud83d\uded1 \u0e15\u0e31\u0e14\u0e02\u0e32\u0e14\u0e17\u0e38\u0e19\u0e15\u0e32\u0e21\u0e41\u0e1c\u0e19 (\ud83c\udf0a \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)): \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01 Pattern \u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2b\u0e25\u0e2d\u0e01\u0e40\u0e02\u0e49\u0e32 Neural Store \u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e01\u0e23\u0e2d\u0e07\u0e23\u0e2d\u0e1a\u0e16\u0e31\u0e14\u0e44\u0e1b"
+    },
+    {
+      "id": 1790583835133,
+      "ticket": 316852,
+      "symbol": "XAUUSD",
+      "type": "BUY",
+      "style": "swing",
+      "styleName": "\ud83c\udf0a \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)",
+      "lot": 0.02,
+      "entry": 4156.84,
+      "exit": 4156.84,
+      "pnl": 0,
+      "pnlPct": 0,
+      "balance": 802.08,
+      "accountBalance": 802.08,
+      "win": true,
+      "timeOpen": "15:23:55",
+      "timeClose": "15:25:33",
+      "reason": "Institutional H4 Order Block + Daily Trend [\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34: Breakeven (\u0e01\u0e31\u0e19\u0e17\u0e38\u0e19\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08)]",
+      "aiFeedback": "\ud83c\udfaf \u0e01\u0e33\u0e44\u0e23\u0e15\u0e32\u0e21\u0e40\u0e1b\u0e49\u0e32 (\ud83c\udf0a \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)): \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e1c\u0e25\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08 \u0e1b\u0e23\u0e31\u0e1a\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e19\u0e49\u0e33\u0e2b\u0e19\u0e31\u0e01 SMC +0.5%"
     }
   ],
-  "last_updated": "2026-09-28T15:21:20.106450"
+  "last_updated": "2026-09-28T15:25:33.731282"
 }

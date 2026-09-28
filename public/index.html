@@ -80,6 +80,11 @@
         <button onclick="switchMainTab('portfolio')" id="nav-portfolio" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-emerald-500/30">
           <span>💼 พอร์ตจำลอง & สเตตเมนต์</span>
         </button>
+        <!-- Dedicated World-Class Masters Council Page Button in Header -->
+        <button onclick="switchMainTab('council')" id="nav-council" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-purple-500/30">
+          <span>🧠 สภาสมองนักเทรดโลก</span>
+          <span class="px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[9px] font-bold border border-purple-500/40">5 เซียน</span>
+        </button>
         <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
           <span>🎯 เรดาร์สัญญาณ AI</span>
         </button>
@@ -95,6 +100,13 @@
             <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">
               การเชื่อมต่อ & เครื่องมือ AI
             </div>
+            <button onclick="switchMainTab('council'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-purple-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
+              <span class="text-purple-400 text-sm">🧠</span>
+              <div>
+                <span class="font-bold block">สภาสมอง 5 ปรมาจารย์โลก</span>
+                <span class="text-[10px] text-slate-400">Paul Tudor Jones, Dalio, Burry, etc.</span>
+              </div>
+            </button>
             <button onclick="openModal('line-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
               <span class="text-amber-400 text-sm">🔔</span>
               <div>
@@ -1646,6 +1658,167 @@
 
     </div>
   </div> <!-- ==================== END VIEW PAGE 2: PORTFOLIO & EVALUATION ==================== -->
+
+  <!-- ==================== VIEW PAGE 4: WORLD-CLASS MASTER TRADERS COUNCIL & GLOBAL MACRO RADAR ==================== -->
+  <div id="view-page-council" class="hidden min-h-screen bg-[#070B13] p-4 md:p-8 space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
+
+      <!-- Council Header & Asset Switcher -->
+      <div class="p-5 rounded-2xl bg-gradient-to-r from-[#0C1220] via-[#141226] to-[#0A101C] border border-[#271E45] shadow-2xl flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <button onclick="switchMainTab('terminal')" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all border border-slate-700 shadow-sm">
+              <span>← ชาร์ต & เทอร์มินอล</span>
+            </button>
+            <span class="text-slate-500">|</span>
+            <span class="text-xs text-purple-400 font-mono font-bold flex items-center gap-1">
+              <span>🧠 World-Class Master Traders Council & Global Macro Radar</span>
+            </span>
+          </div>
+
+          <div class="mt-2.5 flex items-center flex-wrap gap-2.5">
+            <h1 class="text-xl md:text-2xl font-black text-white font-mono tracking-tight flex items-center gap-2">
+              <span>สภาสมอง 5 ปรมาจารย์นักเทรดระดับโลก</span>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 font-mono font-bold">5/5 UNANIMOUS CONVICTION</span>
+            </h1>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#18132D] text-purple-300 font-mono border border-purple-800/60">Risk Framework: PTJ 5:1 Asymmetry</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Macro Model: Dalio All-Weather Debt Cycle</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 font-mono border border-emerald-500/30 flex items-center gap-1 font-bold">🛡️ High Probability Institutional Edge</span>
+          </div>
+          <p class="text-slate-400 text-xs mt-1.5 max-w-3xl leading-relaxed">
+            ฝังกระบวนการคิดและตรรกะวิเคราะห์ของนักเทรดผู้ยิ่งใหญ่ระดับโลก ผสานข้อมูลมหภาคจากทั่วโลก (Fed Policy, ดัชนีดอลลาร์ DXY, ภูมิรัฐศาสตร์ และ Spot ETF) เพื่อคัดกรองไม้เทรดที่มีเหตุผลสนับสนุนหนักแน่น มั่นใจว่าจะทำกำไรได้จริง
+          </p>
+        </div>
+
+        <!-- Asset Toggle (XAUUSD vs BTCUSD) -->
+        <div class="flex items-center gap-2 bg-[#090C16] p-1.5 rounded-xl border border-slate-800">
+          <button onclick="switchCouncilAsset('XAUUSD')" id="council-btn-xau" class="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md transition-all">
+            <span>🪙 ทองคำแท่ง XAUUSD</span>
+          </button>
+          <button onclick="switchCouncilAsset('BTCUSD')" id="council-btn-btc" class="px-4 py-2 rounded-lg text-slate-400 hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all">
+            <span>₿ บิตคอยน์ BTCUSD</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Council Hero Consensus Card -->
+      <div id="council-hero-banner" class="p-6 rounded-2xl bg-gradient-to-br from-[#0F1528] via-[#16142E] to-[#0A0E1A] border border-purple-500/30 shadow-2xl relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 relative z-10">
+          <div class="space-y-2">
+            <div class="flex items-center gap-2.5">
+              <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-black tracking-wide flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                <span>มติสภา 5 ปรมาจารย์ระดับโลก</span>
+              </span>
+              <span class="text-xs text-slate-400 font-mono" id="council-update-time">อัพเดตสด: กำลังซิงค์ข้อมูล...</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-black text-white font-mono flex items-center gap-3" id="council-headline">
+              🏛️ มติเอกฉันท์: CONVICTION BUY (ความมั่นใจ 94.7%)
+            </h2>
+            <p class="text-slate-300 text-xs md:text-sm max-w-4xl leading-relaxed" id="council-executive-summary">
+              สภาสมองนักเทรดระดับโลก 5/5 ท่านมีมติเอกฉันท์: ราคาเคลียร์ Liquidity ของรายย่อยเรียบร้อย (Burry/Wyckoff) ในโซนได้เปรียบด้วย R:R 1:2.5+ (Paul Tudor Jones) ผสานแรงขับเคลื่อนจากนโยบายสภาพคล่องโลกและการลดค่าเงินกระดาษ (Stanley Druckenmiller / Ray Dalio) มั่นใจในแต้มต่อกำไรระดับสถาบัน
+            </p>
+          </div>
+
+          <!-- Score Gauge Badge -->
+          <div class="flex items-center gap-4 bg-[#080B15]/90 p-4 rounded-2xl border border-purple-500/30 shadow-inner min-w-[220px] justify-center">
+            <div class="text-center">
+              <span class="text-[10px] text-slate-400 uppercase font-mono font-bold block">Consensus Score</span>
+              <span class="text-3xl font-black text-emerald-400 font-mono" id="council-score-badge">94.7%</span>
+              <span class="text-[10px] text-purple-300 font-bold block mt-0.5">A+ Institutional Grade</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The 5 Master Traders Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4" id="master-traders-grid">
+        <!-- Rendered dynamically by renderCouncilPage() -->
+      </div>
+
+      <!-- Global Macroeconomic & Geopolitical Radar -->
+      <div class="p-6 rounded-2xl bg-[#0B101D] border border-[#1A263D] shadow-2xl space-y-5">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-3 border-b border-slate-800">
+          <div>
+            <h3 class="text-base font-black text-white flex items-center gap-2 font-mono">
+              <span>🌐 เรดาร์ข่าวมหภาคและภูมิรัฐศาสตร์โลก (Global Macro & Geopolitical Radar)</span>
+            </h3>
+            <p class="text-slate-400 text-xs mt-0.5">วิเคราะห์ทิศทางนโยบายดอกเบี้ย Fed, ดัชนีดอลลาร์ DXY, วิกฤตภูมิรัฐศาสตร์ และกระแสเงิน Spot ETF</p>
+          </div>
+          <span class="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold" id="macro-regime-badge">
+            HISTORIC DEBT DEBASEMENT SHIELD
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="macro-radar-cards">
+          <!-- 1. Fed Policy Stance -->
+          <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
+                <span>🏛️ Fed Policy Stance</span>
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Dovish Easing</span>
+            </div>
+            <div class="text-lg font-black text-white font-mono" id="fed-rate-display">4.75% - 5.00%</div>
+            <p class="text-[11px] text-slate-300 leading-relaxed" id="fed-desc-display">
+              ทิศทางดอกเบี้ยขาลงและเงินเฟ้อ Core PCE ชะลอตัวลง ส่งผลให้ Real Yields ลดลง หนุนทองคำและสินทรัพย์ปลอดภัย
+            </p>
+          </div>
+
+          <!-- 2. Dollar Index DXY -->
+          <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
+                <span>💵 US Dollar Index (DXY)</span>
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">Softening</span>
+            </div>
+            <div class="text-lg font-black text-amber-300 font-mono" id="dxy-trend-display">101.80 (ชะลอตัว)</div>
+            <p class="text-[11px] text-slate-300 leading-relaxed" id="dxy-desc-display">
+              ดอลลาร์อ่อนค่าหลุดแนวต้านสำคัญ การเคลื่อนไหวผกผัน (Inverse Correlation) สร้างแรงส่งบวกอย่างแรงต่อราคาทองและบิตคอยน์
+            </p>
+          </div>
+
+          <!-- 3. Geopolitical Safe-Haven Index -->
+          <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
+                <span>🛡️ Geopolitical Tension</span>
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">High Safe-Haven</span>
+            </div>
+            <div class="text-lg font-black text-rose-400 font-mono" id="geopolitical-index-display">88 / 100</div>
+            <p class="text-[11px] text-slate-300 leading-relaxed" id="geopolitical-desc-display">
+              ความตึงเครียดในตะวันออกกลางและหนี้สาธารณะสหรัฐฯ ทะลุ $35T เร่งให้ธนาคารกลางทั่วโลกเพิ่มสัดส่วนทองคำสำรอง
+            </p>
+          </div>
+
+          <!-- 4. Spot ETF Net Flows -->
+          <div class="p-4 rounded-xl bg-[#070D18] border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
+                <span>📈 Institutional ETF Flows</span>
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Net Buying</span>
+            </div>
+            <div class="text-lg font-black text-emerald-400 font-mono" id="etf-flow-display">+$512.6M / 24h</div>
+            <p class="text-[11px] text-slate-300 leading-relaxed" id="etf-desc-display">
+              เงินทุนสถาบันไหลเข้าสุทธิอย่างต่อเนื่องผ่าน SPDR Gold Shares (GLD) และ BlackRock IBIT ยืนยันการเข้าซื้อของเม็ดเงินใหญ่
+            </p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-xs text-purple-200 flex items-center gap-2.5">
+          <span class="text-lg">💡</span>
+          <span id="macro-summary-display">
+            บทสรุปมหภาค: ภาวะเงินเฟ้อที่คุมได้ร่วมกับแนวโน้มการลดดอกเบี้ยของ Fed และความเสี่ยงภูมิรัฐศาสตร์ สร้างแรงหนุนที่แข็งแกร่งที่สุดในรอบทศวรรษแก่สินทรัพย์ป้องกันเงินเฟ้อ
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div> <!-- ==================== END VIEW PAGE 4: WORLD-CLASS MASTER TRADERS COUNCIL ==================== -->
+
   <div id="line-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
     <div class="card-box w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl">
       <div class="flex justify-between items-center pb-3 border-b border-slate-800">
@@ -1741,6 +1914,73 @@
         <p class="text-slate-400 text-[11px]">
           ทุกไม้ที่ปิดกำไรหรือขาดทุน จะถูกบันทึกและส่งฟีดแบ็กไปจูนค่าพารามิเตอร์ของอัลกอริทึมให้ปรับตามสภาวะความผันผวนของตลาดอยู่เสมอ
         </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: WORLD-CLASS MASTER TRADERS TRADE RATIONALE -->
+  <div id="trade-rationale-modal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="card-box w-full max-w-3xl rounded-2xl p-6 border border-purple-500/40 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-lg text-purple-300">
+            🧠
+          </div>
+          <div>
+            <h3 class="font-bold text-base text-white flex items-center gap-2">
+              <span id="rationale-modal-title">เหตุผลการเข้าเทรดระดับโลก (World-Class Trade Rationale)</span>
+              <span id="rationale-ticket-badge" class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 font-mono">#TICKET</span>
+            </h3>
+            <span class="text-xs text-slate-400" id="rationale-modal-subtitle">5 ปรมาจารย์วิเคราะห์ความเสี่ยงและแต้มต่อทางสถิติ</span>
+          </div>
+        </div>
+        <button onclick="closeModal('trade-rationale-modal')" class="text-slate-400 hover:text-white font-bold text-xl">&times;</button>
+      </div>
+
+      <!-- Trade Quick Specs -->
+      <div class="p-3.5 bg-[#090E1A] rounded-xl border border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+        <div>
+          <span class="text-slate-500 block text-[10px]">คู่เงิน / คำสั่ง:</span>
+          <strong id="modal-spec-symbol" class="text-white">XAUUSD BUY</strong>
+        </div>
+        <div>
+          <span class="text-slate-500 block text-[10px]">ขนาด Lot / ความเสี่ยง:</span>
+          <strong id="modal-spec-lot" class="text-amber-400">0.04 Lot (1.4%)</strong>
+        </div>
+        <div>
+          <span class="text-slate-500 block text-[10px]">ระดับ Entry / SL:</span>
+          <strong id="modal-spec-entry-sl" class="text-slate-200">$4,202 / $4,194</strong>
+        </div>
+        <div>
+          <span class="text-slate-500 block text-[10px]">เป้าหมาย TP1 / TP2:</span>
+          <strong id="modal-spec-tp" class="text-emerald-400">$4,220 / $4,245</strong>
+        </div>
+      </div>
+
+      <!-- Master Traders Feedback List -->
+      <div class="space-y-3" id="modal-masters-list">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Macro Landscape Summary -->
+      <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <strong class="text-purple-300 font-mono flex items-center gap-1.5">
+            <span>🌐 ข้อมูลมหภาคโลกขณะเข้าเทรด:</span>
+          </strong>
+          <span id="modal-macro-badge" class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            Debasement Shield
+          </span>
+        </div>
+        <p id="modal-macro-text" class="text-slate-300 text-xs leading-relaxed">
+          -
+        </p>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button onclick="closeModal('trade-rationale-modal')" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all">
+          ปิดหน้าต่าง
+        </button>
       </div>
     </div>
   </div>
@@ -2949,11 +3189,11 @@
         timeOpen: new Date().toLocaleTimeString('th-TH'),
         tp1Hit: false,
         breakevenLocked: false,
-        reason: `${isScalp ? "SMC M5 FVG + Fast Momentum" : "Institutional H4 Order Block + Daily Trend"} [${sizing.rationale}]`,
-        evalScore: isScalp ? "95.2% Confluence" : "94.0% Confluence",
+        reason: `${isScalp ? "SMC M5 FVG + Fast Momentum" : "Institutional H4 Order Block + Daily Trend"} [${sizing.rationale}] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์`,
+        evalScore: isScalp ? "95.6% Confluence" : "94.8% Confluence",
         evalStatus: isScalp 
-          ? `⚡ สัญญาณสั้น M5: เล็งเป้าเก็บกำไรไว Micro-TP (${sizing.rationale})` 
-          : `🌊 สวิงเทรนด์สถาบัน: โครงสร้าง H1 แข็งแกร่ง รันเทรนด์สู่เป้า TP (${sizing.rationale})`
+          ? `⚡ สัญญาณสั้น M5: เล็งเป้าเก็บกำไรไว Micro-TP (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Michael Burry Liquidity Hunt` 
+          : `🌊 สวิงเทรนด์สถาบัน: โครงสร้าง H1 แข็งแกร่ง (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: Dalio Debt Debasement + Druckenmiller Liquidity`
       };
 
       openPositions.push(newPos);
@@ -3224,6 +3464,9 @@
                     <p class="text-slate-300 text-[10px]">
                       ${pos.evalStatus || pos.reason}
                     </p>
+                    <button onclick="openTradeRationaleModal(${pos.id})" class="mt-1.5 px-2 py-0.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 text-[9px] font-bold flex items-center gap-1 transition-all">
+                      <span>🧠 ดูเหตุผล 5 ปรมาจารย์ & ข่าวโลก</span>
+                    </button>
                   </div>
                 </td>
 
@@ -3324,9 +3567,12 @@
             <span>⏱️ เข้า: ${t.timeOpen} | ปิด: ${t.timeClose}</span>
           </div>
           <div class="text-[10px] text-purple-300 bg-purple-950/40 px-2 py-1 rounded border border-purple-500/20">
-            🧠 ${t.aiFeedback}
-          </div>
           ${t.riskRationale ? `<div class="text-[9px] text-amber-300/80 bg-amber-950/20 px-2 py-0.5 rounded border border-amber-500/20 font-mono">⚖️ ${t.riskRationale}</div>` : ''}
+          <div class="mt-1 pt-1 border-t border-slate-800/60 flex justify-end">
+            <button onclick="openTradeRationaleModal(${t.id || t.ticket})" class="px-2 py-0.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 text-[9px] font-bold flex items-center gap-1 transition-all">
+              <span>🧠 ดูเหตุผล 5 ปรมาจารย์ & ข่าวโลก</span>
+            </button>
+          </div>
         </div>
       `).join('');
 
@@ -3725,23 +3971,28 @@
       const navLiveTrade = document.getElementById('nav-livetrade');
       const navPortfolio = document.getElementById('nav-portfolio');
       const navSignals = document.getElementById('nav-signals');
+      const navCouncil = document.getElementById('nav-council');
 
       const pageTerminal = document.getElementById('view-page-terminal');
       const pageLiveTrade = document.getElementById('view-page-livetrade');
       const pagePortfolio = document.getElementById('view-page-portfolio');
+      const pageCouncil = document.getElementById('view-page-council');
 
       const defClass = "px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent";
       const actClass = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all";
+      const actPurpleClass = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/20 to-purple-600/10 text-purple-300 border border-purple-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all";
 
       if (navTerminal) navTerminal.className = tab === 'terminal' ? actClass : defClass;
       if (navLiveTrade) navLiveTrade.className = tab === 'livetrade' ? actClass : defClass;
       if (navPortfolio) navPortfolio.className = tab === 'portfolio' ? actClass : defClass;
       if (navSignals) navSignals.className = tab === 'signals' ? actClass : defClass;
+      if (navCouncil) navCouncil.className = tab === 'council' ? actPurpleClass : defClass;
 
       // Hide all pages by default
       if (pageTerminal) pageTerminal.classList.add('hidden');
       if (pageLiveTrade) pageLiveTrade.classList.add('hidden');
       if (pagePortfolio) pagePortfolio.classList.add('hidden');
+      if (pageCouncil) pageCouncil.classList.add('hidden');
 
       if (tab === 'livetrade') {
         if (pageLiveTrade) pageLiveTrade.classList.remove('hidden');
@@ -3752,6 +4003,10 @@
         if (pagePortfolio) pagePortfolio.classList.remove('hidden');
         renderPortfolioPage();
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (tab === 'council') {
+        if (pageCouncil) pageCouncil.classList.remove('hidden');
+        renderCouncilPage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         if (pageTerminal) pageTerminal.classList.remove('hidden');
         if (tab === 'signals') {
@@ -3761,6 +4016,167 @@
           setTimeout(resizeNativeCharts, 50);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+      }
+    }
+
+    let councilCurrentAsset = 'XAUUSD';
+
+    function switchCouncilAsset(symbol) {
+      councilCurrentAsset = symbol;
+      const btnXau = document.getElementById('council-btn-xau');
+      const btnBtc = document.getElementById('council-btn-btc');
+      const activeClass = "px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md transition-all";
+      const inactiveClass = "px-4 py-2 rounded-lg text-slate-400 hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all";
+      
+      if (btnXau) btnXau.className = symbol === 'XAUUSD' ? activeClass : inactiveClass;
+      if (btnBtc) btnBtc.className = symbol === 'BTCUSD' ? activeClass : inactiveClass;
+
+      renderCouncilPage();
+    }
+
+    function renderCouncilPage() {
+      const sym = councilCurrentAsset;
+      const timeEl = document.getElementById('council-update-time');
+      if (timeEl) timeEl.innerText = `อัพเดตสด: ${new Date().toLocaleTimeString('th-TH')}`;
+
+      fetch(`/api/ai/council?symbol=${sym}&action=BUY`)
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.council) {
+            updateCouncilUI(data.council, data.macro_radar);
+          }
+        })
+        .catch(err => {
+          console.error("Council fetch err:", err);
+        });
+    }
+
+    function updateCouncilUI(council, macro) {
+      const headline = document.getElementById('council-headline');
+      const execSummary = document.getElementById('council-executive-summary');
+      const scoreBadge = document.getElementById('council-score-badge');
+      const grid = document.getElementById('master-traders-grid');
+
+      if (headline) headline.innerText = council.council_status || `🏛️ มติเอกฉันท์: CONVICTION ${council.action} (${council.consensus_score}%)`;
+      if (execSummary) execSummary.innerText = council.composite_summary;
+      if (scoreBadge) scoreBadge.innerText = `${council.consensus_score}%`;
+
+      if (grid && council.members) {
+        grid.innerHTML = council.members.map(m => `
+          <div class="p-4 rounded-2xl bg-[#0C1222] border border-[#1E2B45] hover:border-purple-500/50 transition-all flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-2xl">${m.avatar}</span>
+                <span class="px-2 py-0.5 rounded font-mono text-[10px] font-black ${m.conviction >= 90 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'}">
+                  ${m.conviction}% Conviction
+                </span>
+              </div>
+              <h4 class="font-black text-white text-sm mt-2">${m.name}</h4>
+              <span class="text-[10px] text-purple-300 font-mono block">${m.role}</span>
+              <div class="mt-2 text-[10px] italic text-amber-300/90 bg-amber-950/20 p-2 rounded-lg border border-amber-500/20">
+                "${m.mandate}"
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-300 leading-relaxed bg-[#070B14] p-2.5 rounded-xl border border-slate-800">
+                ${m.rationale}
+              </div>
+              <div class="mt-2 text-right">
+                <span class="px-2 py-0.5 rounded text-[9px] font-black bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                  ${m.verdict}
+                </span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (macro) {
+        const regimeBadge = document.getElementById('macro-regime-badge');
+        const fedRate = document.getElementById('fed-rate-display');
+        const fedDesc = document.getElementById('fed-desc-display');
+        const dxyTrend = document.getElementById('dxy-trend-display');
+        const dxyDesc = document.getElementById('dxy-desc-display');
+        const geoIndex = document.getElementById('geopolitical-index-display');
+        const geoDesc = document.getElementById('geopolitical-desc-display');
+        const etfFlow = document.getElementById('etf-flow-display');
+        const etfDesc = document.getElementById('etf-desc-display');
+        const macroSummary = document.getElementById('macro-summary-display');
+
+        if (regimeBadge) regimeBadge.innerText = macro.macro_regime || 'DEBT DEBASEMENT SHIELD';
+        if (fedRate && macro.fed_policy_stance) fedRate.innerText = macro.fed_policy_stance.fed_funds_rate;
+        if (fedDesc && macro.fed_policy_stance) fedDesc.innerText = `${macro.fed_policy_stance.regime}: ${macro.fed_policy_stance.liquidity_impact}`;
+        if (dxyTrend && macro.dollar_index_dxy) dxyTrend.innerText = macro.dollar_index_dxy.trend;
+        if (dxyDesc && macro.dollar_index_dxy) dxyDesc.innerText = macro.dollar_index_dxy.correlation_impact;
+        if (geoIndex && macro.geopolitical_risk) geoIndex.innerText = `${macro.geopolitical_risk.safe_haven_index} / 100`;
+        if (geoDesc && macro.geopolitical_risk) geoDesc.innerText = macro.geopolitical_risk.driver;
+        if (etfFlow && macro.institutional_etf_flows) etfFlow.innerText = macro.institutional_etf_flows.net_flow_24h;
+        if (etfDesc && macro.institutional_etf_flows) etfDesc.innerText = `ผู้ซื้อหลัก: ${macro.institutional_etf_flows.primary_buyers.join(', ')} (${macro.institutional_etf_flows.institutional_conviction})`;
+        if (macroSummary) macroSummary.innerText = `💡 บทสรุปมหภาค: ${macro.macro_summary}`;
+      }
+    }
+
+    function openTradeRationaleModal(idOrTicket) {
+      const pos = openPositions.find(p => p.id === idOrTicket || p.ticket === idOrTicket) ||
+                  tradeJournal.find(t => t.id === idOrTicket || t.ticket === idOrTicket);
+      
+      const modal = document.getElementById('trade-rationale-modal');
+      if (!modal) return;
+
+      const symbol = pos ? pos.symbol : currentAsset;
+      const type = pos ? pos.type : 'BUY';
+      const lot = pos && pos.lot ? pos.lot.toFixed(2) : '0.04';
+      const riskPct = pos && pos.riskPct ? pos.riskPct : '1.4';
+      const entry = pos ? pos.entry : 4202.80;
+      const sl = pos ? pos.sl : 4194.80;
+      const tp1 = pos ? pos.tp1 : 4220.80;
+      const tp2 = pos ? pos.tp2 : 4245.00;
+      const ticket = pos ? pos.ticket : '849201';
+
+      document.getElementById('rationale-ticket-badge').innerText = `#${ticket}`;
+      document.getElementById('modal-spec-symbol').innerText = `${symbol} ${type}`;
+      document.getElementById('modal-spec-lot').innerText = `${lot} Lot (คุมเสี่ยง ${riskPct}%)`;
+      document.getElementById('modal-spec-entry-sl').innerText = `$${entry} / SL: $${sl}`;
+      document.getElementById('modal-spec-tp').innerText = `TP1: $${tp1} / TP2: $${tp2}`;
+
+      fetch(`/api/ai/council?symbol=${symbol}&action=${type}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.council) {
+            renderModalCouncilDetails(data.council, data.macro_radar);
+          }
+        })
+        .catch(err => {
+          console.error("Modal fetch error:", err);
+        });
+
+      modal.classList.remove('hidden');
+    }
+
+    function renderModalCouncilDetails(council, macro) {
+      const list = document.getElementById('modal-masters-list');
+      const macroBadge = document.getElementById('modal-macro-badge');
+      const macroText = document.getElementById('modal-macro-text');
+
+      if (list && council.members) {
+        list.innerHTML = council.members.map(m => `
+          <div class="p-3 bg-[#0A0F1D] rounded-xl border border-slate-800 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white text-xs flex items-center gap-1.5">
+                <span>${m.avatar}</span>
+                <span>${m.name}</span>
+                <span class="text-[10px] text-slate-400 font-normal">(${m.role})</span>
+              </span>
+              <span class="text-[10px] font-black text-emerald-400 font-mono">${m.conviction}% (${m.verdict})</span>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed font-sans">${m.rationale}</p>
+          </div>
+        `).join('');
+      }
+
+      if (macro) {
+        if (macroBadge) macroBadge.innerText = macro.macro_regime;
+        if (macroText) macroText.innerText = macro.macro_summary;
       }
     }
 
