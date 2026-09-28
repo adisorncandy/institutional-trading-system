@@ -67,7 +67,7 @@ class EconomicNewsEngine:
                 "title": "US Core PCE Price Index m/m",
                 "country": "USD",
                 "impact": "HIGH",
-                "time": (now + timedelta(minutes=45)).strftime("%Y-%m-%d %H:%M:%S"),
+                "time": (now + timedelta(hours=2, minutes=30)).strftime("%Y-%m-%d %H:%M:%S"),
                 "forecast": "0.2%",
                 "previous": "0.2%",
                 "actual": None

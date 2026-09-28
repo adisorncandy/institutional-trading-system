@@ -2765,84 +2765,6 @@
       }
     }
 
-    function triggerAutoTradeDemoNow() {
-      const sym = autoTradeTarget === 'BOTH' ? currentAsset : autoTradeTarget;
-      selectAsset(sym);
-      
-      const existing = openPositions.find(p => p.symbol === sym);
-      if (existing) {
-        alert(`⚠️ มีออเดอร์ ${sym} (Lot 0.02) กำลังถือครองอยู่แล้วในพอร์ต!\n\nตามหลักความเสี่ยงสถาบัน: เพื่อรักษาพอร์ต $1,000 ให้ปลอดภัย ไม่อนุญาตให้ออกไม้ซ้อน\nคุณสามารถกด 'ปิดทำกำไร' ออเดอร์เดิมก่อนเพื่อดูผลลัพธ์ใน Trade Journal ได้ครับ`);
-        switchCockpitTab('positions');
-        return;
-      }
-
-      showToastAlert(`⚡ [เรดาร์ AI ตรวจพบ Setup] กำลังสั่งเปิดคำสั่งจริง ${sym} (Lot 0.02)...`);
-      
-      setTimeout(() => {
-        autoExecuteSignalTrade('BUY', sym);
-        switchCockpitTab('positions');
-      }, 400);
-    }
-
-    // Automated Live Market Scanner (Runs every 15s if Master Auto-Trade is Active)
-    setInterval(() => {
-      if (!isMasterAutoTradeActive) return;
-
-      const scanStatus = document.getElementById('autotrade-scan-status');
-      if (scanStatus) {
-        const timeStr = new Date().toLocaleTimeString('th-TH');
-        scanStatus.innerText = `เรดาร์สแกน M5 ล่าสุดเมื่อ ${timeStr} • ตลาดสมบูรณ์พร้อมออกไม้ 0.02`;
-      }
-    }, 15000);
-
-    // Auto-Execute Signal Trade with 0.02 Lot & Simulated $1000 Account
-    function autoExecuteSignalTrade(action = 'BUY', symbol = currentAsset, customPrice = null) {
-      // Risk Rule: Maximum 1 active position per asset (Prevent Overtrading)
-      const existing = openPositions.find(p => p.symbol === symbol);
-      if (existing) {
-        console.log(`[RISK CAP] ออเดอร์ ${symbol} กำลังถือครองอยู่แล้ว`);
-        return;
-      }
-
-      const p = customPrice || (symbol === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD);
-      const isGold = symbol === 'XAUUSD';
-      const dec = isGold ? 2 : 1;
-      const slDist = isGold ? 4.5 : 450.0;
-      const tp1Dist = isGold ? 6.5 : 650.0;
-      const tp2Dist = isGold ? 14.0 : 1400.0;
-
-      const slPrice = action === 'BUY' ? p - slDist : p + slDist;
-      const tp1Price = action === 'BUY' ? p + tp1Dist : p - tp1Dist;
-      const tp2Price = action === 'BUY' ? p + tp2Dist : p - tp2Dist;
-
-      const newPos = {
-        id: Date.now(),
-        ticket: Math.floor(100000 + Math.random() * 900000),
-        symbol: symbol,
-        type: action,
-        lot: 0.02, // ทุน 1000 เหรียญ ออก Lot 0.02 ตามคำขอ
-        entry: parseFloat(p.toFixed(dec)),
-        sl: parseFloat(slPrice.toFixed(dec)),
-        tp1: parseFloat(tp1Price.toFixed(dec)),
-        tp2: parseFloat(tp2Price.toFixed(dec)),
-        pnl: 0.0,
-        timeOpen: new Date().toLocaleTimeString('th-TH'),
-        tp1Hit: false,
-        breakevenLocked: false,
-        reason: "Smart Money A+ Setup (Liquidity Sweep + FVG Rebalance)"
-      };
-
-      openPositions.push(newPos);
-      savePositionsState();
-      renderPositions();
-      playAlertBeep();
-      showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (Lot 0.02) เรียบร้อยแล้ว`);
-    }
-
-    function executeQuickTrade(action) {
-      autoExecuteSignalTrade(action, currentAsset);
-    }
-
     // Trigger Demo Scalp Trade (M1/M5 - Quick Target 0.02 Lot)
     function triggerScalpDemoTrade() {
       selectAsset('BTCUSD');
@@ -2888,16 +2810,40 @@
       }, 400);
     }
 
-    // Automated Live Market Scanner (Runs every 15s if Master Auto-Trade is Active)
+    // Proactive 24/7 Automated Market Scanner (Runs every 10s if Master Auto-Trade is Active)
+    let lastAutoExecutionTime = 0;
     setInterval(() => {
       if (!isMasterAutoTradeActive) return;
 
       const scanStatus = document.getElementById('autotrade-scan-status');
-      if (scanStatus) {
-        const timeStr = new Date().toLocaleTimeString('th-TH');
-        scanStatus.innerText = `เรดาร์สแกน M5/H1 ล่าสุดเมื่อ ${timeStr} • ตลาดสมบูรณ์พร้อมออกไม้ 0.02`;
+      const timeStr = new Date().toLocaleTimeString('th-TH');
+
+      // ตรวจสอบราคาจาก Binance WebSocket
+      if (!livePrices || !livePrices.BTCUSD || !livePrices.XAUUSD) {
+        if (scanStatus) scanStatus.innerText = `เรดาร์กำลังเชื่อมต่อฟีดราคา Binance Realtime...`;
+        return;
       }
-    }, 15000);
+
+      const now = Date.now();
+      const targets = autoTradeTarget === 'BOTH' ? ['BTCUSD', 'XAUUSD'] : [autoTradeTarget];
+
+      // สแกนคู่เงินตามเป้าหมาย หากไม่มีออเดอร์ค้างอยู่ ให้วิเคราะห์และออกไม้ Lot 0.02 อัตโนมัติ (Cooldown 15 วิ)
+      for (const sym of targets) {
+        const hasPos = openPositions.some(p => p.symbol === sym);
+        if (!hasPos && (now - lastAutoExecutionTime > 15000)) {
+          const style = sym === 'BTCUSD' ? 'scalping' : 'swing';
+          console.log(`[24/7 SCANNER] Auto-entering institutional setup for ${sym} (${style} 0.02 Lot)`);
+          autoExecuteSignalTrade('BUY', sym, null, style);
+          lastAutoExecutionTime = now;
+          break; // ออกทีละไม้ตามรอบ
+        }
+      }
+
+      if (scanStatus) {
+        const activeCount = openPositions.length;
+        scanStatus.innerText = `เรดาร์สแกนแท่งเทียนสดล่าสุดเมื่อ ${timeStr} • ถือครอง ${activeCount} ไม้ (ระบบ 24/7 Active)`;
+      }
+    }, 10000);
 
     // Auto-Execute Signal Trade with 0.02 Lot & Simulated $1000 Account (แยกสไตล์ เทรดสั้น / เทรดยาว)
     function autoExecuteSignalTrade(action = 'BUY', symbol = currentAsset, customPrice = null, style = 'scalping') {
