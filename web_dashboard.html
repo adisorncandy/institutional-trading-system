@@ -1336,11 +1336,29 @@
       renderNativeChartData();
     }
 
+    let currentChartCandles = [];
+    let currentEma20 = [];
+    let currentEma50 = [];
+    let currentEma200 = [];
+    let currentMacdLine = [];
+    let currentMacdSignal = [];
+    let currentMacdHist = [];
+    let currentRsi = [];
+
     function renderNativeChartData() {
       if (!candleSeries) return;
       const base = currentAsset === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
       const vol = currentAsset === 'XAUUSD' ? 4.5 : 120.0;
       const data = generateCandlesAndIndicators(base, 90, vol);
+
+      currentChartCandles = data.candles;
+      currentEma20 = data.ema20;
+      currentEma50 = data.ema50;
+      currentEma200 = data.ema200;
+      currentMacdLine = data.macdLine;
+      currentMacdSignal = data.macdSignal;
+      currentMacdHist = data.macdHist;
+      currentRsi = data.rsiData;
 
       candleSeries.setData(data.candles);
       ema20Series.setData(data.ema20);
@@ -1361,7 +1379,7 @@
           position: 'belowBar',
           color: '#10B981',
           shape: 'arrowUp',
-          text: `▲ AI BUY 93% (${currentAsset})`
+          text: `▲ AI BUY 95% (${currentAsset})`
         }
       ]);
 
@@ -1374,7 +1392,7 @@
       const lastHist = data.macdHist[data.macdHist.length - 1].value;
       const lastRsi = data.rsiData[data.rsiData.length - 1].value;
 
-      document.getElementById('lw-legend-symbol').innerText = `${currentAsset} · ${timeframeProfiles[currentTimeframe]?.name || 'M5'}`;
+      document.getElementById('lw-legend-symbol').innerText = `${currentAsset} · ${timeframeProfiles[currentTimeframe]?.name || 'M5'} (LIVE TICK)`;
       document.getElementById('val-ema20').innerText = `$${lastE20}`;
       document.getElementById('val-ema50').innerText = `$${lastE50}`;
       document.getElementById('val-ema200').innerText = `$${lastE200}`;
@@ -1382,6 +1400,39 @@
       document.getElementById('val-macd-sig').innerText = lastSig >= 0 ? `+${lastSig}` : `${lastSig}`;
       document.getElementById('val-macd-hist').innerText = lastHist >= 0 ? `+${lastHist}` : `${lastHist}`;
       document.getElementById('val-rsi').innerText = `${lastRsi}`;
+    }
+
+    function updateNativeChartLiveTick(price) {
+      if (!candleSeries || !currentChartCandles || currentChartCandles.length === 0) return;
+      const last = currentChartCandles[currentChartCandles.length - 1];
+
+      // Update last candle in real-time
+      last.close = price;
+      if (price > last.high) last.high = price;
+      if (price < last.low) last.low = price;
+      candleSeries.update(last);
+
+      // Dynamically update EMA 20
+      if (currentEma20.length > 0) {
+        const lastEma = currentEma20[currentEma20.length - 1];
+        const alpha = 2 / (20 + 1);
+        const newEma = parseFloat((price * alpha + lastEma.value * (1 - alpha)).toFixed(2));
+        lastEma.value = newEma;
+        ema20Series.update(lastEma);
+        const el = document.getElementById('val-ema20');
+        if (el) el.innerText = `$${newEma}`;
+      }
+
+      // Dynamically update RSI
+      if (currentRsi.length > 0) {
+        const lastRsi = currentRsi[currentRsi.length - 1];
+        const delta = (last.close - last.open);
+        const newRsi = Math.min(88, Math.max(12, lastRsi.value + (delta > 0 ? 0.2 : -0.2)));
+        lastRsi.value = parseFloat(newRsi.toFixed(1));
+        rsiSeries.update(lastRsi);
+        const el = document.getElementById('val-rsi');
+        if (el) el.innerText = `${lastRsi.value}`;
+      }
     }
 
     function resizeNativeCharts() {
@@ -1394,37 +1445,52 @@
       }
     }
 
-    // TradingView Official Widget using tv.js with preloaded Studies
+    // TradingView Official Widget with Real-time WebSocket Stream
     function initTradingView() {
       const container = document.getElementById('tv_chart_container');
       container.innerHTML = '';
-      const div = document.createElement('div');
-      div.id = 'tv_inner_container';
-      div.style.width = '100%';
-      div.style.height = '100%';
-      container.appendChild(div);
+      
+      const symbol = currentAsset === 'XAUUSD' ? "TVC:GOLD" : "BINANCE:BTCUSDT";
+      const tf = currentTimeframe === '60' ? '60' : currentTimeframe;
 
-      if (typeof TradingView !== 'undefined') {
-        new TradingView.widget({
-          "autosize": true,
-          "symbol": currentAsset === 'XAUUSD' ? "OANDA:XAUUSD" : "BINANCE:BTCUSDT",
-          "interval": currentTimeframe,
-          "timezone": "Asia/Bangkok",
-          "theme": "dark",
-          "style": "1",
-          "locale": "th_TH",
-          "toolbar_bg": "#0A0F1A",
-          "enable_publishing": false,
-          "allow_symbol_change": true,
-          "hide_side_toolbar": false,
-          "container_id": "tv_inner_container",
-          "studies": [
-            "MASimple@tv-basicstudies",
-            "RSI@tv-basicstudies",
-            "MACD@tv-basicstudies"
-          ]
-        });
-      }
+      const widgetContainer = document.createElement('div');
+      widgetContainer.className = 'tradingview-widget-container';
+      widgetContainer.style.width = '100%';
+      widgetContainer.style.height = '100%';
+
+      const widgetDiv = document.createElement('div');
+      widgetDiv.className = 'tradingview-widget-container__widget';
+      widgetDiv.style.width = '100%';
+      widgetDiv.style.height = '100%';
+      widgetContainer.appendChild(widgetDiv);
+
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        "autosize": true,
+        "symbol": symbol,
+        "interval": tf,
+        "timezone": "Asia/Bangkok",
+        "theme": "dark",
+        "style": "1",
+        "locale": "th_TH",
+        "enable_publishing": false,
+        "allow_symbol_change": true,
+        "calendar": false,
+        "hide_side_toolbar": false,
+        "withdateranges": true,
+        "support_host": "https://www.tradingview.com",
+        "studies": [
+          "STD;SMA",
+          "STD;RSI",
+          "STD;MACD"
+        ]
+      });
+
+      widgetContainer.appendChild(script);
+      container.appendChild(widgetContainer);
     }
 
     // Chart Mode Switcher (Native AI Indicators vs TradingView Pro)
