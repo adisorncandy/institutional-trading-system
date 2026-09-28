@@ -47,121 +47,116 @@
 <body class="min-h-screen text-xs select-none">
 
   <!-- 1. TOP PROFESSIONAL INSTITUTIONAL NAVBAR -->
-  <header class="h-16 bg-[#080C14] border-b border-[#162033] px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-xl backdrop-blur-md">
+  <!-- 1. TOP PROFESSIONAL INSTITUTIONAL NAVBAR (Clean, Modern & Uncluttered) -->
+  <header class="h-14 bg-[#080C14]/95 border-b border-[#141C2E] px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-lg backdrop-blur-md">
+    <!-- Left: Brand Logo -->
     <div class="flex items-center gap-6">
-      <!-- Brand Logo & System Status -->
-      <div class="flex items-center gap-3 cursor-pointer" onclick="switchMainTab('terminal')">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-sm shadow-lg shadow-amber-500/20 border border-amber-300/40">
+      <div class="flex items-center gap-2.5 cursor-pointer select-none group" onclick="switchMainTab('terminal')" title="กลับสู่หน้าหลัก เทอร์มินอล">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs shadow-md shadow-amber-500/15 group-hover:scale-105 transition-transform">
           AD
         </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="font-black text-sm tracking-wide text-white uppercase font-mono">INSTITUTIONAL AI</span>
-            <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold border border-emerald-500/40 flex items-center gap-1 shadow-sm">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-              v5.2 PRO
-            </span>
-          </div>
-          <span class="text-[10px] text-slate-400 font-medium block">ระบบเทรดอัตโนมัติ M5/H1 • Confluence 90%+</span>
+        <div class="flex items-center gap-2">
+          <span class="font-black text-xs sm:text-sm tracking-wider text-white font-mono uppercase">
+            INSTITUTIONAL <span class="text-amber-400">AI</span>
+          </span>
+          <span class="px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-400 font-mono text-[9px] font-bold border border-emerald-500/30 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            PRO
+          </span>
         </div>
       </div>
 
-      <!-- Main Navigation Menu (Clean, Readable & Structured) -->
-      <nav class="hidden xl:flex items-center gap-1.5 text-slate-300">
-        <button onclick="switchMainTab('terminal')" id="nav-terminal" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all">
-          <span>📊 ชาร์ต & เทอร์มินอล</span>
+      <!-- Center: Clean Segmented Navigation Tabs -->
+      <nav class="hidden xl:flex items-center p-0.5 bg-[#05080F] border border-[#162033] rounded-xl text-slate-400">
+        <button onclick="switchMainTab('terminal')" id="nav-terminal" class="px-3 py-1.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1.5 text-xs shadow-sm transition-all">
+          <span>📊 เทอร์มินอล</span>
         </button>
-        <!-- Unified Live Trading & Historical Portfolio Page Button in Header -->
-        <button onclick="switchMainTab('livetrade')" id="nav-livetrade" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-amber-500/30">
-          <span>⚡ พอร์ตเทรดสด & ประวัติ</span>
-          <span id="nav-live-count-badge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold border border-amber-500/40">2 ไม้</span>
+        <button onclick="switchMainTab('livetrade')" id="nav-livetrade" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium flex items-center gap-1.5 text-xs border border-transparent">
+          <span>⚡ พอร์ต & ประวัติ</span>
+          <span id="nav-live-count-badge" class="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[9px] font-bold">2 ไม้</span>
         </button>
-        <!-- Dedicated World-Class Masters Council Page Button in Header -->
-        <button onclick="switchMainTab('council')" id="nav-council" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-purple-500/30">
-          <span>🧠 สภาสมองนักเทรดโลก</span>
-          <span class="px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[9px] font-bold border border-purple-500/40">5 เซียน</span>
+        <button onclick="switchMainTab('council')" id="nav-council" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium flex items-center gap-1.5 text-xs border border-transparent">
+          <span>🧠 สภานักเทรดโลก</span>
+          <span class="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[9px] font-bold">5</span>
         </button>
-        <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
-          <span>🎯 เรดาร์สัญญาณ AI</span>
+        <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium flex items-center gap-1.5 text-xs border border-transparent">
+          <span>🎯 เรดาร์ AI</span>
         </button>
-        <!-- Settings & Tools Dropdown Menu (ซ่อนเมนูรองในปุ่มตั้งค่าเพื่อความคลีน สบายตา) -->
-        <div class="relative inline-block text-left" id="settings-dropdown-wrapper">
-          <button onclick="toggleSettingsDropdown(event)" id="btn-settings-dropdown" class="px-3 py-1.5 rounded-xl bg-[#0D1424] hover:bg-[#141F36] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-1.5 text-xs border border-slate-700/60 shadow-sm">
-            <span>⚙️ ตั้งค่า & เครื่องมือ</span>
-            <span class="text-[10px] text-slate-400">▾</span>
-          </button>
-          
-          <!-- Dropdown Menu Box -->
-          <div id="settings-dropdown-menu" class="hidden absolute right-0 mt-2 w-60 rounded-2xl bg-[#0B101D] border border-[#1E2B45] shadow-2xl z-50 py-1.5 backdrop-blur-xl">
-            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">
-              การเชื่อมต่อ & เครื่องมือ AI
-            </div>
-            <button onclick="switchMainTab('council'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-purple-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
-              <span class="text-purple-400 text-sm">🧠</span>
-              <div>
-                <span class="font-bold block">สภาสมอง 5 ปรมาจารย์โลก</span>
-                <span class="text-[10px] text-slate-400">Paul Tudor Jones, Dalio, Burry, etc.</span>
-              </div>
-            </button>
-            <button onclick="openModal('line-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
-              <span class="text-amber-400 text-sm">🔔</span>
-              <div>
-                <span class="font-bold block">ตั้งค่า LINE Alert</span>
-                <span class="text-[10px] text-slate-400">เชื่อมต่อ Token รับสัญญาณแจ้งเตือน</span>
-              </div>
-            </button>
-            <button onclick="openModal('ai-memory-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
-              <span class="text-purple-400 text-sm">🗄️</span>
-              <div>
-                <span class="font-bold block">คลังความจำ AI Memory</span>
-                <span class="text-[10px] text-slate-400">Adaptive Weights & การเรียนรู้ของบอท</span>
-              </div>
-            </button>
-            <button onclick="openModal('news-analysis-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
-              <span class="text-cyan-400 text-sm">📰</span>
-              <div>
-                <span class="font-bold block">ปฏิทินข่าว & สถิติ 10Y</span>
-                <span class="text-[10px] text-slate-400">เช็คตารางความผันผวนข่าวเศรษฐกิจ</span>
-              </div>
-            </button>
-            <div class="border-t border-slate-800/80 my-1"></div>
-            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-              การจัดการพอร์ตจำลอง
-            </div>
-            <button onclick="exportPortfolioStatementCSV(); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2 text-xs text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-2.5 transition-colors">
-              <span>📥</span>
-              <span class="font-bold">ส่งออก Statement (CSV)</span>
-            </button>
-            <button onclick="resetSimulatedAccount(); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2 text-xs text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 transition-colors">
-              <span>🔄</span>
-              <span class="font-bold">รีเซ็ตพอร์ต $1,000</span>
-            </button>
-          </div>
-        </div>
       </nav>
     </div>
 
-    <!-- Right Controls: Ultra-Fast Live Ticker & Master Action Buttons -->
-    <div class="flex items-center gap-3">
-      <!-- Live Price Ticker (Clear, High-Contrast Typography) -->
-      <div class="flex items-center gap-2.5 px-3.5 py-1.5 bg-[#0C121F] border border-[#1C273C] rounded-xl shadow-inner">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="font-black text-slate-200 font-mono text-xs" id="top-symbol">BTCUSD</span>
-        <span class="font-black text-emerald-400 font-mono text-sm tracking-tight" id="top-price">$84,802.0</span>
-        <span class="text-[11px] text-emerald-400 font-mono font-bold" id="top-change">+0.35%</span>
-        <span id="ws-status-indicator" class="hidden md:inline-block text-[9px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-mono font-bold">⚡ WS 0ms</span>
+    <!-- Right Controls: Ultra-Fast Live Ticker, Auto-Trade Pill & Settings Dropdown -->
+    <div class="flex items-center gap-2.5">
+      <!-- Live Price Ticker -->
+      <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#060A12] border border-[#162033] rounded-xl font-mono text-xs">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-bold text-slate-300" id="top-symbol">BTCUSD</span>
+        <span class="font-black text-emerald-400" id="top-price">$84,802.0</span>
+        <span class="text-[10px] text-emerald-400 font-semibold" id="top-change">+0.35%</span>
+        <span id="ws-status-indicator" class="hidden 2xl:inline-block text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">0ms</span>
       </div>
 
       <!-- Master Auto-Trading Switch -->
-      <button onclick="toggleMasterAutoTrader()" id="btn-master-autotrade" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-bold flex items-center gap-2 shadow-lg hover:bg-emerald-500/30 transition-all text-xs">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span id="master-autotrade-text">⚡ รันเทรดจริง: ACTIVE</span>
+      <button onclick="toggleMasterAutoTrader()" id="btn-master-autotrade" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold flex items-center gap-1.5 hover:bg-emerald-500/25 transition-all text-xs shadow-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="master-autotrade-text">⚡ รันเทรด: ACTIVE</span>
       </button>
 
-      <!-- Download EA Button -->
-      <a href="Institutional_AI_EA.mq5" download class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black tracking-wide shadow-md transition-all text-xs">
-        <span>📥 ดาวน์โหลด EA MT5</span>
-      </a>
+      <!-- Settings & Tools Dropdown Menu -->
+      <div class="relative inline-block text-left" id="settings-dropdown-wrapper">
+        <button onclick="toggleSettingsDropdown(event)" id="btn-settings-dropdown" class="px-3 py-1.5 rounded-xl bg-[#0C121F] hover:bg-[#141F36] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-1.5 text-xs border border-slate-700/50 shadow-sm">
+          <span>⚙️ เครื่องมือ</span>
+          <span class="text-[9px] text-slate-400">▾</span>
+        </button>
+        
+        <!-- Dropdown Menu Box -->
+        <div id="settings-dropdown-menu" class="hidden absolute right-0 mt-2 w-64 rounded-2xl bg-[#0B101D] border border-[#1E2B45] shadow-2xl z-50 py-1.5 backdrop-blur-xl">
+          <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">
+            ดาวน์โหลด & การเชื่อมต่อ
+          </div>
+          <!-- EA Download Action -->
+          <a href="Institutional_AI_EA.mq5" download onclick="toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-amber-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors border-b border-slate-800/60">
+            <span class="text-amber-400 text-sm">📥</span>
+            <div>
+              <span class="font-bold block">ดาวน์โหลด EA MT5 (MQL5)</span>
+              <span class="text-[10px] text-slate-400">Institutional_AI_EA.mq5 ติดตั้งบน MT5</span>
+            </div>
+          </a>
+          <button onclick="openModal('line-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
+            <span class="text-amber-400 text-sm">🔔</span>
+            <div>
+              <span class="font-bold block">ตั้งค่า LINE Alert</span>
+              <span class="text-[10px] text-slate-400">เชื่อมต่อ Token รับสัญญาณแจ้งเตือน</span>
+            </div>
+          </button>
+          <button onclick="openModal('ai-memory-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
+            <span class="text-purple-400 text-sm">🗄️</span>
+            <div>
+              <span class="font-bold block">คลังความจำ AI Memory</span>
+              <span class="text-[10px] text-slate-400">Adaptive Weights & การเรียนรู้ของบอท</span>
+            </div>
+          </button>
+          <button onclick="openModal('news-analysis-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
+            <span class="text-cyan-400 text-sm">📰</span>
+            <div>
+              <span class="font-bold block">ปฏิทินข่าว & สถิติ 10Y</span>
+              <span class="text-[10px] text-slate-400">เช็คตารางความผันผวนข่าวเศรษฐกิจ</span>
+            </div>
+          </button>
+          <div class="border-t border-slate-800/80 my-1"></div>
+          <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+            การจัดการพอร์ตจำลอง
+          </div>
+          <button onclick="exportPortfolioStatementCSV(); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2 text-xs text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-2.5 transition-colors">
+            <span>📥</span>
+            <span class="font-bold">ส่งออก Statement (CSV)</span>
+          </button>
+          <button onclick="resetSimulatedAccount(); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2 text-xs text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 transition-colors">
+            <span>🔄</span>
+            <span class="font-bold">รีเซ็ตพอร์ต $1,000</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -3188,13 +3183,13 @@
       const scanStatus = document.getElementById('autotrade-scan-status');
 
       if (isMasterAutoTradeActive) {
-        if (btn) btn.className = "px-3.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-black flex items-center gap-2 shadow-lg hover:bg-emerald-500/30 transition-all";
-        if (text) text.innerText = "⚡ รันเทรดอัตโนมัติ (LIVE ACTIVE)";
-        if (scanStatus) scanStatus.innerText = "สแกนแท่งเทียนสด 24 ชม. (พร้อมออกไม้ 0.02 ทันที)";
-        showToastAlert("🟢 รันเทรดจริงอัตโนมัติ: ระบบเฝ้ากราฟและพร้อมออกไม้ 0.02 ทันทีตาม Signal");
+        if (btn) btn.className = "px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold flex items-center gap-1.5 hover:bg-emerald-500/25 transition-all text-xs shadow-sm";
+        if (text) text.innerText = "⚡ รันเทรด: ACTIVE";
+        if (scanStatus) scanStatus.innerText = "สแกนแท่งเทียนสด 24 ชม. (พร้อมออกไม้ทันที)";
+        showToastAlert("🟢 รันเทรดจริงอัตโนมัติ: ระบบเฝ้ากราฟและพร้อมออกไม้ทันทีตาม Signal");
       } else {
-        if (btn) btn.className = "px-3.5 py-1.5 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 font-bold flex items-center gap-2 hover:bg-slate-700 transition-all";
-        if (text) text.innerText = "⏸️ ระบบเทรดอัตโนมัติ: หยุดพัก (STANDBY)";
+        if (btn) btn.className = "px-3 py-1.5 rounded-xl bg-slate-800/80 text-slate-400 border border-slate-700/80 font-bold flex items-center gap-1.5 hover:bg-slate-700 transition-all text-xs";
+        if (text) text.innerText = "⏸️ รันเทรด: STANDBY";
         if (scanStatus) scanStatus.innerText = "ระบบหยุดพักชั่วคราว (กดปุ่มเพื่อเริ่มรันใหม่)";
         showToastAlert("⏸️ หยุดพักระบบรันเทรดอัตโนมัติชั่วคราว");
       }
@@ -4313,9 +4308,9 @@
       const pageLiveTrade = document.getElementById('view-page-livetrade');
       const pageCouncil = document.getElementById('view-page-council');
 
-      const defClass = "px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent";
-      const actClass = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all";
-      const actPurpleClass = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/20 to-purple-600/10 text-purple-300 border border-purple-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all";
+      const defClass = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium flex items-center gap-1.5 text-xs border border-transparent";
+      const actClass = "px-3 py-1.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1.5 text-xs shadow-sm transition-all";
+      const actPurpleClass = "px-3 py-1.5 rounded-lg bg-purple-500/15 text-purple-300 border border-purple-500/30 font-bold flex items-center gap-1.5 text-xs shadow-sm transition-all";
 
       if (navTerminal) navTerminal.className = tab === 'terminal' ? actClass : defClass;
       if (navLiveTrade) navLiveTrade.className = (tab === 'livetrade' || tab === 'portfolio') ? actClass : defClass;
