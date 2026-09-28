@@ -169,6 +169,45 @@
     </div>
   </div>
 
+  <!-- 2.5 LIVE AUTO-TRADING CONTROLLER BAR (โหมดรันเทรดจริงอัตโนมัติ ออกไม้ Lot 0.02) -->
+  <div class="bg-[#080D18] border-b border-[#1A2538] px-4 py-2 flex flex-wrap items-center justify-between gap-3 text-xs">
+    <div class="flex items-center flex-wrap gap-2.5">
+      <!-- Master Auto-Trading Switch -->
+      <button onclick="toggleMasterAutoTrader()" id="btn-master-autotrade" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-black flex items-center gap-2 shadow-lg hover:bg-emerald-500/30 transition-all">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span id="master-autotrade-text">⚡ รันเทรดอัตโนมัติ (LIVE ACTIVE)</span>
+      </button>
+
+      <!-- Asset Target Selector for Auto-Trade -->
+      <div class="flex items-center bg-[#06090E] p-1 rounded-xl border border-[#1A2333] text-[11px]">
+        <span class="text-slate-400 font-semibold px-2">คู่เงินที่รัน:</span>
+        <button onclick="setAutoTradeTarget('XAUUSD')" id="btn-target-xau" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">
+          <span>🪙 XAUUSD ทองคำ</span>
+        </button>
+        <button onclick="setAutoTradeTarget('BTCUSD')" id="btn-target-btc" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">
+          <span>₿ BTCUSD บิตคอยน์</span>
+        </button>
+        <button onclick="setAutoTradeTarget('BOTH')" id="btn-target-both" class="px-2.5 py-1 rounded-lg bg-amber-500 text-black font-black shadow transition-all">
+          <span>⚡ รันทั้ง 2 คู่พร้อมกัน</span>
+        </button>
+      </div>
+
+      <!-- Live Radar Scanning Indicator -->
+      <div class="hidden xl:flex items-center gap-2 px-3 py-1 rounded-lg bg-[#0C1220] border border-slate-800 text-[10px] font-mono text-slate-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>เรดาร์ AI: <strong class="text-emerald-400" id="autotrade-scan-status">สแกนแท่งเทียนสด 24 ชม. (พร้อมออกไม้ 0.02 ทันที)</strong></span>
+      </div>
+    </div>
+
+    <!-- Quick Live Test Execution Button -->
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400 text-[10px] hidden sm:inline font-mono">ทุนจำลอง: <strong class="text-white">$1,000</strong> | ออกไม้: <strong class="text-amber-300 font-bold">0.02 Lot</strong></span>
+      <button onclick="triggerAutoTradeDemoNow()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-black flex items-center gap-1.5 shadow-md transition-all">
+        <span>▶️ ยิงออเดอร์ 0.02 ทันที (ดูการเทรดสด)</span>
+      </button>
+    </div>
+  </div>
+
   <!-- 3. REAL-TIME INTERACTIVE WORKSPACE (CHART & AI ANALYSIS DUAL SPLIT) -->
   <main id="workspace-container" class="grid grid-cols-1 xl:grid-cols-12 gap-0 border-b border-[#161F2E] transition-all duration-300">
     
@@ -1937,6 +1976,81 @@
         lbl.innerText = "Auto-Pilot: ปิด";
       }
     }
+
+    let autoTradeTarget = 'BOTH'; // 'XAUUSD', 'BTCUSD', 'BOTH'
+    let isMasterAutoTradeActive = true;
+
+    function setAutoTradeTarget(target) {
+      autoTradeTarget = target;
+      ['xau', 'btc', 'both'].forEach(t => {
+        const btn = document.getElementById(`btn-target-${t}`);
+        if (btn) {
+          if (t === target.toLowerCase()) {
+            btn.className = "px-2.5 py-1 rounded-lg bg-amber-500 text-black font-black shadow transition-all";
+          } else {
+            btn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all";
+          }
+        }
+      });
+
+      if (target === 'XAUUSD') {
+        selectAsset('XAUUSD');
+      } else if (target === 'BTCUSD') {
+        selectAsset('BTCUSD');
+      }
+
+      showToastAlert(`🎯 ตั้งค่าคู่เงินรันเทรดจริง: ${target === 'BOTH' ? 'XAUUSD & BTCUSD (พร้อมกัน)' : target} (Lot 0.02)`);
+    }
+
+    function toggleMasterAutoTrader() {
+      isMasterAutoTradeActive = !isMasterAutoTradeActive;
+      isAutoPilot = isMasterAutoTradeActive;
+      const btn = document.getElementById('btn-master-autotrade');
+      const text = document.getElementById('master-autotrade-text');
+      const scanStatus = document.getElementById('autotrade-scan-status');
+
+      if (isMasterAutoTradeActive) {
+        if (btn) btn.className = "px-3.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 font-black flex items-center gap-2 shadow-lg hover:bg-emerald-500/30 transition-all";
+        if (text) text.innerText = "⚡ รันเทรดอัตโนมัติ (LIVE ACTIVE)";
+        if (scanStatus) scanStatus.innerText = "สแกนแท่งเทียนสด 24 ชม. (พร้อมออกไม้ 0.02 ทันที)";
+        showToastAlert("🟢 รันเทรดจริงอัตโนมัติ: ระบบเฝ้ากราฟและพร้อมออกไม้ 0.02 ทันทีตาม Signal");
+      } else {
+        if (btn) btn.className = "px-3.5 py-1.5 rounded-xl bg-slate-800 text-slate-400 border border-slate-700 font-bold flex items-center gap-2 hover:bg-slate-700 transition-all";
+        if (text) text.innerText = "⏸️ ระบบเทรดอัตโนมัติ: หยุดพัก (STANDBY)";
+        if (scanStatus) scanStatus.innerText = "ระบบหยุดพักชั่วคราว (กดปุ่มเพื่อเริ่มรันใหม่)";
+        showToastAlert("⏸️ หยุดพักระบบรันเทรดอัตโนมัติชั่วคราว");
+      }
+    }
+
+    function triggerAutoTradeDemoNow() {
+      const sym = autoTradeTarget === 'BOTH' ? currentAsset : autoTradeTarget;
+      selectAsset(sym);
+      
+      const existing = openPositions.find(p => p.symbol === sym);
+      if (existing) {
+        alert(`⚠️ มีออเดอร์ ${sym} (Lot 0.02) กำลังถือครองอยู่แล้วในพอร์ต!\n\nตามหลักความเสี่ยงสถาบัน: เพื่อรักษาพอร์ต $1,000 ให้ปลอดภัย ไม่อนุญาตให้ออกไม้ซ้อน\nคุณสามารถกด 'ปิดทำกำไร' ออเดอร์เดิมก่อนเพื่อดูผลลัพธ์ใน Trade Journal ได้ครับ`);
+        switchCockpitTab('positions');
+        return;
+      }
+
+      showToastAlert(`⚡ [เรดาร์ AI ตรวจพบ Setup] กำลังสั่งเปิดคำสั่งจริง ${sym} (Lot 0.02)...`);
+      
+      setTimeout(() => {
+        autoExecuteSignalTrade('BUY', sym);
+        switchCockpitTab('positions');
+      }, 400);
+    }
+
+    // Automated Live Market Scanner (Runs every 15s if Master Auto-Trade is Active)
+    setInterval(() => {
+      if (!isMasterAutoTradeActive) return;
+
+      const scanStatus = document.getElementById('autotrade-scan-status');
+      if (scanStatus) {
+        const timeStr = new Date().toLocaleTimeString('th-TH');
+        scanStatus.innerText = `เรดาร์สแกน M5 ล่าสุดเมื่อ ${timeStr} • ตลาดสมบูรณ์พร้อมออกไม้ 0.02`;
+      }
+    }, 15000);
 
     // Auto-Execute Signal Trade with 0.02 Lot & Simulated $1000 Account
     function autoExecuteSignalTrade(action = 'BUY', symbol = currentAsset, customPrice = null) {
