@@ -85,12 +85,13 @@
 
     <!-- Right Controls -->
     <div class="flex items-center gap-3">
-      <!-- Live Price Ticker -->
+      <!-- Live Price Ticker with Ultra Real-Time WebSocket Tag -->
       <div class="flex items-center gap-2 px-3 py-1 bg-[#0E1422] border border-[#1C2638] rounded-lg">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
         <span class="font-bold text-white font-mono" id="top-symbol">BTCUSD</span>
         <span class="font-bold text-emerald-400 font-mono text-sm" id="top-price">$84,802.0</span>
         <span class="text-[10px] text-emerald-400 font-mono font-semibold" id="top-change">+0.35%</span>
+        <span id="ws-status-indicator" class="hidden md:inline-block text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono">⚡ LIVE WS (0ms)</span>
       </div>
 
       <!-- Auto-Pilot Switch -->
@@ -2075,6 +2076,92 @@
       }
     }
 
+    function updateRealtimeUI(symbol, price, changePct, ask, bid) {
+      if (symbol !== currentAsset) return;
+      
+      const priceEl = document.getElementById('top-price');
+      const changeEl = document.getElementById('top-change');
+      const askEl = document.getElementById('quick-ask');
+      const bidEl = document.getElementById('quick-bid');
+
+      const isGold = symbol === 'XAUUSD';
+      const dec = isGold ? 2 : 1;
+
+      if (priceEl) {
+        priceEl.innerText = `$${price.toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec})}`;
+      }
+      if (changeEl && !isNaN(changePct)) {
+        const sign = changePct >= 0 ? '+' : '';
+        changeEl.innerText = `${sign}${changePct.toFixed(2)}%`;
+        changeEl.className = `text-[10px] ${changePct >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-mono font-semibold`;
+      }
+      if (askEl) askEl.innerText = `$${ask ? ask.toFixed(dec) : (price + (isGold ? 0.35 : 0.5)).toFixed(dec)}`;
+      if (bidEl) bidEl.innerText = `$${bid ? bid.toFixed(dec) : price.toFixed(dec)}`;
+
+      updateNativeChartLiveTick(price);
+    }
+
+    let binanceWs = null;
+    function initBinanceWebSocket() {
+      try {
+        const wsUrl = "wss://stream.binance.com:9443/stream?streams=paxgusdt@ticker/btcusdt@ticker";
+        binanceWs = new WebSocket(wsUrl);
+
+        binanceWs.onopen = () => {
+          console.log("🟢 [WORLD-CLASS FEED] Connected to Binance Global WebSocket Stream!");
+          const badge = document.getElementById('ws-status-indicator');
+          if (badge) {
+            badge.innerText = "⚡ LIVE WS (0ms)";
+            badge.className = "hidden md:inline-block text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono";
+          }
+        };
+
+        binanceWs.onmessage = (event) => {
+          try {
+            const payload = JSON.parse(event.data);
+            const stream = payload.stream;
+            const d = payload.data;
+            if (!d) return;
+
+            const p = parseFloat(d.c);
+            const chg = parseFloat(d.P);
+            const bestAsk = parseFloat(d.a);
+            const bestBid = parseFloat(d.b);
+
+            if (stream.includes("paxgusdt")) {
+              livePrices.XAUUSD = p;
+              if (currentAsset === "XAUUSD") {
+                updateRealtimeUI("XAUUSD", p, chg, bestAsk, bestBid);
+              }
+            } else if (stream.includes("btcusdt")) {
+              livePrices.BTCUSD = p;
+              if (currentAsset === "BTCUSD") {
+                updateRealtimeUI("BTCUSD", p, chg, bestAsk, bestBid);
+              }
+            }
+          } catch (e) {
+            console.error("WS parse error", e);
+          }
+        };
+
+        binanceWs.onclose = () => {
+          console.warn("⚠️ Binance WS closed. Auto-reconnecting in 3s...");
+          const badge = document.getElementById('ws-status-indicator');
+          if (badge) {
+            badge.innerText = "⏳ RECONNECTING";
+            badge.className = "hidden md:inline-block text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 font-mono";
+          }
+          setTimeout(initBinanceWebSocket, 3000);
+        };
+
+        binanceWs.onerror = () => {
+          if (binanceWs) binanceWs.close();
+        };
+      } catch (err) {
+        console.error("Binance WS error", err);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       calculateLotDynamically();
 
@@ -2082,28 +2169,14 @@
       setTimeout(initNativeChart, 120);
       window.addEventListener('resize', resizeNativeCharts);
 
-      // Fetch live market prices immediately and poll every 8s
+      // Connect World-Class Ultra Real-Time Binance WebSocket Feed (0ms delay)
+      initBinanceWebSocket();
+
+      // Immediate initial load via REST fallback
       fetchLiveMarketPrices().then(() => {
         selectAsset(currentAsset);
       });
-      setInterval(fetchLiveMarketPrices, 8000);
-
-      // Tick price live simulator with micro-fluctuations around real live price
-      setInterval(() => {
-        if (currentAsset === 'BTCUSD') {
-          const delta = (Math.random() - 0.48) * 12.0;
-          const p = livePrices.BTCUSD + delta;
-          document.getElementById('top-price').innerText = `$${p.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1})}`;
-          document.getElementById('quick-ask').innerText = `$${p.toFixed(1)}`;
-          document.getElementById('quick-bid').innerText = `$${(p - 0.5).toFixed(1)}`;
-        } else {
-          const delta = (Math.random() - 0.48) * 0.45;
-          const p = livePrices.XAUUSD + delta;
-          document.getElementById('top-price').innerText = `$${p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-          document.getElementById('quick-ask').innerText = `$${(p + 0.35).toFixed(2)}`;
-          document.getElementById('quick-bid').innerText = `$${p.toFixed(2)}`;
-        }
-      }, 1500);
+      setInterval(fetchLiveMarketPrices, 30000); // 30s heartbeat fallback only
 
       // Live Economic News Countdown Loop (HH:MM:SS)
       let pceSecondsLeft = 3 * 3600 + 52 * 60 + 14;  // ~3h 52m 14s left
