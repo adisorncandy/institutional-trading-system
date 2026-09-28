@@ -195,11 +195,13 @@ def autonomous_247_trader_worker():
                     
                     # Update portfolio balance
                     port_data = portfolios.get(port_id, {})
+                    if not isinstance(port_data, dict):
+                        port_data = {"id": port_id, "balance": float(port_data or 1000.0)}
                     cur_port_bal = float(port_data.get("balance", 1000.0))
                     new_port_bal = round(cur_port_bal + pnl_dollar, 2)
                     port_data["balance"] = new_port_bal
                     portfolios[port_id] = port_data
-                    total_bal = round(sum(float(p.get("balance", 1000.0)) for p in portfolios.values()), 2)
+                    total_bal = round(sum(float(p.get("balance", 1000.0) if isinstance(p, dict) else p) for p in portfolios.values()), 2)
 
                     # Create Trade Journal Entry
                     port_name = pos.get("portfolioName", port_data.get("name", "พอร์ตสถาบัน"))
@@ -744,11 +746,27 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 except Exception:
                     pass
 
+            port_configs = {
+                "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0},
+                "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0},
+                "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0},
+                "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0},
+            }
+            raw_ports = data.get("portfolios", {})
+            norm_ports = {}
+            for pid, base in port_configs.items():
+                val = raw_ports.get(pid, base.copy())
+                b_val = val.get("balance", 1000.0) if isinstance(val, dict) else float(val or 1000.0)
+                entry_port = base.copy()
+                entry_port["balance"] = round(float(b_val), 2)
+                norm_ports[pid] = entry_port
+
+            tot_b = round(sum(p["balance"] for p in norm_ports.values()), 2)
             payload = {
                 "positions": data.get("positions", []),
-                "portfolios": data.get("portfolios", {}),
-                "total_balance": float(data.get("total_balance", data.get("balance", 4000.0))),
-                "balance": float(data.get("balance", 1000.0)),
+                "portfolios": norm_ports,
+                "total_balance": tot_b,
+                "balance": tot_b,
                 "updated_at": datetime.now().isoformat()
             }
             try:
