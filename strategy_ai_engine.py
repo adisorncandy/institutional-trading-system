@@ -198,6 +198,28 @@ class AIStrategyEngine:
             "macro_radar": macro_landscape
         }
 
+    def record_trade_feedback(self, trade_result: Dict[str, Any]):
+        """
+        Self-Learning Reinforcement Module (ยิ่งใช้ยิ่งฉลาด):
+        Learns from trade outcome (Win/Loss, Slippage, Drawdown)
+        to dynamically tune sensitivity and weights.
+        """
+        self.trade_history_log.append(trade_result)
+        is_win = trade_result.get("pnl", 0) > 0
+        regime = trade_result.get("regime", "RANGE_BOUND")
+
+        # Reinforcement adjustment
+        if is_win:
+            # Strengthen the winning strategy's influence slightly
+            self.adaptive_weights["smc_weight"] = min(0.60, self.adaptive_weights["smc_weight"] + 0.005)
+            self.adaptive_weights["target_rr_ratio"] = min(3.2, self.adaptive_weights["target_rr_ratio"] + 0.02)
+        else:
+            # If trade lost, raise confidence bar and tighten risk
+            self.adaptive_weights["min_confidence_threshold"] = min(88.0, self.adaptive_weights["min_confidence_threshold"] + 0.5)
+            self.adaptive_weights["target_rr_ratio"] = max(2.0, self.adaptive_weights["target_rr_ratio"] - 0.03)
+
+        self.save_memory()
+
 class MasterTradersCouncil:
     """
     Council of World-Class Master Traders & Macro Strategists
@@ -346,28 +368,6 @@ class MasterTradersCouncil:
             "members": members,
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
-
-    def record_trade_feedback(self, trade_result: Dict[str, Any]):
-        """
-        Self-Learning Reinforcement Module (ยิ่งใช้ยิ่งฉลาด):
-        Learns from trade outcome (Win/Loss, Slippage, Drawdown)
-        to dynamically tune sensitivity and weights.
-        """
-        self.trade_history_log.append(trade_result)
-        is_win = trade_result.get("pnl", 0) > 0
-        regime = trade_result.get("regime", "RANGE_BOUND")
-
-        # Reinforcement adjustment
-        if is_win:
-            # Strengthen the winning strategy's influence slightly
-            self.adaptive_weights["smc_weight"] = min(0.60, self.adaptive_weights["smc_weight"] + 0.005)
-            self.adaptive_weights["target_rr_ratio"] = min(3.2, self.adaptive_weights["target_rr_ratio"] + 0.02)
-        else:
-            # If trade lost, raise confidence bar and tighten risk
-            self.adaptive_weights["min_confidence_threshold"] = min(88.0, self.adaptive_weights["min_confidence_threshold"] + 0.5)
-            self.adaptive_weights["target_rr_ratio"] = max(2.0, self.adaptive_weights["target_rr_ratio"] - 0.03)
-
-        self.save_memory()
 
 if __name__ == "__main__":
     engine = AIStrategyEngine()

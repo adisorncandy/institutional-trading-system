@@ -1,10 +1,10 @@
 {
   "weights": {
-    "smc_weight": 0.53,
+    "smc_weight": 0.54,
     "rsi_divergence_weight": 0.25,
     "volume_imbalance_weight": 0.25,
     "min_confidence_threshold": 88.0,
-    "target_rr_ratio": 2.0,
+    "target_rr_ratio": 2.04,
     "tp1_partial_pct": 75,
     "instant_breakeven_trigger": true
   },
@@ -324,7 +324,38 @@
       "timeClose": "15:25:33",
       "reason": "Institutional H4 Order Block + Daily Trend [\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34: Breakeven (\u0e01\u0e31\u0e19\u0e17\u0e38\u0e19\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08)]",
       "aiFeedback": "\ud83c\udfaf \u0e01\u0e33\u0e44\u0e23\u0e15\u0e32\u0e21\u0e40\u0e1b\u0e49\u0e32 (\ud83c\udf0a \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)): \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e1c\u0e25\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08 \u0e1b\u0e23\u0e31\u0e1a\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e19\u0e49\u0e33\u0e2b\u0e19\u0e31\u0e01 SMC +0.5%"
+    },
+    {
+      "pnl": 10.5,
+      "win": true
+    },
+    {
+      "id": 1790585523546,
+      "ticket": 809918,
+      "symbol": "XAUUSD",
+      "type": "SELL",
+      "style": "swing",
+      "portfolioId": "xau_swing",
+      "portfolioName": "\ud83d\udfe1 \u0e17\u0e2d\u0e07\u0e04\u0e33 \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)",
+      "styleName": "\ud83d\udfe1 \u0e17\u0e2d\u0e07\u0e04\u0e33 \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)",
+      "lot": 0.02,
+      "riskPct": 1.8,
+      "riskDollar": 18,
+      "riskRationale": "\u0e04\u0e38\u0e21\u0e04\u0e27\u0e32\u0e21\u0e40\u0e2a\u0e35\u0e48\u0e22\u0e07 1.8% ($18.00) / SL 80 Pips \u2794 \u0e04\u0e33\u0e19\u0e27\u0e13 Lot 0.02",
+      "entry": 4205.5,
+      "exit": 4146.29,
+      "pnl": 118.42,
+      "pips": 592.1,
+      "pnlPct": 11.84,
+      "balance": 1118.42,
+      "accountBalance": 1118.42,
+      "totalBalance": 4118.42,
+      "win": true,
+      "timeOpen": "15:52:03",
+      "timeClose": "21:32:19",
+      "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [\u0e04\u0e38\u0e21\u0e04\u0e27\u0e32\u0e21\u0e40\u0e2a\u0e35\u0e48\u0e22\u0e07 1.8% ($18.00) / SL 80 Pips \u2794 \u0e04\u0e33\u0e19\u0e27\u0e13 Lot 0.02] \u2022 \ud83c\udfdb\ufe0f \u0e21\u0e15\u0e34\u0e2a\u0e20\u0e32 5 \u0e1b\u0e23\u0e21\u0e32\u0e08\u0e32\u0e23\u0e22\u0e4c\u0e40\u0e2b\u0e47\u0e19\u0e1e\u0e49\u0e2d\u0e07\u0e40\u0e2d\u0e01\u0e09\u0e31\u0e19\u0e17\u0e4c [\u0e23\u0e30\u0e1a\u0e1a\u0e1b\u0e34\u0e14\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34 24/7: Take Profit TP1]",
+      "aiFeedback": "\ud83c\udfaf \u0e01\u0e33\u0e44\u0e23\u0e15\u0e32\u0e21\u0e40\u0e1b\u0e49\u0e32 (\ud83d\udfe1 \u0e17\u0e2d\u0e07\u0e04\u0e33 \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing) Lot 0.02): \u0e1b\u0e34\u0e14\u0e44\u0e21\u0e49\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08 \u0e1b\u0e23\u0e31\u0e1a\u0e08\u0e39\u0e19 SMC +0.5%"
     }
   ],
-  "last_updated": "2026-09-28T15:25:33.731282"
+  "last_updated": "2026-09-28T21:32:20.287394"
 }
