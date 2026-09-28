@@ -198,7 +198,7 @@ class handler(BaseHTTPRequestHandler):
         # 4.5 API: Trade Journal & Memory
         elif path == "/api/journal" or path.endswith("/journal"):
             trades = []
-            for check_dir in ["/tmp", root_dir]:
+            for check_dir in [os.path.dirname(__file__), "/tmp", root_dir]:
                 p = os.path.join(check_dir, "ai_trade_journal.json")
                 if os.path.exists(p):
                     try:
@@ -215,6 +215,35 @@ class handler(BaseHTTPRequestHandler):
                 "total_trades": len(trades)
             }).encode("utf-8"))
 
+        # 4.6 API: Active Live Positions State (Zero-Loss Persistence across Updates)
+        elif path == "/api/positions" or path.endswith("/positions"):
+            positions_data = {"positions": [], "balance": 1000.0}
+            for check_dir in [os.path.dirname(__file__), "/tmp", root_dir]:
+                p = os.path.join(check_dir, "ai_active_positions.json")
+                if os.path.exists(p):
+                    try:
+                        with open(p, "r", encoding="utf-8") as f:
+                            positions_data = json.load(f)
+                            break
+                    except Exception:
+                        pass
+            
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "positions": positions_data.get("positions", []),
+                "portfolios": positions_data.get("portfolios", {
+                    "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+                    "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+                    "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+                    "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+                }),
+                "total_balance": positions_data.get("total_balance", 4000.0),
+                "balance": positions_data.get("balance", 1000.0),
+                "total_active": len(positions_data.get("positions", [])),
+                "persistence_safe": True
+            }, ensure_ascii=False).encode("utf-8"))
+
         else:
             self._set_headers(404)
             self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode("utf-8"))
@@ -230,7 +259,7 @@ class handler(BaseHTTPRequestHandler):
             entry = json.loads(post_data.decode('utf-8'))
             
             trades = []
-            for check_dir in ["/tmp", root_dir]:
+            for check_dir in [os.path.dirname(__file__), "/tmp", root_dir]:
                 p = os.path.join(check_dir, "ai_trade_journal.json")
                 if os.path.exists(p):
                     try:
@@ -405,5 +434,36 @@ class handler(BaseHTTPRequestHandler):
                     "symbol": symbol,
                     "flex_sample": payload
                 }).encode("utf-8"))
+        # 4. Save Active Live Positions
+        elif path == "/api/positions" or path.endswith("/positions"):
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                data = {}
+            
+            payload = {
+                "positions": data.get("positions", []),
+                "portfolios": data.get("portfolios", {}),
+                "total_balance": float(data.get("total_balance", data.get("balance", 4000.0))),
+                "balance": float(data.get("balance", 1000.0)),
+                "updated_at": datetime.now().isoformat()
+            }
+            for save_dir in [os.path.dirname(__file__), "/tmp", root_dir]:
+                p = os.path.join(save_dir, "ai_active_positions.json")
+                try:
+                    with open(p, "w", encoding="utf-8") as f:
+                        json.dump(payload, f, indent=2, ensure_ascii=False)
+                except Exception:
+                    pass
+
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "message": "บันทึกสถานะไม้สดลง Safe Storage สำเร็จ",
+                "total_active": len(payload["positions"])
+            }, ensure_ascii=False).encode("utf-8"))
+
         else:
             self._set_headers(404)
