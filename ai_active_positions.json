@@ -1,0 +1,46 @@
+{
+  "positions": [
+    {
+      "id": 1727500001,
+      "ticket": 849201,
+      "symbol": "BTCUSD",
+      "type": "BUY",
+      "style": "scalping",
+      "styleName": "⚡ เทรดสั้น (M5 Scalp)",
+      "lot": 0.02,
+      "entry": 84790,
+      "sl": 84490,
+      "tp1": 85290,
+      "tp2": 85790,
+      "pnl": 2.4,
+      "timeOpen": "13:25:10",
+      "tp1Hit": false,
+      "breakevenLocked": true,
+      "reason": "SMC M5 FVG + EMA Fast Momentum",
+      "evalScore": "94.8% Confluence",
+      "evalStatus": "🛡️ แตะ +8 Pips: ขยับ SL บังหน้าทุน Breakeven เรียบร้อย (ไร้ความเสี่ยง 100%)"
+    },
+    {
+      "id": 1727500002,
+      "ticket": 849202,
+      "symbol": "XAUUSD",
+      "type": "BUY",
+      "style": "swing",
+      "styleName": "🌊 เทรดยาว (H1 Swing)",
+      "lot": 0.02,
+      "entry": 4202.8,
+      "sl": 4194.8,
+      "tp1": 4220.8,
+      "tp2": 4245,
+      "pnl": 5.4,
+      "timeOpen": "11:15:00",
+      "tp1Hit": false,
+      "breakevenLocked": false,
+      "reason": "Institutional H4 Order Block + Daily Trend",
+      "evalScore": "92.5% Confluence",
+      "evalStatus": "🟢 โครงสร้างสวิงเทรนด์แข็งแกร่ง: กำลังมุ่งหน้าสู่เป้า TP1 ตามแผนสถาบัน (R:R 1:2.8)"
+    }
+  ],
+  "balance": 1000,
+  "updated_at": "2026-09-28T07:11:04.510Z"
+}

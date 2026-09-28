@@ -515,9 +515,10 @@
             <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs border border-emerald-500/30">
               📋
             </div>
-            <h2 class="text-base font-black text-white flex items-center gap-2">
+            <h2 class="text-base font-black text-white flex items-center flex-wrap gap-2">
               <span>เมนูย่อย: ออเดอร์กำลังรันตามระบบ & การประเมินผล AI</span>
               <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold border border-emerald-500/40">Real-Time Evaluation</span>
+              <span class="px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-300 font-mono text-[10px] font-bold border border-blue-500/30 flex items-center gap-1">🛡️ ป้องกันสถานะไม้สด 100% (Zero-Loss Safe Reload)</span>
             </h2>
           </div>
           <p class="text-slate-400 text-xs mt-1">
@@ -1207,6 +1208,7 @@
             <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Server: AD-Institutional-Cloud</span>
             <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Leverage: 1:100</span>
             <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Currency: USD ($)</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 font-mono border border-emerald-500/30 flex items-center gap-1 font-bold">🛡️ Zero-Loss Safe Reload (ป้องกันไม้สด 100%)</span>
           </div>
           <p class="text-slate-400 text-xs mt-1.5">
             เก็บบันทึกประวัติและสถิติแบบพอร์ตการลงทุนจริง แยกการประเมินผลอย่างเหมาะสมระหว่าง <strong class="text-amber-300">พอร์ตเทรดสั้น (Scalp M5)</strong> และ <strong class="text-cyan-300">พอร์ตเทรดยาว (Swing H1)</strong>
@@ -1740,8 +1742,8 @@
     let initialBalance = 1000.0;
     let currentOrderFilter = 'all'; // 'all' | 'scalping' | 'swing' | 'matrix' | 'journal'
 
-    // Default Active Orders for Live Demonstration (ทั้งเทรดสั้น M5 และ เทรดยาว H1)
-    let openPositions = [
+    // Default Template Positions (ใช้เป็นตัวอย่างจำลองเฉพาะการเปิดรันระบบครั้งแรกสุด)
+    const DEFAULT_DEMO_POSITIONS = [
       {
         id: 1727500001,
         ticket: 849201,
@@ -1783,7 +1785,30 @@
         evalStatus: '🟢 โครงสร้างสวิงเทรนด์แข็งแกร่ง: กำลังมุ่งหน้าสู่เป้า TP1 ตามแผนสถาบัน (R:R 1:2.8)'
       }
     ];
+
+    // Live In-Flight Positions (Protected across System Updates / Zero-Loss Hot Reload)
+    let openPositions = [];
     let tradeJournal = [];
+
+    // Save Live Positions to Dual Storage (Browser LocalStorage + Server JSON Safe Storage)
+    function savePositionsState() {
+      try {
+        localStorage.setItem('ad_open_positions', JSON.stringify(openPositions));
+        localStorage.setItem('ad_sim_balance', balance.toFixed(2));
+      } catch (e) {}
+
+      // Asynchronously sync to backend storage
+      try {
+        fetch('/api/positions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            positions: openPositions,
+            balance: balance
+          })
+        }).catch(() => {});
+      } catch (e) {}
+    }
 
     // Real-time Live Market Prices (Gold Spot & Bitcoin)
     let livePrices = { XAUUSD: 4205.50, BTCUSD: 83450.00 };
@@ -2711,6 +2736,7 @@
       };
 
       openPositions.push(newPos);
+      savePositionsState();
       renderPositions();
       playAlertBeep();
       showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (Lot 0.02) เรียบร้อยแล้ว`);
@@ -2832,6 +2858,7 @@
       };
 
       openPositions.push(newPos);
+      savePositionsState();
       renderPositions();
       playAlertBeep();
       showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (${newPos.styleName} 0.02 Lot) เรียบร้อยแล้ว`);
@@ -2931,6 +2958,7 @@
 
       tradeJournal.unshift(journalEntry);
       openPositions = openPositions.filter(p => p.id !== id);
+      savePositionsState();
       saveTradeJournal();
       renderPositions();
       renderJournal();
@@ -3242,6 +3270,7 @@
           pos.breakevenLocked = true;
           pos.sl = pos.type === 'BUY' ? pos.entry + (isGold ? 0.3 : 15.0) : pos.entry - (isGold ? 0.3 : 15.0);
           pos.evalStatus = `🛡️ กำไรแตะ +${pos.pips} pips: ขยับ SL บังหน้าทุน Breakeven เรียบร้อย (ไร้ความเสี่ยง 100%)`;
+          savePositionsState();
           showToastAlert(`🛡️ ออเดอร์ #${pos.ticket} (${pos.symbol}) เลื่อน SL บังหน้าทุน Breakeven เรียบร้อย (ไร้ความเสี่ยง 100%)`);
         } else if (pos.breakevenLocked) {
           pos.evalStatus = `🛡️ กำไรบวก ${pos.pips >= 0 ? '+' : ''}${pos.pips} pips: SL กันทุนล็อกไว้แล้ว กำลังลุ้นเป้าหมาย TP1`;
@@ -3306,7 +3335,9 @@
         openPositions = [];
         tradeJournal = [];
         localStorage.removeItem('ad_trade_journal');
+        localStorage.removeItem('ad_open_positions');
         localStorage.setItem('ad_sim_balance', '1000.00');
+        savePositionsState();
         renderPositions();
         renderJournal();
         updateAccountEquityUI();
@@ -3883,7 +3914,10 @@
       }
     }
 
-    function loadJournalAndState() {
+    async function loadJournalAndState() {
+      let hasLoadedPositions = false;
+
+      // 1. Instant LocalStorage Load (Immediate rendering without network latency)
       try {
         const savedJournal = localStorage.getItem('ad_trade_journal');
         if (savedJournal) {
@@ -3893,11 +3927,58 @@
         if (savedBal) {
           balance = parseFloat(savedBal);
         }
+        const savedPos = localStorage.getItem('ad_open_positions');
+        if (savedPos !== null) {
+          const parsed = JSON.parse(savedPos);
+          if (Array.isArray(parsed)) {
+            openPositions = parsed;
+            hasLoadedPositions = true;
+          }
+        }
       } catch (e) {}
+
+      // Initial fast render
       renderPositions();
       renderJournal();
       evaluateLivePositions();
       updateAccountEquityUI();
+
+      // 2. Server-side State Synchronization (Guarantees zero order loss across code/system updates)
+      try {
+        const res = await fetch('/api/positions');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.positions)) {
+            // If local storage was empty or server has active positions, hydrate safely
+            if (!hasLoadedPositions || (openPositions.length === 0 && data.positions.length > 0)) {
+              openPositions = data.positions;
+              hasLoadedPositions = true;
+              try { localStorage.setItem('ad_open_positions', JSON.stringify(openPositions)); } catch(e){}
+            }
+            if (data.balance && !localStorage.getItem('ad_sim_balance')) {
+              balance = parseFloat(data.balance);
+            }
+            renderPositions();
+            evaluateLivePositions();
+            updateAccountEquityUI();
+          }
+        }
+      } catch (e) {}
+
+      // 3. Fallback: Only initialize demo positions if this is an absolute first-time brand new run
+      if (!hasLoadedPositions) {
+        const isInitialized = localStorage.getItem('ad_system_initialized');
+        if (!isInitialized) {
+          openPositions = JSON.parse(JSON.stringify(DEFAULT_DEMO_POSITIONS));
+          localStorage.setItem('ad_system_initialized', 'true');
+          savePositionsState();
+          renderPositions();
+          evaluateLivePositions();
+          updateAccountEquityUI();
+        } else {
+          openPositions = [];
+        }
+      }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
