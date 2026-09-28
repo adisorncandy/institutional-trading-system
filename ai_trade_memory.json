@@ -1,10 +1,10 @@
 {
   "weights": {
-    "smc_weight": 0.515,
+    "smc_weight": 0.52,
     "rsi_divergence_weight": 0.25,
     "volume_imbalance_weight": 0.25,
     "min_confidence_threshold": 88.0,
-    "target_rr_ratio": 2.0500000000000016,
+    "target_rr_ratio": 2.0700000000000016,
     "tp1_partial_pct": 75,
     "instant_breakeven_trigger": true
   },
@@ -188,7 +188,25 @@
       "timeClose": "14:55:35",
       "reason": "Institutional H4 Order Block + Daily Trend [\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34: Breakeven (\u0e01\u0e31\u0e19\u0e17\u0e38\u0e19\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08)]",
       "aiFeedback": "\ud83d\uded1 \u0e15\u0e31\u0e14\u0e02\u0e32\u0e14\u0e17\u0e38\u0e19\u0e15\u0e32\u0e21\u0e41\u0e1c\u0e19 (\ud83c\udf0a \u0e40\u0e17\u0e23\u0e14\u0e22\u0e32\u0e27 (H1 Swing)): \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01 Pattern \u0e2a\u0e31\u0e0d\u0e0d\u0e32\u0e13\u0e2b\u0e25\u0e2d\u0e01\u0e40\u0e02\u0e49\u0e32 Neural Store \u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e01\u0e23\u0e2d\u0e07\u0e23\u0e2d\u0e1a\u0e16\u0e31\u0e14\u0e44\u0e1b"
+    },
+    {
+      "id": 1790582133185,
+      "ticket": 376875,
+      "symbol": "BTCUSD",
+      "type": "BUY",
+      "style": "scalping",
+      "styleName": "\u26a1 \u0e40\u0e17\u0e23\u0e14\u0e2a\u0e31\u0e49\u0e19 (M5 Scalp)",
+      "lot": 0.02,
+      "entry": 83026,
+      "exit": 83036,
+      "pnl": 0.2,
+      "pnlPct": 0.03,
+      "win": true,
+      "timeOpen": "14:55:33",
+      "timeClose": "15:03:51",
+      "reason": "SMC M5 FVG + Fast Momentum [\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34: Breakeven (\u0e01\u0e31\u0e19\u0e17\u0e38\u0e19\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08)]",
+      "aiFeedback": "\ud83c\udfaf \u0e01\u0e33\u0e44\u0e23\u0e15\u0e32\u0e21\u0e40\u0e1b\u0e49\u0e32 (\u26a1 \u0e40\u0e17\u0e23\u0e14\u0e2a\u0e31\u0e49\u0e19 (M5 Scalp)): \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e1c\u0e25\u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08 \u0e1b\u0e23\u0e31\u0e1a\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e19\u0e49\u0e33\u0e2b\u0e19\u0e31\u0e01 SMC +0.5%"
     }
   ],
-  "last_updated": "2026-09-28T14:55:35.062784"
+  "last_updated": "2026-09-28T15:03:51.734669"
 }

@@ -1,5 +1,23 @@
 [
   {
+    "id": 1790582133185,
+    "ticket": 376875,
+    "symbol": "BTCUSD",
+    "type": "BUY",
+    "style": "scalping",
+    "styleName": "⚡ เทรดสั้น (M5 Scalp)",
+    "lot": 0.02,
+    "entry": 83026,
+    "exit": 83036,
+    "pnl": 0.2,
+    "pnlPct": 0.03,
+    "win": true,
+    "timeOpen": "14:55:33",
+    "timeClose": "15:03:51",
+    "reason": "SMC M5 FVG + Fast Momentum [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
+    "aiFeedback": "🎯 กำไรตามเป้า (⚡ เทรดสั้น (M5 Scalp)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+  },
+  {
     "id": 1790581763198,
     "ticket": 320593,
     "symbol": "XAUUSD",

@@ -395,8 +395,11 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                     entry_id = entry.get("id")
                     if entry_id:
                         curr_data["positions"] = [p for p in curr_pos if p.get("id") != entry_id]
-                        with open(pos_path, "w", encoding="utf-8") as f:
-                            json.dump(curr_data, f, indent=2, ensure_ascii=False)
+                    if "balance" in entry:
+                        curr_data["balance"] = float(entry["balance"])
+                    curr_data["updated_at"] = datetime.now().isoformat()
+                    with open(pos_path, "w", encoding="utf-8") as f:
+                        json.dump(curr_data, f, indent=2, ensure_ascii=False)
                 except Exception:
                     pass
 

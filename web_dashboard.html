@@ -3002,6 +3002,8 @@
         exit: parseFloat(currentP.toFixed(dec)),
         pnl: pnlDollar,
         pnlPct: parseFloat(((pnlDollar / balance) * 100).toFixed(2)),
+        balance: parseFloat(balance.toFixed(2)),
+        accountBalance: parseFloat(balance.toFixed(2)),
         win: pnlDollar >= 0,
         timeOpen: pos.timeOpen,
         timeClose: new Date().toLocaleTimeString('th-TH'),
@@ -3027,14 +3029,14 @@
         });
       } catch (e) {}
 
-      // Real-time LINE Alert on Trade Closed
+      // Real-time LINE Alert on Trade Closed (รวมยอดคงเหลือสุทธิ)
       notifyLineTrade('close', journalEntry);
 
       if (customTrigger) {
         playAlertBeep();
-        showToastAlert(`🎯 ปิดทำกำไรอัตโนมัติ #${pos.ticket} (${customTrigger})! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD`);
+        showToastAlert(`🎯 ปิดออเดอร์อัตโนมัติ #${pos.ticket} (${customTrigger})! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD | ยอดคงเหลือ: $${balance.toFixed(2)} USD`);
       } else {
-        showToastAlert(`✅ ปิดคำสั่ง #${pos.ticket} สำเร็จ! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD (บันทึกเข้า Journal แล้ว)`);
+        showToastAlert(`✅ ปิดคำสั่ง #${pos.ticket} สำเร็จ! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD | ยอดคงเหลือ: $${balance.toFixed(2)} USD`);
       }
     }
 

@@ -629,6 +629,19 @@ class LineFlexService:
         pnl_str = f"+${pnl:.2f}" if pnl >= 0 else f"-${abs(pnl):.2f}"
         pnl_color = "#34D399" if pnl >= 0 else "#F87171"
 
+        # Calculate or extract current net portfolio balance
+        balance = float(trade.get("balance", trade.get("accountBalance", 0.0)))
+        if balance <= 0:
+            try:
+                import os
+                pos_file = os.path.join(os.path.dirname(__file__), "ai_active_positions.json")
+                if os.path.exists(pos_file):
+                    with open(pos_file, "r", encoding="utf-8") as f:
+                        b_data = json.load(f)
+                        balance = float(b_data.get("balance", 1000.0))
+            except Exception:
+                balance = 1000.0
+
         reason_display = reason.split('[')[-1].replace(']', '') if '[' in reason else reason
 
         flex_bubble = {
@@ -658,11 +671,13 @@ class LineFlexService:
                         ]
                     },
                     {
-                        "type": "text",
-                        "text": f"ผลตอบแทน: {pnl_pct}% ของพอร์ต ($1,000)",
-                        "color": "#E2E8F0",
-                        "size": "xxs",
-                        "margin": "xs"
+                        "type": "box",
+                        "layout": "horizontal",
+                        "margin": "xs",
+                        "contents": [
+                            {"type": "text", "text": f"ผลตอบแทน: {pnl_pct}% ของพอร์ต", "color": "#E2E8F0", "size": "xxs", "flex": 6},
+                            {"type": "text", "text": f"ยอดคงเหลือ: ${balance:,.2f}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end", "flex": 6}
+                        ]
                     }
                 ]
             },
@@ -673,6 +688,36 @@ class LineFlexService:
                 "paddingAll": "16px",
                 "spacing": "md",
                 "contents": [
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "backgroundColor": "#022C22" if balance >= 1000.0 else "#3B1115",
+                        "borderColor": "#059669" if balance >= 1000.0 else "#DC2626",
+                        "borderWidth": "1px",
+                        "cornerRadius": "8px",
+                        "paddingAll": "10px",
+                        "alignItems": "center",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "flex": 6,
+                                "contents": [
+                                    {"type": "text", "text": "💰 ยอดเงินคงเหลือสุทธิ:", "color": "#94A3B8", "size": "xxs"},
+                                    {"type": "text", "text": "Current Net Balance", "color": "#64748B", "size": "xxs"}
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "text": f"${balance:,.2f} USD",
+                                "color": "#34D399" if balance >= 1000.0 else "#F87171",
+                                "size": "sm",
+                                "weight": "bold",
+                                "align": "end",
+                                "flex": 6
+                            }
+                        ]
+                    },
                     {
                         "type": "box",
                         "layout": "vertical",
@@ -730,7 +775,7 @@ class LineFlexService:
                 ]
             }
         }
-        return {"type": "flex", "altText": f"📊 ปิดออเดอร์ #{ticket} {symbol} ({pnl_str})", "contents": flex_bubble}
+        return {"type": "flex", "altText": f"📊 ปิดออเดอร์ #{ticket} {symbol} ({pnl_str}) | ยอดคงเหลือ: ${balance:,.2f} USD", "contents": flex_bubble}
 
 
 if __name__ == "__main__":
