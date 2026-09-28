@@ -2516,7 +2516,7 @@
     }
 
     // Close Position & Record to Trade Journal for AI Continuous Improvement
-    function closePosition(btn, id) {
+    function closePosition(btn, id, customTrigger = '') {
       const pos = openPositions.find(p => p.id === id);
       if (!pos) return;
 
@@ -2537,6 +2537,8 @@
       // Update Simulated Balance
       balance += pnlDollar;
 
+      const exitReasonStr = customTrigger ? `อัตโนมัติ: ${customTrigger}` : 'ปิดโดยผู้ใช้ (Manual)';
+
       // Create Trade Journal Entry
       const journalEntry = {
         id: pos.id,
@@ -2553,10 +2555,10 @@
         win: pnlDollar >= 0,
         timeOpen: pos.timeOpen,
         timeClose: new Date().toLocaleTimeString('th-TH'),
-        reason: pos.reason,
+        reason: `${pos.reason} [${exitReasonStr}]`,
         aiFeedback: pnlDollar >= 0 
-          ? `🎯 กำไรตามเป้า (${pos.styleName}): เสริมน้ำหนัก SMC +0.5% เข้าสู่ Neural Feature Store` 
-          : `🛑 ตัดขาดทุนตามแผน (${pos.styleName}): ปรับเกณฑ์ความมั่นใจขึ้น +0.5% เพื่อความแม่นยำสูงขึ้น`
+          ? `🎯 กำไรตามเป้า (${pos.styleName}): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%` 
+          : `🛑 ตัดขาดทุนตามแผน (${pos.styleName}): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป`
       };
 
       tradeJournal.unshift(journalEntry);
@@ -2574,7 +2576,12 @@
         });
       } catch (e) {}
 
-      showToastAlert(`✅ ปิดคำสั่ง #${pos.ticket} สำเร็จ! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD (บันทึกเข้า Journal แล้ว)`);
+      if (customTrigger) {
+        playAlertBeep();
+        showToastAlert(`🎯 ปิดทำกำไรอัตโนมัติ #${pos.ticket} (${customTrigger})! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD`);
+      } else {
+        showToastAlert(`✅ ปิดคำสั่ง #${pos.ticket} สำเร็จ! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD (บันทึกเข้า Journal แล้ว)`);
+      }
     }
 
     function closeAllPositions() {
@@ -2872,6 +2879,41 @@
           pos.evalStatus = `⏳ กำลังวิ่งบวก ${pos.pips} pips สอดคล้องโครงสร้าง AI รอแตะ +8 pips เพื่อล็อกทุนอัตโนมัติ`;
         } else {
           pos.evalStatus = `⏳ อยู่ในโซนทดสอบแนวรับ/ต้าน (Pullback โซนปลอดภัย) มี SL คอยควบคุมความเสี่ยงอย่างเข้มงวด`;
+        }
+
+        // Automatic Take Profit (TP1 / TP2) and Stop Loss Execution
+        let shouldAutoClose = false;
+        let exitTrigger = '';
+
+        if (pos.type === 'BUY') {
+          if (p >= pos.tp2) {
+            shouldAutoClose = true;
+            exitTrigger = 'TP2 (เต็มเป้าหมายสถาบัน)';
+          } else if (p >= pos.tp1) {
+            shouldAutoClose = true;
+            exitTrigger = 'TP1 (เก็บกำไรก้อนแรก)';
+          } else if (p <= pos.sl) {
+            shouldAutoClose = true;
+            exitTrigger = pos.breakevenLocked ? 'Breakeven (กันทุนสำเร็จ)' : 'Stop Loss (คุมความเสี่ยง)';
+          }
+        } else if (pos.type === 'SELL') {
+          if (p <= pos.tp2) {
+            shouldAutoClose = true;
+            exitTrigger = 'TP2 (เต็มเป้าหมายสถาบัน)';
+          } else if (p <= pos.tp1) {
+            shouldAutoClose = true;
+            exitTrigger = 'TP1 (เก็บกำไรก้อนแรก)';
+          } else if (p >= pos.sl) {
+            shouldAutoClose = true;
+            exitTrigger = pos.breakevenLocked ? 'Breakeven (กันทุนสำเร็จ)' : 'Stop Loss (คุมความเสี่ยง)';
+          }
+        }
+
+        if (shouldAutoClose && !pos.isClosing) {
+          pos.isClosing = true;
+          setTimeout(() => {
+            closePosition(null, pos.id, exitTrigger);
+          }, 150);
         }
       });
 
