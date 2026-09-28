@@ -83,15 +83,53 @@
         <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
           <span>🎯 เรดาร์สัญญาณ AI</span>
         </button>
-        <button onclick="openModal('line-modal')" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
-          <span>🔔 LINE Alert</span>
-        </button>
-        <button onclick="openModal('ai-memory-modal')" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
-          <span>🗄️ AI Memory</span>
-        </button>
-        <button onclick="openModal('news-analysis-modal')" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
-          <span>📰 ปฏิทินข่าว</span>
-        </button>
+        <!-- Settings & Tools Dropdown Menu (ซ่อนเมนูรองในปุ่มตั้งค่าเพื่อความคลีน สบายตา) -->
+        <div class="relative inline-block text-left" id="settings-dropdown-wrapper">
+          <button onclick="toggleSettingsDropdown(event)" id="btn-settings-dropdown" class="px-3 py-1.5 rounded-xl bg-[#0D1424] hover:bg-[#141F36] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-1.5 text-xs border border-slate-700/60 shadow-sm">
+            <span>⚙️ ตั้งค่า & เครื่องมือ</span>
+            <span class="text-[10px] text-slate-400">▾</span>
+          </button>
+          
+          <!-- Dropdown Menu Box -->
+          <div id="settings-dropdown-menu" class="hidden absolute right-0 mt-2 w-60 rounded-2xl bg-[#0B101D] border border-[#1E2B45] shadow-2xl z-50 py-1.5 backdrop-blur-xl">
+            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800">
+              การเชื่อมต่อ & เครื่องมือ AI
+            </div>
+            <button onclick="openModal('line-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
+              <span class="text-amber-400 text-sm">🔔</span>
+              <div>
+                <span class="font-bold block">ตั้งค่า LINE Alert</span>
+                <span class="text-[10px] text-slate-400">เชื่อมต่อ Token รับสัญญาณแจ้งเตือน</span>
+              </div>
+            </button>
+            <button onclick="openModal('ai-memory-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
+              <span class="text-purple-400 text-sm">🗄️</span>
+              <div>
+                <span class="font-bold block">คลังความจำ AI Memory</span>
+                <span class="text-[10px] text-slate-400">Adaptive Weights & การเรียนรู้ของบอท</span>
+              </div>
+            </button>
+            <button onclick="openModal('news-analysis-modal'); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2.5 text-xs text-slate-300 hover:bg-[#141E33] hover:text-white flex items-center gap-2.5 transition-colors">
+              <span class="text-cyan-400 text-sm">📰</span>
+              <div>
+                <span class="font-bold block">ปฏิทินข่าว & สถิติ 10Y</span>
+                <span class="text-[10px] text-slate-400">เช็คตารางความผันผวนข่าวเศรษฐกิจ</span>
+              </div>
+            </button>
+            <div class="border-t border-slate-800/80 my-1"></div>
+            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              การจัดการพอร์ตจำลอง
+            </div>
+            <button onclick="exportPortfolioStatementCSV(); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2 text-xs text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-2.5 transition-colors">
+              <span>📥</span>
+              <span class="font-bold">ส่งออก Statement (CSV)</span>
+            </button>
+            <button onclick="resetSimulatedAccount(); toggleSettingsDropdown();" class="w-full text-left px-3.5 py-2 text-xs text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 transition-colors">
+              <span>🔄</span>
+              <span class="font-bold">รีเซ็ตพอร์ต $1,000</span>
+            </button>
+          </div>
+        </div>
       </nav>
     </div>
 
@@ -3640,6 +3678,23 @@
       }
       setTimeout(resizeNativeCharts, 50);
     }
+
+    function toggleSettingsDropdown(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById('settings-dropdown-menu');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    // Close settings dropdown when clicked outside
+    document.addEventListener('click', (e) => {
+      const wrapper = document.getElementById('settings-dropdown-wrapper');
+      const menu = document.getElementById('settings-dropdown-menu');
+      if (menu && !menu.classList.contains('hidden')) {
+        if (wrapper && !wrapper.contains(e.target)) {
+          menu.classList.add('hidden');
+        }
+      }
+    });
 
     function openModal(id) { 
       document.getElementById(id).classList.remove('hidden'); 
