@@ -1083,6 +1083,39 @@
     let balance = 31430.0;
     let openPositions = [];
 
+    // Real-time Live Market Prices (Gold Spot & Bitcoin)
+    let livePrices = { XAUUSD: 4205.50, BTCUSD: 83450.00 };
+
+    async function fetchLiveMarketPrices() {
+      try {
+        const resXau = await fetch('/api/price?symbol=XAUUSD');
+        const dataXau = await resXau.json();
+        if (dataXau && dataXau.price) {
+          livePrices.XAUUSD = dataXau.price;
+        }
+      } catch (e) {
+        try {
+          const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
+          const d = await r.json();
+          if (d && d.price) livePrices.XAUUSD = parseFloat(d.price);
+        } catch (_) {}
+      }
+
+      try {
+        const resBtc = await fetch('/api/price?symbol=BTCUSD');
+        const dataBtc = await resBtc.json();
+        if (dataBtc && dataBtc.price) {
+          livePrices.BTCUSD = dataBtc.price;
+        }
+      } catch (e) {
+        try {
+          const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+          const d = await r.json();
+          if (d && d.price) livePrices.BTCUSD = parseFloat(d.price);
+        } catch (_) {}
+      }
+    }
+
     // Timeframe Adaptive Specifications
     const timeframeProfiles = {
       '1': {
@@ -1305,8 +1338,8 @@
 
     function renderNativeChartData() {
       if (!candleSeries) return;
-      const base = currentAsset === 'XAUUSD' ? 2640.5 : 84802.0;
-      const vol = currentAsset === 'XAUUSD' ? 2.5 : 120.0;
+      const base = currentAsset === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
+      const vol = currentAsset === 'XAUUSD' ? 4.5 : 120.0;
       const data = generateCandlesAndIndicators(base, 90, vol);
 
       candleSeries.setData(data.candles);
@@ -1466,10 +1499,10 @@
         btnXAU.className = "px-3 py-1.5 rounded-lg font-bold border border-amber-500/50 bg-amber-500/10 text-amber-300 transition-all flex items-center gap-1.5 shadow-sm";
         btnBTC.className = "px-3 py-1.5 rounded-lg font-bold border border-slate-700 bg-slate-800/80 text-slate-300 transition-all flex items-center gap-1.5";
         
-        const base = 2640.50;
+        const base = livePrices.XAUUSD;
         document.getElementById('top-symbol').innerText = "XAUUSD";
         document.getElementById('top-price').innerText = `$${base.toFixed(2)}`;
-        document.getElementById('quick-ask').innerText = `$${(base + 0.3).toFixed(2)}`;
+        document.getElementById('quick-ask').innerText = `$${(base + 0.35).toFixed(2)}`;
         document.getElementById('quick-bid').innerText = `$${base.toFixed(2)}`;
         document.getElementById('chart-current-symbol').innerText = `XAUUSD (${currentTimeframe}m) [${isScalp ? 'Scalp' : 'Swing'}]`;
         document.getElementById('confluence-symbol').innerText = `[XAUUSD - ${isScalp ? '⚡ Scalping' : '🌊 Swing Trend'}]`;
@@ -1504,7 +1537,7 @@
         btnBTC.className = "px-3 py-1.5 rounded-lg font-bold border border-amber-500/50 bg-amber-500/10 text-amber-300 transition-all flex items-center gap-1.5 shadow-sm";
         btnXAU.className = "px-3 py-1.5 rounded-lg font-bold border border-slate-700 bg-slate-800/80 text-slate-300 transition-all flex items-center gap-1.5";
         
-        const base = 84802.0;
+        const base = livePrices.BTCUSD;
         document.getElementById('top-symbol').innerText = "BTCUSD";
         document.getElementById('top-price').innerText = `$${base.toFixed(1)}`;
         document.getElementById('quick-ask').innerText = `$${base.toFixed(1)}`;
@@ -1582,7 +1615,7 @@
     function triggerSignalPopupDemo() {
       playAlertBeep();
       const profile = timeframeProfiles[currentTimeframe] || timeframeProfiles['5'];
-      const p = currentAsset === 'XAUUSD' ? 2640.5 : 84802.0;
+      const p = currentAsset === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
       const sl = currentAsset === 'XAUUSD' ? (p - profile.xauSL).toFixed(2) : (p - profile.btcSL).toFixed(1);
       const tp1 = currentAsset === 'XAUUSD' ? (p + profile.xauTP1).toFixed(2) : (p + profile.btcTP1).toFixed(1);
       const tp2 = currentAsset === 'XAUUSD' ? (p + profile.xauTP2).toFixed(2) : (p + profile.btcTP2).toFixed(1);
@@ -1657,7 +1690,7 @@
 
       isTradingInProgress = true;
       const lot = parseFloat(document.getElementById('calc-lot').innerText) || 0.39;
-      const p = currentAsset === 'XAUUSD' ? 2640.5 : 84802.0;
+      const p = currentAsset === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
       const slDist = currentAsset === 'XAUUSD' ? 8.5 : 450.0;
       const slPrice = action === 'BUY' ? p - slDist : p + slDist;
 
@@ -1987,13 +2020,26 @@
       setTimeout(initNativeChart, 120);
       window.addEventListener('resize', resizeNativeCharts);
 
-      // Tick price live simulator
+      // Fetch live market prices immediately and poll every 8s
+      fetchLiveMarketPrices().then(() => {
+        selectAsset(currentAsset);
+      });
+      setInterval(fetchLiveMarketPrices, 8000);
+
+      // Tick price live simulator with micro-fluctuations around real live price
       setInterval(() => {
         if (currentAsset === 'BTCUSD') {
-          const delta = (Math.random() - 0.48) * 8.0;
-          const p = 84802.0 + delta;
-          document.getElementById('top-price').innerText = `$${p.toFixed(1)}`;
+          const delta = (Math.random() - 0.48) * 12.0;
+          const p = livePrices.BTCUSD + delta;
+          document.getElementById('top-price').innerText = `$${p.toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1})}`;
           document.getElementById('quick-ask').innerText = `$${p.toFixed(1)}`;
+          document.getElementById('quick-bid').innerText = `$${(p - 0.5).toFixed(1)}`;
+        } else {
+          const delta = (Math.random() - 0.48) * 0.45;
+          const p = livePrices.XAUUSD + delta;
+          document.getElementById('top-price').innerText = `$${p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+          document.getElementById('quick-ask').innerText = `$${(p + 0.35).toFixed(2)}`;
+          document.getElementById('quick-bid').innerText = `$${p.toFixed(2)}`;
         }
       }, 1500);
 

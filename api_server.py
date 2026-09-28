@@ -9,6 +9,7 @@ import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import json
 import urllib.parse
+import urllib.request
 from datetime import datetime
 
 from news_engine import EconomicNewsEngine
@@ -21,6 +22,31 @@ news_engine = EconomicNewsEngine()
 ai_engine = AIStrategyEngine()
 backtester = InstitutionalBacktester()
 line_dispatcher = LineBotDispatcher()
+
+_price_cache = {}
+
+def get_live_market_price(symbol="XAUUSD"):
+    symbol = symbol.upper()
+    is_gold = "XAU" in symbol
+    pair = "PAXGUSDT" if is_gold else "BTCUSDT"
+    fallback = 4205.50 if is_gold else 83450.00
+    
+    # Simple 2-second in-memory cache to avoid flooding
+    now = datetime.now().timestamp()
+    cached = _price_cache.get(pair)
+    if cached and (now - cached["time"] < 2.0):
+        return cached["price"]
+
+    try:
+        url = f"https://api.binance.com/api/v3/ticker/price?symbol={pair}"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=2.0) as r:
+            data = json.loads(r.read().decode())
+            val = round(float(data.get("price", fallback)), 2 if is_gold else 1)
+            _price_cache[pair] = {"price": val, "time": now}
+            return val
+    except Exception:
+        return fallback
 
 class InstitutionalAPIHandler(BaseHTTPRequestHandler):
     def _set_headers(self, status=200, content_type="application/json"):
@@ -39,10 +65,23 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
         path = parsed.path
         query = urllib.parse.parse_qs(parsed.query)
 
-        # 1. API: Get Live Signal for MT5 EA or Web
-        if path == "/api/signal":
+        # 0. API: Real-time Live Market Price (Gold Spot & BTC)
+        if path == "/api/price":
             symbol = query.get("symbol", ["XAUUSD"])[0]
-            current_price = float(query.get("price", [2638.5 if "XAU" in symbol else 63500.0])[0])
+            price = get_live_market_price(symbol)
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "symbol": symbol.upper(),
+                "price": price,
+                "timestamp": datetime.now().isoformat()
+            }).encode("utf-8"))
+
+        # 1. API: Get Live Signal for MT5 EA or Web
+        elif path == "/api/signal":
+            symbol = query.get("symbol", ["XAUUSD"])[0]
+            live_ref = get_live_market_price(symbol)
+            current_price = float(query.get("price", [live_ref])[0])
             atr = 8.5 if "XAU" in symbol else 1200.0
 
             news_status = news_engine.evaluate_news_filter(symbol)
@@ -210,22 +249,24 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
             symbol = data.get("symbol", "XAUUSD")
             style = data.get("style", "scalp")
 
+            ref_p = get_live_market_price(symbol)
+
             if alert_type == "signal":
                 if symbol == "XAUUSD":
                     if style == "scalp":
                         payload = LineFlexService.create_signal_message(
-                            symbol="XAUUSD", order_type="BUY LIMIT", entry_range="2,638.50 - 2,640.00",
-                            stop_loss="2,635.00 (-35 pips)", tp1="2,643.00 (+45 pips)", tp2="2,647.00 (+85 pips)",
-                            rr_ratio="1:2.4", confidence=95, timeframe="M1/M5 Scalping",
+                            symbol="XAUUSD", order_type="BUY LIMIT", entry_range=f"{ref_p - 1.5:.2f} - {ref_p:.2f}",
+                            stop_loss=f"{ref_p - 4.0:.2f} (-40 pips)", tp1=f"{ref_p + 5.0:.2f} (+50 pips)", tp2=f"{ref_p + 10.0:.2f} (+100 pips)",
+                            rr_ratio="1:2.5", confidence=95, timeframe="M1/M5 Scalping",
                             rationale="Liquidity Sweep + Micro-FVG + 4-Bar Time Decay Exit",
                             news_status="ไม่มีข่าวแดงกระทบใน 90 นาที",
                             lot_recommendation="0.05 Lot (ความเสี่ยง 1.5% / $1,000)"
                         )
                     else:
                         payload = LineFlexService.create_signal_message(
-                            symbol="XAUUSD", order_type="BUY LIMIT", entry_range="2,638.50 - 2,640.00",
-                            stop_loss="2,632.00 (-65 pips)", tp1="2,648.00 (+80 pips)", tp2="2,658.00 (+180 pips)",
-                            rr_ratio="1:2.8", confidence=92, timeframe="H1/H4 Institutional Swing",
+                            symbol="XAUUSD", order_type="BUY LIMIT", entry_range=f"{ref_p - 4.0:.2f} - {ref_p:.2f}",
+                            stop_loss=f"{ref_p - 15.0:.2f} (-150 pips)", tp1=f"{ref_p + 25.0:.2f} (+250 pips)", tp2=f"{ref_p + 55.0:.2f} (+550 pips)",
+                            rr_ratio="1:3.2", confidence=93, timeframe="H1/H4 Institutional Swing",
                             rationale="H1 Order Block + FVG Rebalance Confluence",
                             news_status="ไม่มีข่าวแดงกระทบใน 90 นาที",
                             lot_recommendation="0.03 Lot (ความเสี่ยง 2.0% / $1,000)"
@@ -233,18 +274,18 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 else:
                     if style == "scalp":
                         payload = LineFlexService.create_signal_message(
-                            symbol="BTCUSD", order_type="BUY LIMIT", entry_range="63,450 - 63,550",
-                            stop_loss="63,200 (-250 pips)", tp1="63,900 (+350 pips)", tp2="64,300 (+750 pips)",
-                            rr_ratio="1:3.0", confidence=95, timeframe="M1/M5 Scalping",
+                            symbol="BTCUSD", order_type="BUY LIMIT", entry_range=f"{ref_p - 100:.1f} - {ref_p:.1f}",
+                            stop_loss=f"{ref_p - 350:.1f} (-350 pips)", tp1=f"{ref_p + 450:.1f} (+450 pips)", tp2=f"{ref_p + 950:.1f} (+950 pips)",
+                            rr_ratio="1:2.7", confidence=95, timeframe="M1/M5 Scalping",
                             rationale="Micro FVG Fill + Order Book Depth Confluence",
                             news_status="ไม่มีข่าวแดงกระทบใน 90 นาที",
                             lot_recommendation="0.02 Lot"
                         )
                     else:
                         payload = LineFlexService.create_signal_message(
-                            symbol="BTCUSD", order_type="BUY LIMIT", entry_range="63,400 - 63,600",
-                            stop_loss="62,600 (-800 pips)", tp1="64,800 (+1,200 pips)", tp2="66,500 (+2,900 pips)",
-                            rr_ratio="1:3.6", confidence=93, timeframe="H1/H4 Institutional Swing",
+                            symbol="BTCUSD", order_type="BUY LIMIT", entry_range=f"{ref_p - 300:.1f} - {ref_p:.1f}",
+                            stop_loss=f"{ref_p - 1200:.1f} (-1,200 pips)", tp1=f"{ref_p + 2200:.1f} (+2,200 pips)", tp2=f"{ref_p + 4500:.1f} (+4,500 pips)",
+                            rr_ratio="1:3.75", confidence=94, timeframe="H1/H4 Institutional Swing",
                             rationale="Institutional Liquidity Void + On-Chain Halving Cycle",
                             news_status="ไม่มีข่าวแดงกระทบใน 90 นาที",
                             lot_recommendation="0.02 Lot"
@@ -253,18 +294,18 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 if symbol == "XAUUSD":
                     payload = LineFlexService.create_range_message(
                         symbol="XAUUSD", date_str=datetime.now().strftime("%d %b %Y"),
-                        range_high="2,662.00 - 2,668.00 (Sell Zone)",
-                        pivot_equi="2,646.00 - 2,648.00 (Equilibrium)",
-                        range_low="2,632.00 - 2,638.00 (Buy Zone)",
+                        range_high=f"{ref_p + 25.0:.2f} - {ref_p + 35.0:.2f} (Sell Zone)",
+                        pivot_equi=f"{ref_p + 5.0:.2f} - {ref_p + 10.0:.2f} (Equilibrium)",
+                        range_low=f"{ref_p - 25.0:.2f} - {ref_p - 15.0:.2f} (Buy Zone)",
                         bias="SIDEWAY / MEAN REVERSION",
                         key_news_time="Core PCE เวลา 19:30 (ระวังผันผวน)"
                     )
                 else:
                     payload = LineFlexService.create_range_message(
                         symbol="BTCUSD", date_str=datetime.now().strftime("%d %b %Y"),
-                        range_high="65,200 - 66,000 (Resistance Zone)",
-                        pivot_equi="63,800 - 64,200 (Fair Value Pivot)",
-                        range_low="62,400 - 62,900 (Demand Zone)",
+                        range_high=f"{ref_p + 1500:.1f} - {ref_p + 2500:.1f} (Resistance Zone)",
+                        pivot_equi=f"{ref_p + 200:.1f} - {ref_p + 600:.1f} (Fair Value Pivot)",
+                        range_low=f"{ref_p - 1500:.1f} - {ref_p - 800:.1f} (Demand Zone)",
                         bias="BULLISH EXPANSION",
                         key_news_time="FOMC Rate Decision / Powell Speech"
                     )
