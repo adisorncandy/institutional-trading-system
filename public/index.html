@@ -96,6 +96,12 @@
         <span id="ws-status-indicator" class="hidden 2xl:inline-block text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">0ms</span>
       </div>
 
+      <!-- Server Real-Time Sync Indicator Badge -->
+      <div id="server-sync-badge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-[#060A12] border border-[#162033] rounded-xl text-[10px] text-emerald-400 font-mono shadow-sm">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="server-sync-text">⚡ ซิงค์เซิร์ฟเวอร์สด 24/7</span>
+      </div>
+
       <!-- Master Auto-Trading Switch -->
       <button onclick="toggleMasterAutoTrader()" id="btn-master-autotrade" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold flex items-center gap-1.5 hover:bg-emerald-500/25 transition-all text-xs shadow-sm">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
@@ -4856,9 +4862,94 @@
       }
     }
 
-    async function loadJournalAndState() {
-      let hasLoadedPositions = false;
+    let isSyncingServer = false;
+    let syncErrorCount = 0;
 
+    async function syncServerState() {
+      if (isSyncingServer) return;
+      isSyncingServer = true;
+      try {
+        const [resPos, resJour] = await Promise.all([
+          fetch('/api/positions'),
+          fetch('/api/journal')
+        ]);
+
+        let stateChanged = false;
+
+        if (resPos.ok) {
+          const pData = await resPos.json();
+          if (pData && pData.status === 'success') {
+            if (Array.isArray(pData.positions)) {
+              openPositions = pData.positions;
+              openPositions.forEach(p => {
+                if (!p.portfolioId) {
+                  p.portfolioId = getPortfolioId(p.symbol, p.style);
+                  p.portfolioName = (PORTFOLIO_CONFIGS[p.portfolioId] || {}).name || p.styleName;
+                }
+              });
+            }
+            if (pData.portfolios && typeof pData.portfolios === 'object') {
+              portfolioBalances = { ...portfolioBalances, ...pData.portfolios };
+            }
+            if (pData.total_balance !== undefined) {
+              balance = parseFloat(pData.total_balance);
+            } else {
+              balance = getTotalPortfolioBalance();
+            }
+            try {
+              localStorage.setItem('ad_open_positions', JSON.stringify(openPositions));
+              localStorage.setItem('ad_port_balances', JSON.stringify(portfolioBalances));
+              localStorage.setItem('ad_sim_balance', balance.toFixed(2));
+            } catch(e) {}
+            stateChanged = true;
+          }
+        }
+
+        if (resJour.ok) {
+          const jData = await resJour.json();
+          if (jData && Array.isArray(jData.trades)) {
+            tradeJournal = jData.trades;
+            tradeJournal.forEach(t => {
+              if (!t.portfolioId) {
+                t.portfolioId = getPortfolioId(t.symbol, t.style);
+                t.portfolioName = (PORTFOLIO_CONFIGS[t.portfolioId] || {}).name || (t.style === 'scalping' ? 'เทรดสั้น M5' : 'เทรดยาว H1');
+              }
+            });
+            try {
+              localStorage.setItem('ad_trade_journal', JSON.stringify(tradeJournal));
+            } catch(e) {}
+            stateChanged = true;
+          }
+        }
+
+        if (stateChanged) {
+          renderPositions();
+          renderJournal();
+          evaluateLivePositions();
+          renderPortfolioPage();
+          updateAccountEquityUI();
+        }
+
+        syncErrorCount = 0;
+        const syncEl = document.getElementById('server-sync-text');
+        if (syncEl) {
+          const now = new Date();
+          const timeStr = now.toTimeString().split(' ')[0];
+          syncEl.innerText = `⚡ ซิงค์เซิร์ฟเวอร์สด (${timeStr})`;
+        }
+      } catch (err) {
+        syncErrorCount++;
+        console.warn("Background server sync notice:", err);
+        const syncEl = document.getElementById('server-sync-text');
+        if (syncEl && syncErrorCount > 3) {
+          syncEl.innerText = `⚠️ ขาดการเชื่อมต่อเซิร์ฟเวอร์`;
+        }
+      } finally {
+        isSyncingServer = false;
+      }
+    }
+
+    async function loadJournalAndState() {
       // 1. Instant LocalStorage Load (Immediate rendering without network latency)
       try {
         const savedJournal = localStorage.getItem('ad_trade_journal');
@@ -4897,62 +4988,19 @@
                 p.portfolioName = (PORTFOLIO_CONFIGS[p.portfolioId] || {}).name || p.styleName;
               }
             });
-            hasLoadedPositions = true;
           }
         }
       } catch (e) {}
 
-      // Initial fast render
+      // Initial fast paint
       renderPositions();
       renderJournal();
       evaluateLivePositions();
+      renderPortfolioPage();
       updateAccountEquityUI();
 
-      // 2. Server-side State Synchronization (Guarantees zero order loss across code/system updates)
-      try {
-        const res = await fetch('/api/positions');
-        if (res.ok) {
-          const data = await res.json();
-          if (data) {
-            if (Array.isArray(data.positions)) {
-              if (!hasLoadedPositions || (openPositions.length === 0 && data.positions.length > 0)) {
-                openPositions = data.positions;
-                openPositions.forEach(p => {
-                  if (!p.portfolioId) {
-                    p.portfolioId = getPortfolioId(p.symbol, p.style);
-                    p.portfolioName = (PORTFOLIO_CONFIGS[p.portfolioId] || {}).name || p.styleName;
-                  }
-                });
-                hasLoadedPositions = true;
-                try { localStorage.setItem('ad_open_positions', JSON.stringify(openPositions)); } catch(e){}
-              }
-            }
-            if (data.portfolios && typeof data.portfolios === 'object') {
-              portfolioBalances = { ...portfolioBalances, ...data.portfolios };
-              try { localStorage.setItem('ad_port_balances', JSON.stringify(portfolioBalances)); } catch(e){}
-            }
-            balance = getTotalPortfolioBalance();
-            renderPositions();
-            evaluateLivePositions();
-            updateAccountEquityUI();
-          }
-        }
-      } catch (e) {}
-
-      // 3. Fallback: Only initialize demo positions if this is an absolute first-time brand new run
-      if (!hasLoadedPositions) {
-        const isInitialized = localStorage.getItem('ad_system_initialized');
-        if (!isInitialized) {
-          openPositions = JSON.parse(JSON.stringify(DEFAULT_DEMO_POSITIONS));
-          localStorage.setItem('ad_system_initialized', 'true');
-          savePositionsState();
-          renderPositions();
-          evaluateLivePositions();
-          updateAccountEquityUI();
-        } else {
-          openPositions = [];
-        }
-      }
+      // 2. Synchronize directly with 24/7 Backend Server (Single Source of Truth)
+      await syncServerState();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -4967,6 +5015,9 @@
 
       // Load Persisted Trade Journal & Balance ($1,000)
       loadJournalAndState();
+
+      // 24/7 Autonomous Trader Real-time Sync Loop (syncs every 4 seconds)
+      setInterval(syncServerState, 4000);
 
       // Immediate initial load via REST fallback
       fetchLiveMarketPrices().then(() => {
