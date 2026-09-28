@@ -1087,31 +1087,27 @@
     let livePrices = { XAUUSD: 4205.50, BTCUSD: 83450.00 };
 
     async function fetchLiveMarketPrices() {
+      // 1. First priority: Direct Client-Side Fetch from Binance CDN (0 Vercel Serverless Invocations)
       try {
-        const resXau = await fetch('/api/price?symbol=XAUUSD');
-        const dataXau = await resXau.json();
-        if (dataXau && dataXau.price) {
-          livePrices.XAUUSD = dataXau.price;
-        }
+        const [rGold, rBtc] = await Promise.all([
+          fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT').then(r => r.json()),
+          fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r => r.json())
+        ]);
+        if (rGold && rGold.price) livePrices.XAUUSD = parseFloat(parseFloat(rGold.price).toFixed(2));
+        if (rBtc && rBtc.price) livePrices.BTCUSD = parseFloat(parseFloat(rBtc.price).toFixed(1));
+        return;
       } catch (e) {
+        // 2. Fallback to Vercel Serverless API only if direct connection is blocked by browser/firewall
         try {
-          const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-          const d = await r.json();
-          if (d && d.price) livePrices.XAUUSD = parseFloat(d.price);
+          const resXau = await fetch('/api/price?symbol=XAUUSD');
+          const dataXau = await resXau.json();
+          if (dataXau && dataXau.price) livePrices.XAUUSD = dataXau.price;
         } catch (_) {}
-      }
 
-      try {
-        const resBtc = await fetch('/api/price?symbol=BTCUSD');
-        const dataBtc = await resBtc.json();
-        if (dataBtc && dataBtc.price) {
-          livePrices.BTCUSD = dataBtc.price;
-        }
-      } catch (e) {
         try {
-          const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-          const d = await r.json();
-          if (d && d.price) livePrices.BTCUSD = parseFloat(d.price);
+          const resBtc = await fetch('/api/price?symbol=BTCUSD');
+          const dataBtc = await resBtc.json();
+          if (dataBtc && dataBtc.price) livePrices.BTCUSD = dataBtc.price;
         } catch (_) {}
       }
     }
