@@ -24,6 +24,7 @@ backtester = InstitutionalBacktester()
 line_dispatcher = LineBotDispatcher()
 
 _price_cache = {}
+_notified_close_tickets = set()
 
 def get_live_market_price(symbol="XAUUSD"):
     symbol = symbol.upper()
@@ -401,6 +402,17 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
 
             # Update AI Adaptive weights
             ai_engine.record_trade_feedback(entry)
+
+            # Auto LINE Broadcast for closed trade
+            ticket_id = entry.get("ticket")
+            if line_dispatcher.channel_access_token and ticket_id and ticket_id not in _notified_close_tickets:
+                _notified_close_tickets.add(ticket_id)
+                try:
+                    close_flex = LineFlexService.create_order_close_message(entry)
+                    line_dispatcher.send_broadcast_flex(close_flex)
+                except Exception as err:
+                    print("Auto LINE close notification error:", err)
+
             self._set_headers(200)
             self.wfile.write(json.dumps({
                 "status": "success",
@@ -489,6 +501,49 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 "message": "บันทึก LINE Channel Access Token สำเร็จแล้ว!",
                 "has_token": bool(new_token)
             }).encode("utf-8"))
+
+        # Real-time Order Notification (Open / Close) via LINE
+        elif path == "/api/line/notify_trade":
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                payload = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                payload = {}
+            
+            action_type = payload.get("action", "open") # "open" or "close"
+            trade_data = payload.get("data", {})
+            ticket_id = trade_data.get("ticket")
+
+            if line_dispatcher.channel_access_token:
+                try:
+                    if action_type == "open":
+                        flex_msg = LineFlexService.create_order_open_message(trade_data)
+                    else:
+                        if ticket_id and ticket_id in _notified_close_tickets:
+                            self._set_headers(200)
+                            self.wfile.write(json.dumps({"status": "skipped", "message": "Already notified"}).encode("utf-8"))
+                            return
+                        if ticket_id:
+                            _notified_close_tickets.add(ticket_id)
+                        flex_msg = LineFlexService.create_order_close_message(trade_data)
+                    
+                    success, resp_msg = line_dispatcher.send_broadcast_flex(flex_msg)
+                    self._set_headers(200 if success else 500)
+                    self.wfile.write(json.dumps({
+                        "status": "success" if success else "error",
+                        "message": resp_msg,
+                        "action": action_type
+                    }).encode("utf-8"))
+                except Exception as e:
+                    self._set_headers(500)
+                    self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode("utf-8"))
+            else:
+                self._set_headers(200)
+                self.wfile.write(json.dumps({
+                    "status": "no_token",
+                    "message": "LINE token not configured"
+                }).encode("utf-8"))
 
         # Send LINE Alert (Signal, Daily Blueprint, or 10Y Summary)
         elif path == "/api/line/send":

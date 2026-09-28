@@ -476,8 +476,263 @@ class LineFlexService:
         }
         return {"type": "flex", "altText": f"สรุปผลการเทรดประจำวัน {date_str}", "contents": flex_bubble}
 
+    @staticmethod
+    def create_order_open_message(pos: Dict[str, Any]) -> Dict[str, Any]:
+        """Creates a Flex Message Card when a new order is opened."""
+        symbol = pos.get("symbol", "XAUUSD")
+        action = pos.get("type", "BUY")
+        style_name = pos.get("styleName", "⚡ เทรดสั้น (M5 Scalp)")
+        lot = float(pos.get("lot", 0.02))
+        ticket = pos.get("ticket", "000000")
+        entry = float(pos.get("entry", 0.0))
+        sl = float(pos.get("sl", 0.0))
+        tp1 = float(pos.get("tp1", 0.0))
+        tp2 = float(pos.get("tp2", 0.0))
+        reason = pos.get("reason", "Institutional Setup")
+        eval_score = pos.get("evalScore", "95% Confluence")
+        time_open = pos.get("timeOpen", "")
+
+        is_buy = "BUY" in str(action).upper()
+        header_color = "#059669" if is_buy else "#DC2626"
+
+        flex_bubble = {
+            "type": "bubble",
+            "size": "mega",
+            "header": {
+                "type": "box",
+                "layout": "vertical",
+                "backgroundColor": header_color,
+                "paddingAll": "16px",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {"type": "text", "text": "⚡ 24/7 AUTO-TRADING", "color": "#ECFDF5", "size": "xxs", "weight": "bold"},
+                            {"type": "text", "text": f"LOT {lot:.2f}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end"}
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "margin": "sm",
+                        "contents": [
+                            {"type": "text", "text": f"{symbol} {action}", "color": "#FFFFFF", "size": "xl", "weight": "bold", "flex": 4},
+                            {"type": "text", "text": f"#{ticket}", "color": "#E2E8F0", "size": "xs", "weight": "bold", "align": "end", "flex": 3}
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "text": style_name,
+                        "color": "#D1FAE5" if is_buy else "#FFE4E6",
+                        "size": "xs",
+                        "margin": "xs"
+                    }
+                ]
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "backgroundColor": "#0F172A",
+                "paddingAll": "16px",
+                "spacing": "md",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "backgroundColor": "#1E293B",
+                        "cornerRadius": "10px",
+                        "paddingAll": "12px",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "🎯 ราคาเข้า (Entry):", "color": "#94A3B8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": f"${entry:,.2f}" if "XAU" in symbol else f"${entry:,.1f}", "color": "#FFFFFF", "size": "xs", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "🛑 Stop Loss (SL):", "color": "#F87171", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": f"${sl:,.2f}" if "XAU" in symbol else f"${sl:,.1f}", "color": "#FCA5A5", "size": "xs", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "🏁 เป้าหมาย TP 1:", "color": "#34D399", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": f"${tp1:,.2f}" if "XAU" in symbol else f"${tp1:,.1f}", "color": "#6EE7B7", "size": "xs", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "🏆 เป้าหมาย TP 2:", "color": "#38BDF8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": f"${tp2:,.2f}" if "XAU" in symbol else f"${tp2:,.1f}", "color": "#7DD3FC", "size": "xs", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "backgroundColor": "#1E293B",
+                        "cornerRadius": "8px",
+                        "paddingAll": "10px",
+                        "spacing": "xs",
+                        "contents": [
+                            {"type": "text", "text": f"💡 Confluence: {reason}", "color": "#38BDF8", "size": "xxs", "wrap": True},
+                            {"type": "text", "text": f"🧠 AI Score: {eval_score}", "color": "#A7F3D0", "size": "xxs", "wrap": True},
+                            {"type": "text", "text": f"⏱️ เวลาเปิด: {time_open} (ทุน $1,000)", "color": "#94A3B8", "size": "xxs"}
+                        ]
+                    }
+                ]
+            }
+        }
+        return {"type": "flex", "altText": f"🚀 เปิดออเดอร์ใหม่: {symbol} {action} (Lot {lot:.2f}) #{ticket}", "contents": flex_bubble}
+
+    @staticmethod
+    def create_order_close_message(trade: Dict[str, Any]) -> Dict[str, Any]:
+        """Creates a Flex Message Card when an order is closed (TP/SL/BE/Manual)."""
+        symbol = trade.get("symbol", "XAUUSD")
+        action = trade.get("type", "BUY")
+        style_name = trade.get("styleName", "⚡ เทรดสั้น (M5 Scalp)")
+        lot = float(trade.get("lot", 0.02))
+        ticket = trade.get("ticket", "000000")
+        entry = float(trade.get("entry", 0.0))
+        exit_p = float(trade.get("exit", 0.0))
+        pnl = float(trade.get("pnl", 0.0))
+        pnl_pct = trade.get("pnlPct", 0.0)
+        win = trade.get("win", False)
+        reason = trade.get("reason", "ปิดออเดอร์")
+        ai_feedback = trade.get("aiFeedback", "")
+        time_open = trade.get("timeOpen", "")
+        time_close = trade.get("timeClose", "")
+
+        is_be = "Breakeven" in reason or "กันทุน" in reason
+        if win:
+            header_color = "#059669"
+            status_text = "🎯 ปิดทำกำไรสำเร็จ (TAKE PROFIT)"
+        elif is_be:
+            header_color = "#D97706"
+            status_text = "🛡️ ปิดเสมอตัว (BREAKEVEN กันทุน)"
+        else:
+            header_color = "#DC2626"
+            status_text = "🛑 ตัดขาดทุนคุมความเสี่ยง (STOP LOSS)"
+
+        pnl_str = f"+${pnl:.2f}" if pnl >= 0 else f"-${abs(pnl):.2f}"
+        pnl_color = "#34D399" if pnl >= 0 else "#F87171"
+
+        reason_display = reason.split('[')[-1].replace(']', '') if '[' in reason else reason
+
+        flex_bubble = {
+            "type": "bubble",
+            "size": "mega",
+            "header": {
+                "type": "box",
+                "layout": "vertical",
+                "backgroundColor": header_color,
+                "paddingAll": "16px",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {"type": "text", "text": status_text, "color": "#FFFFFF", "size": "xxs", "weight": "bold"},
+                            {"type": "text", "text": f"#{ticket}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end"}
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "margin": "sm",
+                        "contents": [
+                            {"type": "text", "text": f"{symbol} {action} ({lot:.2f} Lot)", "color": "#FFFFFF", "size": "lg", "weight": "bold", "flex": 5},
+                            {"type": "text", "text": pnl_str, "color": "#FFFFFF", "size": "lg", "weight": "bold", "align": "end", "flex": 4}
+                        ]
+                    },
+                    {
+                        "type": "text",
+                        "text": f"ผลตอบแทน: {pnl_pct}% ของพอร์ต ($1,000)",
+                        "color": "#E2E8F0",
+                        "size": "xxs",
+                        "margin": "xs"
+                    }
+                ]
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "backgroundColor": "#0F172A",
+                "paddingAll": "16px",
+                "spacing": "md",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "backgroundColor": "#1E293B",
+                        "cornerRadius": "10px",
+                        "paddingAll": "12px",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "🎯 ราคาเข้า (Entry):", "color": "#94A3B8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": f"${entry:,.2f}" if "XAU" in symbol else f"${entry:,.1f}", "color": "#FFFFFF", "size": "xs", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "🏁 ราคาปิด (Exit):", "color": "#94A3B8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": f"${exit_p:,.2f}" if "XAU" in symbol else f"${exit_p:,.1f}", "color": pnl_color, "size": "xs", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "⏱️ ช่วงเวลาถือไม้:", "color": "#94A3B8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": f"{time_open} - {time_close}", "color": "#CBD5E1", "size": "xs", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "📌 เงื่อนไขปิดไม้:", "color": "#94A3B8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": reason_display, "color": "#FCD34D", "size": "xs", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "backgroundColor": "#1E293B",
+                        "cornerRadius": "8px",
+                        "paddingAll": "10px",
+                        "spacing": "xs",
+                        "contents": [
+                            {"type": "text", "text": "🧠 AI Learning Update:", "color": "#A78BFA", "size": "xxs", "weight": "bold"},
+                            {"type": "text", "text": ai_feedback or "บันทึกข้อมูลเข้า Neural Store เรียบร้อย", "color": "#E2E8F0", "size": "xxs", "wrap": True}
+                        ]
+                    }
+                ]
+            }
+        }
+        return {"type": "flex", "altText": f"📊 ปิดออเดอร์ #{ticket} {symbol} ({pnl_str})", "contents": flex_bubble}
+
 
 if __name__ == "__main__":
-    # Test generation and print sample
     signal = LineFlexService.create_signal_message()
     print("Signal JSON payload created successfully. Keys:", signal.keys())

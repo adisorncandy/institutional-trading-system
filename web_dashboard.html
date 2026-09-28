@@ -2845,6 +2845,19 @@
       }
     }, 10000);
 
+    // Real-time LINE Alert Dispatcher for Orders (ADStrade.bot @733ajjvt)
+    function notifyLineTrade(action, data) {
+      try {
+        fetch('/api/line/notify_trade', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: action, data: data })
+        }).catch(err => console.warn('LINE notification dispatch background notice:', err));
+      } catch (e) {
+        console.warn('LINE dispatch error:', e);
+      }
+    }
+
     // Auto-Execute Signal Trade with 0.02 Lot & Simulated $1000 Account (แยกสไตล์ เทรดสั้น / เทรดยาว)
     function autoExecuteSignalTrade(action = 'BUY', symbol = currentAsset, customPrice = null, style = 'scalping') {
       const existing = openPositions.find(p => p.symbol === symbol && p.style === style);
@@ -2903,6 +2916,7 @@
       renderPositions();
       playAlertBeep();
       showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (${newPos.styleName} 0.02 Lot) เรียบร้อยแล้ว`);
+      notifyLineTrade('open', newPos);
     }
 
     function executeQuickTrade(action) {
@@ -3012,6 +3026,9 @@
           body: JSON.stringify(journalEntry)
         });
       } catch (e) {}
+
+      // Real-time LINE Alert on Trade Closed
+      notifyLineTrade('close', journalEntry);
 
       if (customTrigger) {
         playAlertBeep();
