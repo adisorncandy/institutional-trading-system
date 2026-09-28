@@ -111,10 +111,29 @@ class handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self._set_headers(200)
 
-    def do_GET(self):
+    def _extract_request_path(self):
         parsed = urllib.parse.urlparse(self.path)
-        path = parsed.path
         query = urllib.parse.parse_qs(parsed.query)
+
+        # 1. Check x-forwarded-uri header (Vercel sets this to the original client request path)
+        fwd = self.headers.get("x-forwarded-uri", "") or self.headers.get("x-matched-path", "")
+        if fwd:
+            fwd_path = urllib.parse.urlparse(fwd).path
+            if fwd_path and fwd_path != "/api/index.py":
+                return fwd_path, query
+
+        # 2. Check query param __path passed by vercel.json rewrite
+        if "__path" in query:
+            p = query["__path"][0]
+            if not p.startswith("/"):
+                p = "/api/" + p
+            return p, query
+
+        # 3. Fallback to self.path
+        return parsed.path, query
+
+    def do_GET(self):
+        path, query = self._extract_request_path()
 
         # 0. API: Real-time Live Market Price
         if path == "/api/price" or path.endswith("/price"):
@@ -270,8 +289,7 @@ class handler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode("utf-8"))
 
     def do_POST(self):
-        parsed = urllib.parse.urlparse(self.path)
-        path = parsed.path
+        path, query = self._extract_request_path()
 
         # 0. Trade Journal Entry & Self-Learning Loop
         if path == "/api/journal" or path.endswith("/journal"):

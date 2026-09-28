@@ -1,12 +1,7 @@
 {
   "version": 2,
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "*.json"
-    }
-  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/api/(.*)", "destination": "/api/index.py?__path=$1" },
     { "source": "/(.*)", "destination": "/public/$1" }
   ]
 }
