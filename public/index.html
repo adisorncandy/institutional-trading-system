@@ -3247,6 +3247,11 @@
         binanceWs.onerror = () => {
           if (binanceWs) binanceWs.close();
         };
+      } catch (err) {
+        console.error("Binance WS error", err);
+      }
+    }
+
     function loadJournalAndState() {
       try {
         const savedJournal = localStorage.getItem('ad_trade_journal');
