@@ -75,6 +75,30 @@ def get_real_klines(symbol="XAUUSD", limit=35):
     except Exception:
         return [{"close": fallback_price + (i % 3), "high": fallback_price + 5, "low": fallback_price - 5, "open": fallback_price} for i in range(limit)]
 
+def compute_authoritative_portfolio_balances():
+    ports = {
+        "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+        "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+        "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+        "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+    }
+    for check_dir in [os.path.dirname(__file__), "/tmp", root_dir]:
+        journal_path = os.path.join(check_dir, "ai_trade_journal.json")
+        if os.path.exists(journal_path):
+            try:
+                with open(journal_path, "r", encoding="utf-8") as f:
+                    trades = json.load(f)
+                for t in trades:
+                    sym = t.get("symbol", "XAUUSD")
+                    st = t.get("style", "scalping")
+                    pid = t.get("portfolioId") or (("xau" if "XAU" in sym else "btc") + "_" + ("scalp" if "scalp" in st else "swing"))
+                    if pid in ports:
+                        ports[pid]["balance"] = round(ports[pid]["balance"] + float(t.get("pnl", 0.0)), 2)
+                break
+            except Exception:
+                pass
+    return ports
+
 class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status=200, content_type="application/json"):
         self.send_response(status)
@@ -228,18 +252,15 @@ class handler(BaseHTTPRequestHandler):
                     except Exception:
                         pass
             
+            authoritative_ports = compute_authoritative_portfolio_balances()
+            tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
             self._set_headers(200)
             self.wfile.write(json.dumps({
                 "status": "success",
                 "positions": positions_data.get("positions", []),
-                "portfolios": positions_data.get("portfolios", {
-                    "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
-                    "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
-                    "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
-                    "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
-                }),
-                "total_balance": positions_data.get("total_balance", 4000.0),
-                "balance": positions_data.get("balance", 1000.0),
+                "portfolios": authoritative_ports,
+                "total_balance": tot_bal,
+                "balance": tot_bal,
                 "total_active": len(positions_data.get("positions", [])),
                 "persistence_safe": True
             }, ensure_ascii=False).encode("utf-8"))
@@ -443,11 +464,13 @@ class handler(BaseHTTPRequestHandler):
             except Exception:
                 data = {}
             
+            authoritative_ports = compute_authoritative_portfolio_balances()
+            tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
             payload = {
                 "positions": data.get("positions", []),
-                "portfolios": data.get("portfolios", {}),
-                "total_balance": float(data.get("total_balance", data.get("balance", 4000.0))),
-                "balance": float(data.get("balance", 1000.0)),
+                "portfolios": authoritative_ports,
+                "total_balance": tot_bal,
+                "balance": tot_bal,
                 "updated_at": datetime.now().isoformat()
             }
             for save_dir in [os.path.dirname(__file__), "/tmp", root_dir]:

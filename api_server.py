@@ -108,6 +108,28 @@ def calculate_position_size(symbol, style, sl_dist, balance):
     rationale = f"คุมความเสี่ยง {risk_pct}% (${risk_dollar:.2f}) / SL {pips} Pips ➔ คำนวณ Lot {lot:.2f}"
     return lot, risk_pct, risk_dollar, rationale
 
+def compute_authoritative_portfolio_balances():
+    ports = {
+        "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+        "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+        "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+        "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+    }
+    journal_path = os.path.join(os.path.dirname(__file__), "ai_trade_journal.json")
+    if os.path.exists(journal_path):
+        try:
+            with open(journal_path, "r", encoding="utf-8") as f:
+                trades = json.load(f)
+            for t in trades:
+                sym = t.get("symbol", "XAUUSD")
+                st = t.get("style", "scalping")
+                pid = t.get("portfolioId") or (("xau" if "XAU" in sym else "btc") + "_" + ("scalp" if "scalp" in st else "swing"))
+                if pid in ports:
+                    ports[pid]["balance"] = round(ports[pid]["balance"] + float(t.get("pnl", 0.0)), 2)
+        except Exception:
+            pass
+    return ports
+
 def autonomous_247_trader_worker():
     """
     24/7 Autonomous Institutional Trading Engine (Backend Daemon).
@@ -593,21 +615,19 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 except Exception:
                     pass
 
+            authoritative_ports = compute_authoritative_portfolio_balances()
+            tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
+
             self._set_headers(200)
             self.wfile.write(json.dumps({
                 "status": "success",
                 "positions": positions_data.get("positions", []),
-                "portfolios": positions_data.get("portfolios", {
-                    "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
-                    "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
-                    "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
-                    "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
-                }),
-                "total_balance": positions_data.get("total_balance", 4000.0),
-                "balance": positions_data.get("balance", 1000.0),
+                "portfolios": authoritative_ports,
+                "total_balance": tot_bal,
+                "balance": tot_bal,
                 "total_active": len(positions_data.get("positions", [])),
                 "persistence_safe": True
-            }).encode("utf-8"))
+            }, ensure_ascii=False).encode("utf-8"))
 
         # 5. Web Dashboard UI
         elif path == "/" or path == "/dashboard":
@@ -746,27 +766,13 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 except Exception:
                     pass
 
-            port_configs = {
-                "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0},
-                "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0},
-                "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0},
-                "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0},
-            }
-            raw_ports = data.get("portfolios", {})
-            norm_ports = {}
-            for pid, base in port_configs.items():
-                val = raw_ports.get(pid, base.copy())
-                b_val = val.get("balance", 1000.0) if isinstance(val, dict) else float(val or 1000.0)
-                entry_port = base.copy()
-                entry_port["balance"] = round(float(b_val), 2)
-                norm_ports[pid] = entry_port
-
-            tot_b = round(sum(p["balance"] for p in norm_ports.values()), 2)
+            authoritative_ports = compute_authoritative_portfolio_balances()
+            tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
             payload = {
                 "positions": data.get("positions", []),
-                "portfolios": norm_ports,
-                "total_balance": tot_b,
-                "balance": tot_b,
+                "portfolios": authoritative_ports,
+                "total_balance": tot_bal,
+                "balance": tot_bal,
                 "updated_at": datetime.now().isoformat()
             }
             try:

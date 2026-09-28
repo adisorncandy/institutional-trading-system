@@ -3292,48 +3292,13 @@
       }, 400);
     }
 
-    // Proactive 24/7 Automated Market Scanner (Runs every 10s if Master Auto-Trade is Active)
-    let lastAutoExecutionTime = 0;
+    // Proactive 24/7 Engine Status Monitor (Syncs with backend autonomous daemon)
     setInterval(() => {
-      if (!isMasterAutoTradeActive) return;
-
       const scanStatus = document.getElementById('autotrade-scan-status');
       const timeStr = new Date().toLocaleTimeString('th-TH');
-
-      // ตรวจสอบราคาจาก Binance WebSocket
-      if (!livePrices || !livePrices.BTCUSD || !livePrices.XAUUSD) {
-        if (scanStatus) scanStatus.innerText = `เรดาร์กำลังเชื่อมต่อฟีดราคา Binance Realtime...`;
-        return;
-      }
-
-      const now = Date.now();
-      const targets = autoTradeTarget === 'BOTH' ? ['BTCUSD', 'XAUUSD'] : [autoTradeTarget];
-
-      // สแกนคู่เงินตามเป้าหมาย หากไม่มีออเดอร์ค้างอยู่ ให้วิเคราะห์โซน SMC (Premium = SELL, Discount = BUY) และออกไม้อัตโนมัติ (Cooldown 15 วิ)
-      for (const sym of targets) {
-        const hasPos = openPositions.some(p => p.symbol === sym);
-        if (!hasPos && (now - lastAutoExecutionTime > 15000)) {
-          const style = sym === 'BTCUSD' ? 'scalping' : 'swing';
-          const p = sym === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
-          const isGold = sym === 'XAUUSD';
-
-          // ตรวจสอบโซนราคาตามทฤษฎี Smart Money Concepts (SMC):
-          // หากราคาแตะช่วงบนของกรอบ (Premium Zone / Supply Block) -> เปิดคำสั่ง SELL
-          // หากราคาแตะช่วงล่างของกรอบ (Discount Zone / Demand Block) -> เปิดคำสั่ง BUY
-          const cycleRef = isGold ? (p % 10.0) : (p % 400.0);
-          const midThreshold = isGold ? 5.0 : 200.0;
-          const autoAction = (cycleRef >= midThreshold) ? 'SELL' : 'BUY';
-
-          console.log(`[24/7 SCANNER] Auto-entering institutional setup for ${sym} (${autoAction} ${style})`);
-          autoExecuteSignalTrade(autoAction, sym, null, style);
-          lastAutoExecutionTime = now;
-          break; // ออกทีละไม้ตามรอบ
-        }
-      }
-
       if (scanStatus) {
         const activeCount = openPositions.length;
-        scanStatus.innerText = `เรดาร์สแกนแท่งเทียนสดล่าสุดเมื่อ ${timeStr} • ถือครอง ${activeCount} ไม้ (ระบบ 24/7 Active)`;
+        scanStatus.innerText = `เรดาร์สแกนแท่งเทียนสดล่าสุดเมื่อ ${timeStr} • ถือครอง ${activeCount} ไม้ (ระบบ Backend 24/7 Active)`;
       }
     }, 10000);
 
