@@ -12,7 +12,7 @@
     "riskRationale": "คุมความเสี่ยง 1.4% ($14.00) / SL 35 Pips ➔ คำนวณ Lot 0.04",
     "entry": 83650.0,
     "exit": 83150.0,
-    "pnl": 20.00,
+    "pnl": 20.0,
     "pips": 50.0,
     "pnlPct": 2.0,
     "balance": 1000.0,
@@ -21,7 +21,9 @@
     "timeOpen": "14:10:15",
     "timeClose": "14:35:20",
     "reason": "SMC M5 Bearish Supply FVG Rejection [อัตโนมัติ: TP1 (เก็บกำไรก้อนแรก)]",
-    "aiFeedback": "🎯 กำไรตามเป้าฝั่งชอร์ต (⚡ เทรดสั้น M5 SELL): กวาด Liquidity เหนือแนวต้านสำเร็จ บันทึกผลกำไร ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้าฝั่งชอร์ต (⚡ เทรดสั้น M5 SELL): กวาด Liquidity เหนือแนวต้านสำเร็จ บันทึกผลกำไร ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   },
   {
     "id": 1790583935134,
@@ -41,7 +43,9 @@
     "timeOpen": "15:25:35",
     "timeClose": "15:33:45",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790583835133,
@@ -61,7 +65,9 @@
     "timeOpen": "15:23:55",
     "timeClose": "15:25:33",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790583685134,
@@ -81,7 +87,9 @@
     "timeOpen": "15:21:25",
     "timeClose": "15:23:50",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790583635140,
@@ -101,7 +109,9 @@
     "timeOpen": "15:20:35",
     "timeClose": "15:21:20",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790582631846,
@@ -121,7 +131,9 @@
     "timeOpen": "15:03:51",
     "timeClose": "15:20:06",
     "reason": "SMC M5 FVG + Fast Momentum [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   },
   {
     "id": 1790583422840,
@@ -141,7 +153,9 @@
     "timeOpen": "15:17:02",
     "timeClose": "15:20:05",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: TP2 (เต็มเป้าหมายสถาบัน)]",
-    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790582153184,
@@ -159,7 +173,9 @@
     "timeOpen": "14:55:53",
     "timeClose": "15:17:02",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790582133185,
@@ -177,7 +193,9 @@
     "timeOpen": "14:55:33",
     "timeClose": "15:03:51",
     "reason": "SMC M5 FVG + Fast Momentum [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🎯 กำไรตามเป้า (⚡ เทรดสั้น (M5 Scalp)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้า (⚡ เทรดสั้น (M5 Scalp)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   },
   {
     "id": 1790581763198,
@@ -195,7 +213,9 @@
     "timeOpen": "14:49:23",
     "timeClose": "14:55:35",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790581743195,
@@ -213,7 +233,9 @@
     "timeOpen": "14:49:03",
     "timeClose": "14:55:31",
     "reason": "SMC M5 FVG + Fast Momentum [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🎯 กำไรตามเป้า (⚡ เทรดสั้น (M5 Scalp)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้า (⚡ เทรดสั้น (M5 Scalp)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   },
   {
     "id": 1790581480436,
@@ -231,7 +253,9 @@
     "timeOpen": "14:44:40",
     "timeClose": "14:48:53",
     "reason": "Institutional H4 Order Block + Daily Trend (24/7 Scanner Auto-Entry) [อัตโนมัติ: TP2 (เต็มเป้าหมายสถาบัน)]",
-    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้า (🌊 เทรดยาว (H1 Swing)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1790581480435,
@@ -249,7 +273,9 @@
     "timeOpen": "14:44:40",
     "timeClose": "14:48:53",
     "reason": "SMC M5 FVG + Fast Momentum (24/7 Scanner Auto-Entry) [อัตโนมัติ: TP1 (เก็บกำไรก้อนแรก)]",
-    "aiFeedback": "🎯 กำไรตามเป้า (⚡ เทรดสั้น (M5 Scalp)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%"
+    "aiFeedback": "🎯 กำไรตามเป้า (⚡ เทรดสั้น (M5 Scalp)): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   },
   {
     "id": 1727500002,
@@ -267,7 +293,9 @@
     "timeOpen": "11:15:00",
     "timeClose": "14:15:40",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Stop Loss (คุมความเสี่ยง)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1727500001,
@@ -285,7 +313,9 @@
     "timeOpen": "13:25:10",
     "timeClose": "14:15:40",
     "reason": "SMC M5 FVG + EMA Fast Momentum [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   },
   {
     "id": 1727500002,
@@ -303,7 +333,9 @@
     "timeOpen": "11:15:00",
     "timeClose": "14:03:04",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Stop Loss (คุมความเสี่ยง)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1727500001,
@@ -321,7 +353,9 @@
     "timeOpen": "13:25:10",
     "timeClose": "14:03:04",
     "reason": "SMC M5 FVG + EMA Fast Momentum [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   },
   {
     "id": 1727500002,
@@ -339,7 +373,9 @@
     "timeOpen": "11:15:00",
     "timeClose": "14:01:53",
     "reason": "Institutional H4 Order Block + Daily Trend [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (🌊 เทรดยาว (H1 Swing)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "xau_swing",
+    "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
   },
   {
     "id": 1727500001,
@@ -357,6 +393,8 @@
     "timeOpen": "13:25:10",
     "timeClose": "14:01:51",
     "reason": "SMC M5 FVG + EMA Fast Momentum [อัตโนมัติ: Breakeven (กันทุนสำเร็จ)]",
-    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป"
+    "aiFeedback": "🛑 ตัดขาดทุนตามแผน (⚡ เทรดสั้น (M5 Scalp)): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป",
+    "portfolioId": "btc_scalp",
+    "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
   }
 ]

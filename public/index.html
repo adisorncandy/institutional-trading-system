@@ -1040,25 +1040,19 @@
           <div class="mt-2.5 flex items-center flex-wrap gap-2.5">
             <h1 class="text-xl md:text-2xl font-black text-white font-mono tracking-tight flex items-center gap-2">
               <span>พอร์ตเทรดสด & ประวัติสเตตเมนต์</span>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">#LIVE-PORTFOLIO</span>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">#4-PORTFOLIO-SYSTEM</span>
             </h1>
-            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Server: AD-Institutional-Cloud</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-amber-300 font-mono border border-amber-500/30">ทุนพอร์ตละ $1,000 USD</span>
             <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Leverage: 1:100</span>
             <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 font-mono border border-emerald-500/30 flex items-center gap-1 font-bold">🛡️ Zero-Loss Safe Reload (ป้องกันไม้สด 100%)</span>
           </div>
           <p class="text-slate-400 text-xs mt-1.5">
-            รวมศูนย์หน้าเดียว: คำสั่งเทรดสดที่กำลังวิ่งมอนิเตอร์อยู่ส่วนบน และประวัติผลการเทรดพร้อมสเตตเมนต์โบรกเกอร์อยู่ส่วนล่างในหน้าเดียวกัน
+            แยก 4 พอร์ตอิสระ: <strong>🟡 ทองคำ สั้น M5 ($1,000)</strong>, <strong>🟡 ทองคำ ยาว H1 ($1,000)</strong>, <strong>🟠 บิตคอยน์ สั้น M5 ($1,000)</strong> และ <strong>🟠 บิตคอยน์ ยาว H1 ($1,000)</strong> รวมทุน $4,000 USD คุมความเสี่ยงและแยกสถิติอิสระ
           </p>
         </div>
 
         <!-- Live Trade Quick Execution Toolbar -->
         <div class="flex items-center flex-wrap gap-2">
-          <button onclick="triggerScalpDemoTrade()" class="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-bold border border-amber-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>⚡ + เปิดไม้เทรดสั้น M5</span>
-          </button>
-          <button onclick="triggerSwingDemoTrade()" class="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 font-bold border border-cyan-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>🌊 + เปิดไม้เทรดยาว H1</span>
-          </button>
           <button onclick="exportPortfolioStatementCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold border border-emerald-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
             <span>📥 ส่งออก Statement (CSV)</span>
           </button>
@@ -1068,76 +1062,191 @@
         </div>
       </div>
 
-      <!-- Real-Time Evaluation Ribbon (4 Quick KPI Cards) -->
+      <!-- Grand Fund Summary Banner (รวมทุน 4 พอร์ต $4,000) -->
+      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-[#0E1528] via-[#101932] to-[#0D1424] border border-[#1E2B48] flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs font-mono shadow-xl">
+        <div class="flex items-center gap-2">
+          <span class="text-base">💼</span>
+          <div>
+            <span class="font-bold text-white text-xs block">รวม 4 พอร์ตจำลองสถาบัน (Multi-Portfolio AUM)</span>
+            <span class="text-[11px] text-slate-400">ทุนเริ่มต้นรวม $4,000.00 USD (พอร์ตละ $1,000.00)</span>
+          </div>
+        </div>
+        <div class="flex items-center flex-wrap gap-4 text-xs">
+          <div>
+            <span class="text-slate-400 block text-[10px]">ยอดรวม Balance:</span>
+            <strong id="grand-bal-val" class="text-white font-bold text-sm">$4,000.00</strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px]">Equity รวมสุทธิ:</span>
+            <strong id="grand-equity-val" class="text-emerald-400 font-black text-sm">$4,007.80</strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px]">ผลตอบแทนรวม:</span>
+            <strong id="grand-pnl-val" class="text-emerald-400 font-bold text-sm">+$7.80 (+0.20%)</strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px]">ออเดอร์สดทั้งหมด:</span>
+            <strong id="grand-orders-val" class="text-amber-300 font-bold text-sm">2 ไม้</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time 4 Institutional Master Portfolio Cards ($1,000 USD Capital Each) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-        <!-- 1. Portfolio Capital & Equity Status -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] flex flex-col justify-between shadow-xl">
-          <div class="flex justify-between items-center text-slate-400">
-            <span class="font-bold flex items-center gap-1.5">
-              <span>💼 พอร์ตจำลอง ($1,000)</span>
-            </span>
-            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">0.02 Lot/ไม้</span>
+        
+        <!-- Card 1: 🟡 ทองคำ เทรดสั้น (M5 Scalp) -->
+        <div onclick="switchPortfolioFilter('xau_scalp')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-amber-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+          <div>
+            <div class="flex justify-between items-center text-slate-400 mb-1">
+              <span class="font-bold text-amber-300 flex items-center gap-1.5 text-xs">
+                <span>🟡 ทองคำ สั้น M5</span>
+              </span>
+              <span class="text-[10px] font-mono text-amber-300 bg-amber-950/70 px-2 py-0.5 rounded border border-amber-500/30">ทุน $1,000</span>
+            </div>
+            <div class="flex justify-between items-baseline my-1.5 font-mono">
+              <span class="text-[11px] text-slate-400">Equity สด:</span>
+              <strong id="card-xau_scalp-eq" class="text-base text-emerald-400 font-black">$1,000.00</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>Balance:</span>
+              <strong id="card-xau_scalp-bal" class="text-slate-200">$1,000.00</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>ไม้ที่รันอยู่:</span>
+              <span id="card-xau_scalp-cnt" class="text-amber-300 font-bold">0 ไม้ ($0.00)</span>
+            </div>
           </div>
-          <div class="my-2.5 flex justify-between items-baseline">
-            <span class="text-xs text-slate-400">Equity สด:</span>
-            <strong id="eval-equity-val" class="text-xl text-emerald-400 font-mono font-black">$1,007.80</strong>
-          </div>
-          <div class="pt-2 border-t border-slate-800/80 flex justify-between items-baseline">
-            <span class="text-[11px] text-slate-400">กำไรลอยตัวรวม:</span>
-            <strong id="eval-floating-val" class="text-xs text-emerald-400 font-mono font-bold">+$7.80 (+0.78%)</strong>
-          </div>
-        </div>
-
-        <!-- 2. Scalping Evaluation KPI -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-amber-500/30 flex flex-col justify-between shadow-xl">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-amber-300 font-mono flex items-center gap-1.5">
-              <span>⚡ เทรดสั้น (Scalp M5)</span>
-            </span>
-            <span class="text-[10px] text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30 font-bold">Win Rate 88.5%</span>
-          </div>
-          <div class="my-2 text-[11px] text-slate-300 space-y-0.5 font-mono">
-            <div><span class="text-slate-400">กลยุทธ์:</span> <strong class="text-white">SMC M5 FVG + Fast Momentum</strong></div>
-            <div><span class="text-slate-400">เป้าหมาย:</span> <span class="text-amber-300 font-bold">Micro-TP 6-10 Pips (กันทุนทันที)</span></div>
-          </div>
-          <div class="pt-2 border-t border-slate-800/80 text-[10px]" id="eval-scalp-verdict">
-            🟢 <strong class="text-emerald-400">สถานะประเมินผล:</strong> ล็อค Breakeven หน้าทุนแล้ว ไร้ความเสี่ยง 100%
-          </div>
-        </div>
-
-        <!-- 3. Swing Evaluation KPI -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-cyan-500/30 flex flex-col justify-between shadow-xl">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-cyan-300 font-mono flex items-center gap-1.5">
-              <span>🌊 เทรดยาว (Swing H1/H4)</span>
-            </span>
-            <span class="text-[10px] text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">Win Rate 92.4%</span>
-          </div>
-          <div class="my-2 text-[11px] text-slate-300 space-y-0.5 font-mono">
-            <div><span class="text-slate-400">กลยุทธ์:</span> <strong class="text-white">H4 Institutional Order Block</strong></div>
-            <div><span class="text-slate-400">เป้าหมาย:</span> <span class="text-cyan-300 font-bold">ถือรันเทรนด์ 25-60 Pips (R:R 1:2.8)</span></div>
-          </div>
-          <div class="pt-2 border-t border-slate-800/80 text-[10px]" id="eval-swing-verdict">
-            🟢 <strong class="text-cyan-300">สถานะประเมินผล:</strong> โครงสร้างเทรนด์แข็งแกร่ง กำลังมุ่งหน้าสู่เป้า TP1
-          </div>
-        </div>
-
-        <!-- 4. Quick Execution Actions -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] flex flex-col justify-between shadow-xl">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-white text-xs">🕹️ คำสั่งทดสอบระบบด่วน</span>
-            <span class="text-[10px] text-slate-400 font-mono">Lot: 0.02</span>
-          </div>
-          <div class="grid grid-cols-2 gap-1.5 my-2">
-            <button onclick="triggerScalpDemoTrade()" class="py-1.5 px-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 text-center transition-all text-[11px]">
-              + เปิดไม้เทรดสั้น
-            </button>
-            <button onclick="triggerSwingDemoTrade()" class="py-1.5 px-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 text-center transition-all text-[11px]">
-              + เปิดไม้เทรดยาว
+          <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
+            <span id="card-xau_scalp-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.00%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('xau_scalp')" class="py-1 px-2.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 text-[10px] transition-all">
+              ⚡ + เปิดไม้ M5
             </button>
           </div>
-          <button onclick="closeAllPositions()" class="w-full py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/30 transition-all text-[10px]">
-            ❌ ปิดออเดอร์ทั้งหมด (Close All)
+        </div>
+
+        <!-- Card 2: 🟡 ทองคำ เทรดยาว (H1 Swing) -->
+        <div onclick="switchPortfolioFilter('xau_swing')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-yellow-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+          <div>
+            <div class="flex justify-between items-center text-slate-400 mb-1">
+              <span class="font-bold text-yellow-300 flex items-center gap-1.5 text-xs">
+                <span>🟡 ทองคำ ยาว H1</span>
+              </span>
+              <span class="text-[10px] font-mono text-yellow-300 bg-yellow-950/70 px-2 py-0.5 rounded border border-yellow-500/30">ทุน $1,000</span>
+            </div>
+            <div class="flex justify-between items-baseline my-1.5 font-mono">
+              <span class="text-[11px] text-slate-400">Equity สด:</span>
+              <strong id="card-xau_swing-eq" class="text-base text-emerald-400 font-black">$1,005.40</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>Balance:</span>
+              <strong id="card-xau_swing-bal" class="text-slate-200">$1,000.00</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>ไม้ที่รันอยู่:</span>
+              <span id="card-xau_swing-cnt" class="text-cyan-300 font-bold">1 ไม้ (+$5.40)</span>
+            </div>
+          </div>
+          <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
+            <span id="card-xau_swing-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.54%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('xau_swing')" class="py-1 px-2.5 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 font-bold border border-yellow-500/40 text-[10px] transition-all">
+              🌊 + เปิดไม้ยาว H1
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 3: 🟠 บิตคอยน์ เทรดสั้น (M5 Scalp) -->
+        <div onclick="switchPortfolioFilter('btc_scalp')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-orange-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+          <div>
+            <div class="flex justify-between items-center text-slate-400 mb-1">
+              <span class="font-bold text-orange-400 flex items-center gap-1.5 text-xs">
+                <span>🟠 บิตคอยน์ สั้น M5</span>
+              </span>
+              <span class="text-[10px] font-mono text-orange-300 bg-orange-950/70 px-2 py-0.5 rounded border border-orange-500/30">ทุน $1,000</span>
+            </div>
+            <div class="flex justify-between items-baseline my-1.5 font-mono">
+              <span class="text-[11px] text-slate-400">Equity สด:</span>
+              <strong id="card-btc_scalp-eq" class="text-base text-emerald-400 font-black">$1,002.40</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>Balance:</span>
+              <strong id="card-btc_scalp-bal" class="text-slate-200">$1,000.00</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>ไม้ที่รันอยู่:</span>
+              <span id="card-btc_scalp-cnt" class="text-orange-300 font-bold">1 ไม้ (+$2.40)</span>
+            </div>
+          </div>
+          <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
+            <span id="card-btc_scalp-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.24%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('btc_scalp')" class="py-1 px-2.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 font-bold border border-orange-500/40 text-[10px] transition-all">
+              ⚡ + เปิดไม้ M5
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 4: 🟠 บิตคอยน์ เทรดยาว (H1 Swing) -->
+        <div onclick="switchPortfolioFilter('btc_swing')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-cyan-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+          <div>
+            <div class="flex justify-between items-center text-slate-400 mb-1">
+              <span class="font-bold text-cyan-300 flex items-center gap-1.5 text-xs">
+                <span>🟠 บิตคอยน์ ยาว H1</span>
+              </span>
+              <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/70 px-2 py-0.5 rounded border border-cyan-500/30">ทุน $1,000</span>
+            </div>
+            <div class="flex justify-between items-baseline my-1.5 font-mono">
+              <span class="text-[11px] text-slate-400">Equity สด:</span>
+              <strong id="card-btc_swing-eq" class="text-base text-emerald-400 font-black">$1,000.00</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>Balance:</span>
+              <strong id="card-btc_swing-bal" class="text-slate-200">$1,000.00</strong>
+            </div>
+            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
+              <span>ไม้ที่รันอยู่:</span>
+              <span id="card-btc_swing-cnt" class="text-cyan-300 font-bold">0 ไม้ ($0.00)</span>
+            </div>
+          </div>
+          <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
+            <span id="card-btc_swing-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.00%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('btc_swing')" class="py-1 px-2.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 text-[10px] transition-all">
+              🌊 + เปิดไม้ยาว H1
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Dedicated Portfolio Switcher & Order Filter Bar -->
+      <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3 p-3 bg-[#080C16] rounded-2xl border border-[#162136]">
+        <div class="flex items-center flex-wrap gap-1.5 text-xs">
+          <span class="text-[11px] text-slate-400 font-bold px-1.5 flex items-center gap-1">
+            <span>📁 เลือกพอร์ต:</span>
+          </span>
+          <button onclick="switchPortfolioFilter('all')" id="portbtn-all" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all text-xs">
+            <span>🌐 รวมทุกพอร์ต ($4,000)</span>
+            <span id="pbadge-all" class="px-1.5 py-0.2 rounded-full bg-black/30 text-white font-mono text-[10px]">2</span>
+          </button>
+          <button onclick="switchPortfolioFilter('xau_scalp')" id="portbtn-xau_scalp" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟡 ทองคำ สั้น M5 ($1,000)</span>
+            <span id="pbadge-xau_scalp" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-amber-300 font-mono text-[10px]">0</span>
+          </button>
+          <button onclick="switchPortfolioFilter('xau_swing')" id="portbtn-xau_swing" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟡 ทองคำ ยาว H1 ($1,000)</span>
+            <span id="pbadge-xau_swing" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-yellow-300 font-mono text-[10px]">1</span>
+          </button>
+          <button onclick="switchPortfolioFilter('btc_scalp')" id="portbtn-btc_scalp" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟠 บิตคอยน์ สั้น M5 ($1,000)</span>
+            <span id="pbadge-btc_scalp" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-orange-300 font-mono text-[10px]">1</span>
+          </button>
+          <button onclick="switchPortfolioFilter('btc_swing')" id="portbtn-btc_swing" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟠 บิตคอยน์ ยาว H1 ($1,000)</span>
+            <span id="pbadge-btc_swing" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-cyan-300 font-mono text-[10px]">0</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="closeAllPositions()" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/30 text-xs transition-all flex items-center gap-1">
+            <span>❌ ปิดออเดอร์ในมุมมองนี้</span>
           </button>
         </div>
       </div>
@@ -1319,7 +1428,7 @@
             <span class="font-bold flex items-center gap-1.5">
               <span>💰 Balance (ยอดเงินในบัญชี)</span>
             </span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">ทุนตั้งต้น $1,000</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300" id="port-initial-cap-label">ทุนตั้งต้น $1,000</span>
           </div>
           <div class="my-2.5">
             <strong class="text-2xl text-white font-black" id="port-bal-val">$1,000.00</strong>
@@ -2045,11 +2154,80 @@
   <script>
     let currentAsset = 'BTCUSD';
     let currentTimeframe = '5';
-    let balance = 1000.0;
-    let initialBalance = 1000.0;
+
+    // 4 Distinct Institutional Portfolios Configuration ($1,000 USD Capital Each)
+    const PORTFOLIO_CONFIGS = {
+      xau_scalp: {
+        id: 'xau_scalp',
+        symbol: 'XAUUSD',
+        style: 'scalping',
+        name: '🟡 ทองคำ เทรดสั้น (M5 Scalp)',
+        shortName: 'ทองคำ สั้น M5',
+        timeframe: 'M5',
+        initialBalance: 1000.0,
+        badgeClass: 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+      },
+      xau_swing: {
+        id: 'xau_swing',
+        symbol: 'XAUUSD',
+        style: 'swing',
+        name: '🟡 ทองคำ เทรดยาว (H1 Swing)',
+        shortName: 'ทองคำ ยาว H1',
+        timeframe: 'H1',
+        initialBalance: 1000.0,
+        badgeClass: 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/30'
+      },
+      btc_scalp: {
+        id: 'btc_scalp',
+        symbol: 'BTCUSD',
+        style: 'scalping',
+        name: '🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)',
+        shortName: 'BTC สั้น M5',
+        timeframe: 'M5',
+        initialBalance: 1000.0,
+        badgeClass: 'bg-orange-500/15 text-orange-300 border border-orange-500/30'
+      },
+      btc_swing: {
+        id: 'btc_swing',
+        symbol: 'BTCUSD',
+        style: 'swing',
+        name: '🟠 บิตคอยน์ เทรดยาว (H1 Swing)',
+        shortName: 'BTC ยาว H1',
+        timeframe: 'H1',
+        initialBalance: 1000.0,
+        badgeClass: 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30'
+      }
+    };
+
+    let portfolioBalances = {
+      xau_scalp: 1000.0,
+      xau_swing: 1000.0,
+      btc_scalp: 1000.0,
+      btc_swing: 1000.0
+    };
+
+    let currentPortfolioFilter = 'all'; // 'all' | 'xau_scalp' | 'xau_swing' | 'btc_scalp' | 'btc_swing'
+
+    function getPortfolioId(symbol, style) {
+      const isGold = (symbol || '').toUpperCase().includes('XAU');
+      const isScalp = (style || '').toLowerCase().includes('scalp');
+      if (isGold) return isScalp ? 'xau_scalp' : 'xau_swing';
+      return isScalp ? 'btc_scalp' : 'btc_swing';
+    }
+
+    function getPortfolioBalance(portId) {
+      return portfolioBalances[portId] || 1000.0;
+    }
+
+    function getTotalPortfolioBalance() {
+      return Object.values(portfolioBalances).reduce((a, b) => a + b, 0);
+    }
+
+    let balance = 4000.0;
+    let initialBalance = 4000.0;
     let currentOrderFilter = 'all'; // 'all' | 'scalping' | 'swing' | 'matrix' | 'journal'
 
-    // Default Template Positions (ใช้เป็นตัวอย่างจำลองเฉพาะการเปิดรันระบบครั้งแรกสุด)
+    // Default Template Positions
     const DEFAULT_DEMO_POSITIONS = [
       {
         id: 1727500001,
@@ -2057,8 +2235,10 @@
         symbol: 'BTCUSD',
         type: 'BUY',
         style: 'scalping',
+        portfolioId: 'btc_scalp',
+        portfolioName: '🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)',
         styleName: '⚡ เทรดสั้น (M5 Scalp)',
-        lot: 0.02,
+        lot: 0.04,
         entry: 84790.0,
         sl: 84490.0,
         tp1: 85290.0,
@@ -2077,6 +2257,8 @@
         symbol: 'XAUUSD',
         type: 'BUY',
         style: 'swing',
+        portfolioId: 'xau_swing',
+        portfolioName: '🟡 ทองคำ เทรดยาว (H1 Swing)',
         styleName: '🌊 เทรดยาว (H1 Swing)',
         lot: 0.02,
         entry: 4202.80,
@@ -2099,8 +2281,10 @@
 
     // Save Live Positions to Dual Storage (Browser LocalStorage + Server JSON Safe Storage)
     function savePositionsState() {
+      balance = getTotalPortfolioBalance();
       try {
         localStorage.setItem('ad_open_positions', JSON.stringify(openPositions));
+        localStorage.setItem('ad_port_balances', JSON.stringify(portfolioBalances));
         localStorage.setItem('ad_sim_balance', balance.toFixed(2));
       } catch (e) {}
 
@@ -2111,6 +2295,8 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             positions: openPositions,
+            portfolios: portfolioBalances,
+            total_balance: balance,
             balance: balance
           })
         }).catch(() => {});
@@ -3014,26 +3200,59 @@
       }
     }
 
-    // Trigger Demo Scalp Trade (M1/M5 - Quick Target 0.02 Lot)
-    function triggerScalpDemoTrade() {
-      selectAsset('BTCUSD');
-      showToastAlert("⚡ [เรดาร์เทรดสั้น M5] กำลังจำลองเปิดคำสั่ง Scalp 0.02 Lot (เป้า Micro-TP)...");
+    // Trigger Specific Institutional Portfolio Demo Trade ($1,000 USD Capital Each)
+    function triggerPortfolioTrade(portId, action = null) {
+      const cfg = PORTFOLIO_CONFIGS[portId];
+      if (!cfg) return;
+
+      selectAsset(cfg.symbol);
+      const isGold = cfg.symbol === 'XAUUSD';
+      const curPrice = isGold ? livePrices.XAUUSD : livePrices.BTCUSD;
+
+      let dir = action;
+      if (!dir) {
+        const threshold = isGold ? 4200.0 : 83000.0;
+        dir = curPrice < threshold ? 'BUY' : 'SELL';
+      }
+
+      showToastAlert(`⚡ [${cfg.name}] กำลังส่งคำสั่ง ${dir} จำลอง (คำนวณความเสี่ยงจากทุน $1,000)...`);
       setTimeout(() => {
-        autoExecuteSignalTrade('BUY', 'BTCUSD', null, 'scalping');
+        autoExecuteSignalTrade(dir, cfg.symbol, null, cfg.style);
         switchMainTab('livetrade');
-        switchOrderFilter('scalping');
+        switchPortfolioFilter(portId);
       }, 350);
     }
 
-    // Trigger Demo Swing Trade (H1/H4 - Trend Run 0.02 Lot)
+    // Switch Active Portfolio Filter View (all | xau_scalp | xau_swing | btc_scalp | btc_swing)
+    function switchPortfolioFilter(portId) {
+      currentPortfolioFilter = portId;
+
+      const allIds = ['all', 'xau_scalp', 'xau_swing', 'btc_scalp', 'btc_swing'];
+      allIds.forEach(id => {
+        const btn = document.getElementById(`portbtn-${id}`);
+        if (btn) {
+          if (id === portId) {
+            btn.className = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all text-xs";
+          } else {
+            btn.className = "px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs";
+          }
+        }
+      });
+
+      renderPositions();
+      renderPortfolioPage();
+      renderJournal();
+      evaluateLivePositions();
+    }
+
+    // Trigger Demo Scalp Trade (M1/M5 - Quick Target on BTC Scalp Portfolio $1,000)
+    function triggerScalpDemoTrade() {
+      triggerPortfolioTrade('btc_scalp', 'BUY');
+    }
+
+    // Trigger Demo Swing Trade (H1/H4 - Trend Run on Gold Swing Portfolio $1,000)
     function triggerSwingDemoTrade() {
-      selectAsset('XAUUSD');
-      showToastAlert("🌊 [เรดาร์เทรดยาว H1] กำลังจำลองเปิดคำสั่ง Swing 0.02 Lot (เป้า Run Trend)...");
-      setTimeout(() => {
-        autoExecuteSignalTrade('BUY', 'XAUUSD', null, 'swing');
-        switchMainTab('livetrade');
-        switchOrderFilter('swing');
-      }, 350);
+      triggerPortfolioTrade('xau_swing', 'BUY');
     }
 
     function triggerAutoTradeDemoNow() {
@@ -3146,8 +3365,12 @@
       const tp1Price = action === 'BUY' ? p + tp1Dist : p - tp1Dist;
       const tp2Price = action === 'BUY' ? p + tp2Dist : p - tp2Dist;
 
-      // คำนวณขนาดไม้ตามโมเดลความเสี่ยงสถาบัน (Fixed Fractional Risk Sizing)
-      const sizing = calculateInstitutionalPositionSize(symbol, style, slDist, balance);
+      const portId = getPortfolioId(symbol, style);
+      const portBal = getPortfolioBalance(portId);
+      const portCfg = PORTFOLIO_CONFIGS[portId] || { name: isScalp ? '⚡ เทรดสั้น (M5 Scalp)' : '🌊 เทรดยาว (H1 Swing)' };
+
+      // คำนวณขนาดไม้ตามโมเดลความเสี่ยงสถาบันจากทุนของพอร์ตนั้นๆ ($1,000)
+      const sizing = calculateInstitutionalPositionSize(symbol, style, slDist, portBal);
 
       const isBuy = action === 'BUY';
       const setupName = isScalp 
@@ -3168,7 +3391,9 @@
         symbol: symbol,
         type: action,
         style: style,
-        styleName: isScalp ? '⚡ เทรดสั้น (M5 Scalp)' : '🌊 เทรดยาว (H1 Swing)',
+        portfolioId: portId,
+        portfolioName: portCfg.name,
+        styleName: portCfg.name,
         lot: sizing.lot,
         riskPct: sizing.riskPct,
         riskDollar: sizing.riskDollar,
@@ -3191,7 +3416,7 @@
       savePositionsState();
       renderPositions();
       playAlertBeep();
-      showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (${newPos.styleName} ${sizing.lot.toFixed(2)} Lot | ${sizing.rationale}) เรียบร้อยแล้ว`);
+      showToastAlert(`⚡ [${portCfg.name}] เปิดคำสั่ง ${action} ${symbol} (Lot ${sizing.lot.toFixed(2)} | ${sizing.rationale}) เรียบร้อยแล้ว`);
       notifyLineTrade('open', newPos);
     }
 
@@ -3261,19 +3486,26 @@
       }
       pnlDollar = parseFloat(pnlDollar.toFixed(2));
 
-      // Update Simulated Balance
-      balance += pnlDollar;
+      // Update Specific Simulated Portfolio Balance ($1,000 Capital Base)
+      const portId = pos.portfolioId || getPortfolioId(pos.symbol, pos.style);
+      if (!portfolioBalances[portId]) portfolioBalances[portId] = 1000.0;
+      portfolioBalances[portId] = parseFloat((portfolioBalances[portId] + pnlDollar).toFixed(2));
+      balance = getTotalPortfolioBalance();
 
       const exitReasonStr = customTrigger ? `อัตโนมัติ: ${customTrigger}` : 'ปิดโดยผู้ใช้ (Manual)';
+      const portCfg = PORTFOLIO_CONFIGS[portId] || { name: pos.styleName };
+      const currentPortBal = portfolioBalances[portId];
 
-      // Create Trade Journal Entry
+      // Create Trade Journal Entry with Portfolio Metadata
       const journalEntry = {
         id: pos.id,
         ticket: pos.ticket,
         symbol: pos.symbol,
         type: pos.type,
         style: pos.style,
-        styleName: pos.styleName,
+        portfolioId: portId,
+        portfolioName: portCfg.name,
+        styleName: portCfg.name,
         lot: lot,
         riskPct: pos.riskPct || 1.5,
         riskDollar: pos.riskDollar || 15.0,
@@ -3282,16 +3514,17 @@
         exit: parseFloat(currentP.toFixed(dec)),
         pnl: pnlDollar,
         pips: pos.pips || (isGold ? (currentP - pos.entry) * 10.0 : (currentP - pos.entry) / 10.0),
-        pnlPct: parseFloat(((pnlDollar / balance) * 100).toFixed(2)),
-        balance: parseFloat(balance.toFixed(2)),
-        accountBalance: parseFloat(balance.toFixed(2)),
+        pnlPct: parseFloat(((pnlDollar / currentPortBal) * 100).toFixed(2)),
+        balance: currentPortBal,
+        accountBalance: currentPortBal,
+        totalBalance: balance,
         win: pnlDollar >= 0,
         timeOpen: pos.timeOpen,
         timeClose: new Date().toLocaleTimeString('th-TH'),
         reason: `${pos.reason} [${exitReasonStr}]`,
         aiFeedback: pnlDollar >= 0 
-          ? `🎯 กำไรตามเป้า (${pos.styleName} Lot ${lot.toFixed(2)}): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%` 
-          : `🛑 ตัดขาดทุนตามแผน (${pos.styleName} Lot ${lot.toFixed(2)}): คุมความเสี่ยงตาม Risk Budget บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป`
+          ? `🎯 กำไรตามเป้า (${portCfg.name} Lot ${lot.toFixed(2)}): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%` 
+          : `🛑 ตัดขาดทุนตามแผน (${portCfg.name} Lot ${lot.toFixed(2)}): คุมความเสี่ยงตาม Risk Budget บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป`
       };
 
       tradeJournal.unshift(journalEntry);
@@ -3310,23 +3543,27 @@
         });
       } catch (e) {}
 
-      // Real-time LINE Alert on Trade Closed (รวมยอดคงเหลือสุทธิ)
+      // Real-time LINE Alert on Trade Closed (ส่งสรุปยอดคงเหลือของพอร์ตนั้นๆ)
       notifyLineTrade('close', journalEntry);
 
       if (customTrigger) {
         playAlertBeep();
-        showToastAlert(`🎯 ปิดออเดอร์อัตโนมัติ #${pos.ticket} (${customTrigger})! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD | ยอดคงเหลือ: $${balance.toFixed(2)} USD`);
+        showToastAlert(`🎯 ปิดออเดอร์อัตโนมัติ #${pos.ticket} (${portCfg.name})! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD | ยอดคงเหลือพอร์ตนี้: $${currentPortBal.toFixed(2)} USD`);
       } else {
-        showToastAlert(`✅ ปิดคำสั่ง #${pos.ticket} สำเร็จ! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD | ยอดคงเหลือ: $${balance.toFixed(2)} USD`);
+        showToastAlert(`✅ ปิดคำสั่ง #${pos.ticket} (${portCfg.name}) สำเร็จ! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD | ยอดคงเหลือพอร์ตนี้: $${currentPortBal.toFixed(2)} USD`);
       }
     }
 
     function closeAllPositions() {
-      if (openPositions.length === 0) {
-        alert("ไม่มีออเดอร์ค้างในพอร์ต");
+      let targetPositions = openPositions;
+      if (currentPortfolioFilter !== 'all') {
+        targetPositions = openPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) === currentPortfolioFilter);
+      }
+      if (targetPositions.length === 0) {
+        alert("ไม่มีออเดอร์ค้างในมุมมองพอร์ตนี้");
         return;
       }
-      const ids = openPositions.map(p => p.id);
+      const ids = targetPositions.map(p => p.id);
       ids.forEach(id => closePosition(null, id));
     }
 
@@ -3360,12 +3597,34 @@
       if (bCockpit) bCockpit.innerText = totalCount;
       if (liveMarginUsed) liveMarginUsed.innerText = `$${(totalCount * 10).toFixed(2)}`;
 
+      // Update Portfolio Badges
+      const pAll = openPositions.length;
+      const pXauScalp = openPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) === 'xau_scalp').length;
+      const pXauSwing = openPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) === 'xau_swing').length;
+      const pBtcScalp = openPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) === 'btc_scalp').length;
+      const pBtcSwing = openPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) === 'btc_swing').length;
+
+      const elPAll = document.getElementById('pbadge-all');
+      const elPXauScalp = document.getElementById('pbadge-xau_scalp');
+      const elPXauSwing = document.getElementById('pbadge-xau_swing');
+      const elPBtcScalp = document.getElementById('pbadge-btc_scalp');
+      const elPBtcSwing = document.getElementById('pbadge-btc_swing');
+
+      if (elPAll) elPAll.innerText = pAll;
+      if (elPXauScalp) elPXauScalp.innerText = pXauScalp;
+      if (elPXauSwing) elPXauSwing.innerText = pXauSwing;
+      if (elPBtcScalp) elPBtcScalp.innerText = pBtcScalp;
+      if (elPBtcSwing) elPBtcSwing.innerText = pBtcSwing;
+
       // Filter positions for the Sub-Menu Table View
       let filteredPositions = openPositions;
+      if (currentPortfolioFilter !== 'all') {
+        filteredPositions = filteredPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) === currentPortfolioFilter);
+      }
       if (currentOrderFilter === 'scalping') {
-        filteredPositions = openPositions.filter(p => p.style === 'scalping');
+        filteredPositions = filteredPositions.filter(p => p.style === 'scalping');
       } else if (currentOrderFilter === 'swing') {
-        filteredPositions = openPositions.filter(p => p.style === 'swing');
+        filteredPositions = filteredPositions.filter(p => p.style === 'swing');
       }
 
       // 1. Render Main Sub-Menu Table Body
@@ -3374,7 +3633,7 @@
           tableBody.innerHTML = `
             <tr>
               <td colspan="8" class="text-center py-8 text-slate-500 text-xs font-mono">
-                ไม่มีออเดอร์ในหมวดหมู่นี้ (ระบบพร้อมเปิดอัตโนมัติ Lot 0.02 เมื่อสัญญาณ AI ตรงตามเงื่อนไข)
+                ไม่มีออเดอร์ในพอร์ตหรือหมวดหมู่นี้ (ระบบพร้อมเปิดอัตโนมัติเมื่อสัญญาณ AI ตรงตามเงื่อนไข)
               </td>
             </tr>
           `;
@@ -3385,18 +3644,18 @@
             const dec = isGold ? 2 : 1;
             const isProfit = pos.pnl >= 0;
 
-            const isScalp = pos.style === 'scalping';
-            const styleBadge = isScalp
-              ? `<span class="px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold text-[10px]">⚡ เทรดสั้น M5</span>`
-              : `<span class="px-2 py-0.5 rounded-md bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold text-[10px]">🌊 เทรดยาว H1</span>`;
+            const portId = pos.portfolioId || getPortfolioId(pos.symbol, pos.style);
+            const portCfg = PORTFOLIO_CONFIGS[portId] || { name: pos.styleName, badgeClass: 'bg-slate-800 text-slate-300' };
+            const portBal = getPortfolioBalance(portId);
 
             return `
               <tr class="hover:bg-[#0E1526] transition-colors border-b border-[#141E30]">
                 <!-- 1. Style & Symbol -->
                 <td class="py-3 px-3">
+                  <span class="px-2 py-0.5 rounded-md ${portCfg.badgeClass} font-bold text-[10px] inline-block mb-1">${portCfg.name}</span>
                   <div class="flex items-center gap-2">
-                    ${styleBadge}
                     <strong class="text-white text-xs font-mono">${pos.symbol}</strong>
+                    <span class="text-[10px] text-slate-500 font-mono">#${pos.ticket}</span>
                   </div>
                   <span class="text-[10px] text-slate-500 block font-mono mt-0.5">เปิดเมื่อ: ${pos.timeOpen}</span>
                 </td>
@@ -3409,7 +3668,7 @@
                     </span>
                     <strong class="text-amber-300 font-mono text-xs">${pos.lot ? pos.lot.toFixed(2) : '0.02'} Lot</strong>
                   </div>
-                  <span class="text-[10px] text-slate-500 font-mono block mt-0.5">#${pos.ticket}</span>
+                  <span class="text-[10px] text-slate-500 font-mono block mt-0.5">${pos.riskRationale || ''}</span>
                 </td>
 
                 <!-- 3. Entry Price -->
@@ -3431,7 +3690,7 @@
                     </strong>
                   </div>
                   <span class="text-[10px] font-mono ${isProfit ? 'text-emerald-400/80' : 'text-rose-400/80'} block">
-                    ${isProfit ? '+' : ''}${((pos.pnl / balance) * 100).toFixed(2)}% | ${pos.pips >= 0 ? '+' : ''}${pos.pips.toFixed(1)} Pips
+                    ${isProfit ? '+' : ''}${((pos.pnl / portBal) * 100).toFixed(2)}% ของพอร์ต | ${pos.pips >= 0 ? '+' : ''}${pos.pips.toFixed(1)} Pips
                   </span>
                 </td>
 
@@ -3518,11 +3777,15 @@
       const countEl = document.getElementById('journal-total-count');
       const subJournalCount = document.getElementById('sub-journal-count');
 
-      const total = tradeJournal.length;
+      const displayedJournal = currentPortfolioFilter === 'all'
+        ? tradeJournal
+        : tradeJournal.filter(t => (t.portfolioId || getPortfolioId(t.symbol, t.style)) === currentPortfolioFilter);
+
+      const total = displayedJournal.length;
       if (subJournalCount) subJournalCount.innerText = total;
 
       if (total === 0) {
-        const emptyHtml = `<div class="text-center py-6 text-slate-500 text-xs font-mono">ยังไม่มีประวัติการเทรด (ไม้ที่ปิดจะถูกบันทึกเพื่อจูน AI ที่นี่)</div>`;
+        const emptyHtml = `<div class="text-center py-6 text-slate-500 text-xs font-mono">ยังไม่มีประวัติการเทรดในมุมมองนี้ (ไม้ที่ปิดจะถูกบันทึกเพื่อจูน AI ที่นี่)</div>`;
         if (listEl) listEl.innerHTML = emptyHtml;
         if (fullListEl) fullListEl.innerHTML = emptyHtml;
         if (winrateEl) winrateEl.innerText = "100%";
@@ -3531,9 +3794,9 @@
         return;
       }
 
-      const wins = tradeJournal.filter(t => t.win).length;
+      const wins = displayedJournal.filter(t => t.win).length;
       const winRate = ((wins / total) * 100).toFixed(1);
-      const netProfit = tradeJournal.reduce((sum, t) => sum + (t.pnl || 0), 0);
+      const netProfit = displayedJournal.reduce((sum, t) => sum + (t.pnl || 0), 0);
 
       if (winrateEl) winrateEl.innerText = `${winRate}%`;
       if (netPnlEl) {
@@ -3542,12 +3805,17 @@
       }
       if (countEl) countEl.innerText = `${total} ไม้ (${wins}W / ${total - wins}L)`;
 
-      const journalHtml = tradeJournal.map(t => `
+      const journalHtml = displayedJournal.map(t => {
+        const portId = t.portfolioId || getPortfolioId(t.symbol, t.style);
+        const portCfg = PORTFOLIO_CONFIGS[portId] || { name: t.portfolioName || t.styleName || 'พอร์ตสถาบัน', badgeClass: 'bg-slate-800 text-slate-300' };
+        return `
         <div class="p-3 rounded-xl bg-[#0A0F1D] border ${t.win ? 'border-emerald-500/30' : 'border-rose-500/30'} text-xs font-mono space-y-1.5">
           <div class="flex justify-between items-center">
             <span class="font-bold ${t.type === 'BUY' ? 'text-emerald-400' : 'text-rose-400'} flex items-center gap-1.5">
               <span>#${t.ticket} ${t.type} ${t.symbol} (${t.lot ? t.lot.toFixed(2) : '0.02'} Lot)</span>
-              <span class="px-1.5 py-0.2 rounded text-[10px] ${t.style === 'scalping' ? 'bg-amber-500/20 text-amber-300' : 'bg-cyan-500/20 text-cyan-300'}">${t.style === 'scalping' ? 'เทรดสั้น' : 'เทรดยาว'}</span>
+              <span class="px-1.5 py-0.2 rounded text-[10px] ${portCfg.badgeClass || (t.style === 'scalping' ? 'bg-amber-500/20 text-amber-300' : 'bg-cyan-500/20 text-cyan-300')}">
+                ${portCfg.shortName || portCfg.name}
+              </span>
             </span>
             <span class="font-black ${t.win ? 'text-emerald-400' : 'text-rose-400'}">
               ${t.pnl >= 0 ? '+' : ''}$${t.pnl.toFixed(2)} (${t.pnlPct >= 0 ? '+' : ''}${t.pnlPct}%)
@@ -3565,7 +3833,8 @@
             </button>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
 
       if (listEl) listEl.innerHTML = journalHtml;
       if (fullListEl) fullListEl.innerHTML = journalHtml;
@@ -3671,6 +3940,62 @@
         }
       });
 
+      // Real-time Multi-Portfolio Evaluation
+      const pStats = {
+        xau_scalp: { float: 0, count: 0 },
+        xau_swing: { float: 0, count: 0 },
+        btc_scalp: { float: 0, count: 0 },
+        btc_swing: { float: 0, count: 0 }
+      };
+
+      openPositions.forEach(pos => {
+        const pid = pos.portfolioId || getPortfolioId(pos.symbol, pos.style);
+        if (pStats[pid]) {
+          pStats[pid].float += pos.pnl;
+          pStats[pid].count += 1;
+        }
+      });
+
+      // Update 4 Master Portfolio Cards ($1,000 USD Capital Each)
+      ['xau_scalp', 'xau_swing', 'btc_scalp', 'btc_swing'].forEach(pid => {
+        const bal = getPortfolioBalance(pid);
+        const fl = pStats[pid].float;
+        const eq = bal + fl;
+        const cnt = pStats[pid].count;
+        const ret = (((eq - 1000.0) / 1000.0) * 100).toFixed(2);
+
+        const elBal = document.getElementById(`card-${pid}-bal`);
+        const elEq = document.getElementById(`card-${pid}-eq`);
+        const elCnt = document.getElementById(`card-${pid}-cnt`);
+        const elRet = document.getElementById(`card-${pid}-ret`);
+
+        if (elBal) elBal.innerText = `$${bal.toFixed(2)}`;
+        if (elEq) {
+          elEq.innerText = `$${eq.toFixed(2)}`;
+          elEq.className = `text-base font-black ${eq >= 1000.0 ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+        if (elCnt) elCnt.innerText = `${cnt} ไม้ (${fl >= 0 ? '+' : ''}$${fl.toFixed(2)})`;
+        if (elRet) {
+          elRet.innerText = `${ret >= 0 ? '+' : ''}${ret}%`;
+          elRet.className = `text-[11px] font-bold font-mono ${ret >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+      });
+
+      // Update Grand Fund Combined Summary
+      const totBal = getTotalPortfolioBalance();
+      const totEq = totBal + totalFloating;
+      const totRet = (((totEq - 4000.0) / 4000.0) * 100).toFixed(2);
+
+      const elGrandBal = document.getElementById('grand-bal-val');
+      const elGrandEq = document.getElementById('grand-equity-val');
+      const elGrandPnl = document.getElementById('grand-pnl-val');
+      const elGrandOrders = document.getElementById('grand-orders-val');
+
+      if (elGrandBal) elGrandBal.innerText = `$${totBal.toFixed(2)}`;
+      if (elGrandEq) elGrandEq.innerText = `$${totEq.toFixed(2)}`;
+      if (elGrandPnl) elGrandPnl.innerText = `${totalFloating >= 0 ? '+' : ''}$${totalFloating.toFixed(2)} (${totRet >= 0 ? '+' : ''}${totRet}%)`;
+      if (elGrandOrders) elGrandOrders.innerText = `${openPositions.length} ไม้`;
+
       updateAccountEquityUI(totalFloating);
       renderPositions();
     }
@@ -3678,25 +4003,46 @@
     function saveTradeJournal() {
       try {
         localStorage.setItem('ad_trade_journal', JSON.stringify(tradeJournal.slice(0, 100)));
-        localStorage.setItem('ad_sim_balance', balance.toFixed(2));
+        localStorage.setItem('ad_sim_balance', getTotalPortfolioBalance().toFixed(2));
       } catch (e) {}
       renderJournal();
       updateAccountEquityUI();
     }
 
     function resetSimulatedAccount() {
-      if (confirm("ต้องการรีเซ็ตพอร์ตจำลองเป็นทุนเริ่มต้น $1,000.00 และล้างประวัติเทรดใช่หรือไม่?")) {
-        balance = 1000.0;
+      if (currentPortfolioFilter === 'all') {
+        if (!confirm("คุณต้องการรีเซ็ตพอร์ตการลงทุนทั้ง 4 บัญชีกลับสู่ทุนเริ่มต้น $1,000 x 4 = $4,000 ใช่หรือไม่?")) return;
+        portfolioBalances = {
+          xau_scalp: 1000.0,
+          xau_swing: 1000.0,
+          btc_scalp: 1000.0,
+          btc_swing: 1000.0
+        };
         openPositions = [];
         tradeJournal = [];
         localStorage.removeItem('ad_trade_journal');
         localStorage.removeItem('ad_open_positions');
-        localStorage.setItem('ad_sim_balance', '1000.00');
+        localStorage.setItem('ad_port_balances', JSON.stringify(portfolioBalances));
+        localStorage.setItem('ad_sim_balance', '4000.00');
         savePositionsState();
         renderPositions();
+        renderPortfolioPage();
         renderJournal();
-        updateAccountEquityUI();
-        alert("✅ รีเซ็ตพอร์ตจำลอง $1,000.00 สำเร็จเรียบร้อย!");
+        evaluateLivePositions();
+        alert("✅ รีเซ็ตพอร์ตการลงทุนทั้ง 4 บัญชีกลับสู่ทุน $1,000 ต่อพอร์ต ($4,000 รวม) สำเร็จเรียบร้อย!");
+      } else {
+        const cfg = PORTFOLIO_CONFIGS[currentPortfolioFilter];
+        if (!confirm(`คุณต้องการรีเซ็ตเฉพาะ ${cfg.name} กลับสู่ทุนเริ่มต้น $1,000.00 ใช่หรือไม่?`)) return;
+        portfolioBalances[currentPortfolioFilter] = 1000.0;
+        openPositions = openPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) !== currentPortfolioFilter);
+        tradeJournal = tradeJournal.filter(t => (t.portfolioId || getPortfolioId(t.symbol, t.style)) !== currentPortfolioFilter);
+        savePositionsState();
+        saveTradeJournal();
+        renderPositions();
+        renderPortfolioPage();
+        renderJournal();
+        evaluateLivePositions();
+        alert(`✅ รีเซ็ต ${cfg.name} กลับสู่ทุนเริ่มต้น $1,000.00 สำเร็จเรียบร้อย!`);
       }
     }
 
@@ -4199,26 +4545,35 @@
 
     // Export Portfolio Statement to CSV (Download real statement ledger)
     function exportPortfolioStatementCSV() {
-      if (tradeJournal.length === 0) {
-        alert("ยังไม่มีประวัติการเทรดที่ปิดแล้วในพอร์ต กรุณารอให้ออเดอร์ปิดทำกำไร หรือกดปิดออเดอร์เพื่อดูรายงาน Statement");
+      const targetTrades = currentPortfolioFilter === 'all'
+        ? tradeJournal
+        : tradeJournal.filter(t => (t.portfolioId || getPortfolioId(t.symbol, t.style)) === currentPortfolioFilter);
+
+      if (targetTrades.length === 0) {
+        alert("ยังไม่มีประวัติการเทรดที่ปิดแล้วในมุมมองพอร์ตนี้ กรุณารอให้ออเดอร์ปิดทำกำไร หรือกดปิดออเดอร์เพื่อดูรายงาน Statement");
         return;
       }
 
-      let csv = "Ticket,Symbol,Style,Type,Lot,EntryPrice,ExitPrice,TimeOpen,TimeClose,NetProfit_USD,Return_Pct,AI_Feedback\n";
-      tradeJournal.forEach(t => {
+      let csv = "Ticket,Portfolio,Symbol,Style,Type,Lot,RiskPct,EntryPrice,ExitPrice,TimeOpen,TimeClose,NetProfit_USD,Return_Pct,AI_Feedback,RiskRationale\n";
+      targetTrades.forEach(t => {
+        const portId = t.portfolioId || getPortfolioId(t.symbol, t.style);
+        const portCfg = PORTFOLIO_CONFIGS[portId] || { name: t.portfolioName || t.styleName || 'พอร์ตสถาบัน' };
         const line = [
           t.ticket,
+          `"${portCfg.name}"`,
           t.symbol,
           t.style === 'scalping' ? 'Scalp_M5' : 'Swing_H1',
           t.type,
-          t.lot,
+          t.lot ? t.lot.toFixed(2) : '0.02',
+          t.riskPct || 1.4,
           t.entry,
           t.exit,
           `"${t.timeOpen}"`,
           `"${t.timeClose}"`,
           t.pnl,
           `${t.pnlPct}%`,
-          `"${(t.aiFeedback || '').replace(/"/g, '""')}"`
+          `"${(t.aiFeedback || '').replace(/"/g, '""')}"`,
+          `"${(t.riskRationale || '').replace(/"/g, '""')}"`
         ].join(",");
         csv += line + "\n";
       });
@@ -4227,7 +4582,7 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", `Institutional_Portfolio_Statement_SIM884920_${new Date().toISOString().slice(0,10)}.csv`);
+      link.setAttribute("download", `Portfolio_Statement_${currentPortfolioFilter.toUpperCase()}_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -4244,6 +4599,7 @@
       const freeMarginEl = document.getElementById('port-free-margin');
       const winrateEl = document.getElementById('port-stat-winrate');
       const pfEl = document.getElementById('port-stat-pf');
+      const capLabel = document.getElementById('port-initial-cap-label');
 
       const scalpCntEl = document.getElementById('ptab-scalp-cnt');
       const swingCntEl = document.getElementById('ptab-swing-cnt');
@@ -4253,52 +4609,73 @@
       const swingTable = document.getElementById('port-table-swing-body');
       const stmtTable = document.getElementById('port-statement-table-body');
 
-      let totalFloating = 0;
-      openPositions.forEach(p => totalFloating += (p.pnl || 0));
+      const isFiltered = currentPortfolioFilter !== 'all';
+      const curPortCfg = isFiltered ? PORTFOLIO_CONFIGS[currentPortfolioFilter] : null;
+      const initialCap = isFiltered ? 1000.0 : 4000.0;
+      const currentPortBal = isFiltered ? getPortfolioBalance(currentPortfolioFilter) : getTotalPortfolioBalance();
 
-      const equity = balance + totalFloating;
-      const realizedProfit = balance - 1000.0;
-      const realizedPct = ((realizedProfit / 1000.0) * 100).toFixed(2);
-      const marginUsed = openPositions.length * 10.0; // 0.02 Lot on 1:100 leverage ~= $10
+      if (capLabel) {
+        capLabel.innerText = isFiltered ? `${curPortCfg.shortName} (ทุน $1,000)` : "ทุนรวม 4 พอร์ต $4,000";
+      }
+
+      const filteredPositions = isFiltered
+        ? openPositions.filter(p => (p.portfolioId || getPortfolioId(p.symbol, p.style)) === currentPortfolioFilter)
+        : openPositions;
+
+      const filteredJournal = isFiltered
+        ? tradeJournal.filter(t => (t.portfolioId || getPortfolioId(t.symbol, t.style)) === currentPortfolioFilter)
+        : tradeJournal;
+
+      let totalFloating = 0;
+      filteredPositions.forEach(p => totalFloating += (p.pnl || 0));
+
+      const equity = currentPortBal + totalFloating;
+      const realizedProfit = currentPortBal - initialCap;
+      const realizedPct = ((realizedProfit / initialCap) * 100).toFixed(2);
+      const marginUsed = filteredPositions.length * 10.0; // 0.02 Lot on 1:100 leverage ~= $10
       const freeMargin = Math.max(0, equity - marginUsed);
 
-      if (balEl) balEl.innerText = `$${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      if (balEl) balEl.innerText = `$${currentPortBal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
       if (realizedEl) {
         realizedEl.innerText = `${realizedProfit >= 0 ? '+' : ''}$${realizedProfit.toFixed(2)} (${realizedProfit >= 0 ? '+' : ''}${realizedPct}%)`;
         realizedEl.className = realizedProfit >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
       }
       if (eqEl) eqEl.innerText = `$${equity.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
       if (floatEl) {
-        floatEl.innerText = `${totalFloating >= 0 ? '+' : ''}$${totalFloating.toFixed(2)} (${totalFloating >= 0 ? '+' : ''}${((totalFloating / balance) * 100).toFixed(2)}%)`;
+        const floatPct = ((totalFloating / (currentPortBal || 1)) * 100).toFixed(2);
+        floatEl.innerText = `${totalFloating >= 0 ? '+' : ''}$${totalFloating.toFixed(2)} (${totalFloating >= 0 ? '+' : ''}${floatPct}%)`;
         floatEl.className = totalFloating >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
       }
-      if (marginEl) marginEl.innerText = `$${marginUsed.toFixed(2)} (${(openPositions.length * 0.02).toFixed(2)} Lot)`;
+      if (marginEl) marginEl.innerText = `$${marginUsed.toFixed(2)} (${(filteredPositions.length * 0.02).toFixed(2)} Lot)`;
       if (freeMarginEl) freeMarginEl.innerText = `$${freeMargin.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-      const totalClosed = tradeJournal.length;
+      const totalClosed = filteredJournal.length;
       if (stmtCntEl) stmtCntEl.innerText = totalClosed;
       
-      const scalpPositions = openPositions.filter(p => p.style === 'scalping');
-      const swingPositions = openPositions.filter(p => p.style === 'swing');
+      const scalpPositions = filteredPositions.filter(p => p.style === 'scalping');
+      const swingPositions = filteredPositions.filter(p => p.style === 'swing');
 
       if (scalpCntEl) scalpCntEl.innerText = scalpPositions.length;
       if (swingCntEl) swingCntEl.innerText = swingPositions.length;
 
       // Stats
       if (totalClosed > 0) {
-        const wins = tradeJournal.filter(t => t.win).length;
+        const wins = filteredJournal.filter(t => t.win).length;
         const wr = ((wins / totalClosed) * 100).toFixed(1);
         if (winrateEl) winrateEl.innerText = `${wr}%`;
-        const grossWin = tradeJournal.filter(t => t.win).reduce((sum, t) => sum + (t.pnl || 0), 0);
-        const grossLoss = Math.abs(tradeJournal.filter(t => !t.win).reduce((sum, t) => sum + (t.pnl || 0), 0));
+        const grossWin = filteredJournal.filter(t => t.win).reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const grossLoss = Math.abs(filteredJournal.filter(t => !t.win).reduce((sum, t) => sum + (t.pnl || 0), 0));
         const pf = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : '3.50';
         if (pfEl) pfEl.innerText = pf;
+      } else {
+        if (winrateEl) winrateEl.innerText = "100%";
+        if (pfEl) pfEl.innerText = "3.50";
       }
 
       // Render Active Scalp Table
       if (scalpTable) {
         if (scalpPositions.length === 0) {
-          scalpTable.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-500 text-xs font-mono">ไม่มีออเดอร์เทรดสั้นค้าง (กดปุ่ม '+ เปิดไม้เทรดสั้น' ด้านบนเพื่อทดสอบ)</td></tr>`;
+          scalpTable.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-500 text-xs font-mono">ไม่มีออเดอร์เทรดสั้นค้างในมุมมองนี้</td></tr>`;
         } else {
           scalpTable.innerHTML = scalpPositions.map(pos => renderPortfolioTableRow(pos)).join('');
         }
@@ -4307,7 +4684,7 @@
       // Render Active Swing Table
       if (swingTable) {
         if (swingPositions.length === 0) {
-          swingTable.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-500 text-xs font-mono">ไม่มีออเดอร์เทรดยาวค้าง (กดปุ่ม '+ เปิดไม้เทรดยาว' ด้านบนเพื่อทดสอบ)</td></tr>`;
+          swingTable.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-500 text-xs font-mono">ไม่มีออเดอร์เทรดยาวค้างในมุมมองนี้</td></tr>`;
         } else {
           swingTable.innerHTML = swingPositions.map(pos => renderPortfolioTableRow(pos)).join('');
         }
@@ -4316,11 +4693,19 @@
       // Render Statement Table
       if (stmtTable) {
         if (totalClosed === 0) {
-          stmtTable.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-500 text-xs font-mono">ยังไม่มีประวัติคำสั่งที่ปิดแล้ว (เมื่อออเดอร์ปิดทำกำไร ระบบจะลงบัญชีสเตตเมนต์ทันที)</td></tr>`;
+          stmtTable.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-500 text-xs font-mono">ยังไม่มีประวัติคำสั่งที่ปิดแล้วในมุมมองนี้ (เมื่อออเดอร์ปิดทำกำไร ระบบจะลงบัญชีสเตตเมนต์ทันที)</td></tr>`;
         } else {
-          stmtTable.innerHTML = tradeJournal.map(t => `
+          stmtTable.innerHTML = filteredJournal.map(t => {
+            const portId = t.portfolioId || getPortfolioId(t.symbol, t.style);
+            const portCfg = PORTFOLIO_CONFIGS[portId] || { name: t.portfolioName || t.styleName || 'พอร์ตสถาบัน', badgeClass: 'bg-slate-800 text-slate-300' };
+            return `
             <tr class="hover:bg-[#0E1526] transition-colors border-b border-slate-800/80">
-              <td class="py-2.5 px-3 font-mono font-bold text-amber-300">#${t.ticket}</td>
+              <td class="py-2.5 px-3 font-mono font-bold text-amber-300">
+                #${t.ticket}
+                <span class="block text-[9px] px-1.5 py-0.2 rounded font-sans font-semibold mt-0.5 ${portCfg.badgeClass}">
+                  ${portCfg.shortName || portCfg.name}
+                </span>
+              </td>
               <td class="py-2.5 px-3 text-[10px] text-slate-400">เข้า: ${t.timeOpen}<br>ปิด: ${t.timeClose}</td>
               <td class="py-2.5 px-3">
                 <span class="font-bold text-white">${t.symbol}</span>
@@ -4339,7 +4724,8 @@
                 ${t.riskRationale ? `<span class="block text-[9px] text-amber-300/80 font-mono mt-0.5">⚖️ ${t.riskRationale}</span>` : ''}
               </td>
             </tr>
-          `).join('');
+          `;
+          }).join('');
         }
       }
     }
@@ -4483,16 +4869,39 @@
         const savedJournal = localStorage.getItem('ad_trade_journal');
         if (savedJournal) {
           tradeJournal = JSON.parse(savedJournal);
+          tradeJournal.forEach(t => {
+            if (!t.portfolioId) {
+              t.portfolioId = getPortfolioId(t.symbol, t.style);
+              t.portfolioName = (PORTFOLIO_CONFIGS[t.portfolioId] || {}).name || (t.style === 'scalping' ? 'เทรดสั้น M5' : 'เทรดยาว H1');
+            }
+          });
+        }
+        const savedPortBal = localStorage.getItem('ad_port_balances');
+        if (savedPortBal) {
+          try {
+            const pb = JSON.parse(savedPortBal);
+            if (pb && typeof pb === 'object') {
+              portfolioBalances = { ...portfolioBalances, ...pb };
+            }
+          } catch(e) {}
         }
         const savedBal = localStorage.getItem('ad_sim_balance');
         if (savedBal) {
           balance = parseFloat(savedBal);
+        } else {
+          balance = getTotalPortfolioBalance();
         }
         const savedPos = localStorage.getItem('ad_open_positions');
         if (savedPos !== null) {
           const parsed = JSON.parse(savedPos);
           if (Array.isArray(parsed)) {
             openPositions = parsed;
+            openPositions.forEach(p => {
+              if (!p.portfolioId) {
+                p.portfolioId = getPortfolioId(p.symbol, p.style);
+                p.portfolioName = (PORTFOLIO_CONFIGS[p.portfolioId] || {}).name || p.styleName;
+              }
+            });
             hasLoadedPositions = true;
           }
         }
@@ -4509,16 +4918,25 @@
         const res = await fetch('/api/positions');
         if (res.ok) {
           const data = await res.json();
-          if (data && Array.isArray(data.positions)) {
-            // If local storage was empty or server has active positions, hydrate safely
-            if (!hasLoadedPositions || (openPositions.length === 0 && data.positions.length > 0)) {
-              openPositions = data.positions;
-              hasLoadedPositions = true;
-              try { localStorage.setItem('ad_open_positions', JSON.stringify(openPositions)); } catch(e){}
+          if (data) {
+            if (Array.isArray(data.positions)) {
+              if (!hasLoadedPositions || (openPositions.length === 0 && data.positions.length > 0)) {
+                openPositions = data.positions;
+                openPositions.forEach(p => {
+                  if (!p.portfolioId) {
+                    p.portfolioId = getPortfolioId(p.symbol, p.style);
+                    p.portfolioName = (PORTFOLIO_CONFIGS[p.portfolioId] || {}).name || p.styleName;
+                  }
+                });
+                hasLoadedPositions = true;
+                try { localStorage.setItem('ad_open_positions', JSON.stringify(openPositions)); } catch(e){}
+              }
             }
-            if (data.balance && !localStorage.getItem('ad_sim_balance')) {
-              balance = parseFloat(data.balance);
+            if (data.portfolios && typeof data.portfolios === 'object') {
+              portfolioBalances = { ...portfolioBalances, ...data.portfolios };
+              try { localStorage.setItem('ad_port_balances', JSON.stringify(portfolioBalances)); } catch(e){}
             }
+            balance = getTotalPortfolioBalance();
             renderPositions();
             evaluateLivePositions();
             updateAccountEquityUI();

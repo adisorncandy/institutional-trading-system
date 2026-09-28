@@ -22,7 +22,9 @@
       "breakevenLocked": false,
       "reason": "SMC M5 Bearish Supply FVG Rejection [คุมความเสี่ยง 1.4% ($14.00) / SL 30 Pips ➔ คำนวณ Lot 0.05] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์",
       "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ สัญญาณสั้น M5 SELL: กวาด Liquidity แนวต้าน (Premium Zone) เล็งเป้า Short FVG (คุมความเสี่ยง 1.4% ($14.00) / SL 30 Pips ➔ คำนวณ Lot 0.05) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Burry Trapped Retail Sweep"
+      "evalStatus": "⚡ สัญญาณสั้น M5 SELL: กวาด Liquidity แนวต้าน (Premium Zone) เล็งเป้า Short FVG (คุมความเสี่ยง 1.4% ($14.00) / SL 30 Pips ➔ คำนวณ Lot 0.05) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Burry Trapped Retail Sweep",
+      "portfolioId": "btc_scalp",
+      "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)"
     },
     {
       "id": 1790585523546,
@@ -46,9 +48,47 @@
       "breakevenLocked": false,
       "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์",
       "evalScore": "94.8% Confluence",
-      "evalStatus": "🌊 สวิงเทรนด์สถาบัน SELL: ปะทะ Bearish Supply Block ย่อตัวตามโครงสร้าง H1 (คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02) | 🧠 สภา 5 ปรมาจารย์: Druckenmiller Momentum Exhaustion + Wyckoff Distribution"
+      "evalStatus": "🌊 สวิงเทรนด์สถาบัน SELL: ปะทะ Bearish Supply Block ย่อตัวตามโครงสร้าง H1 (คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02) | 🧠 สภา 5 ปรมาจารย์: Druckenmiller Momentum Exhaustion + Wyckoff Distribution",
+      "portfolioId": "xau_swing",
+      "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)"
     }
   ],
   "balance": 1000.0,
-  "updated_at": "2026-09-28T15:52:03.555796"
+  "updated_at": "2026-09-28T15:52:03.555796",
+  "portfolios": {
+    "xau_scalp": {
+      "id": "xau_scalp",
+      "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)",
+      "symbol": "XAUUSD",
+      "style": "scalping",
+      "initialBalance": 1000.0,
+      "balance": 1000.0
+    },
+    "xau_swing": {
+      "id": "xau_swing",
+      "name": "🟡 ทองคำ เทรดยาว (H1 Swing)",
+      "symbol": "XAUUSD",
+      "style": "swing",
+      "initialBalance": 1000.0,
+      "balance": 1000.0
+    },
+    "btc_scalp": {
+      "id": "btc_scalp",
+      "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)",
+      "symbol": "BTCUSD",
+      "style": "scalping",
+      "initialBalance": 1000.0,
+      "balance": 1000.0
+    },
+    "btc_swing": {
+      "id": "btc_swing",
+      "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
+      "symbol": "BTCUSD",
+      "style": "swing",
+      "initialBalance": 1000.0,
+      "balance": 1000.0
+    }
+  },
+  "total_initial_balance": 4000.0,
+  "total_balance": 4000.0
 }

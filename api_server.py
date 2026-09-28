@@ -358,6 +358,13 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps({
                 "status": "success",
                 "positions": positions_data.get("positions", []),
+                "portfolios": positions_data.get("portfolios", {
+                    "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+                    "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+                    "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+                    "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+                }),
+                "total_balance": positions_data.get("total_balance", 4000.0),
                 "balance": positions_data.get("balance", 1000.0),
                 "total_active": len(positions_data.get("positions", [])),
                 "persistence_safe": True
@@ -422,7 +429,7 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
             except Exception:
                 pass
 
-            # Also update Active Positions state (remove closed order)
+            # Also update Active Positions state (remove closed order) and credit portfolio balance
             pos_path = os.path.join(os.path.dirname(__file__), "ai_active_positions.json")
             if os.path.exists(pos_path):
                 try:
@@ -432,8 +439,27 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                     entry_id = entry.get("id")
                     if entry_id:
                         curr_data["positions"] = [p for p in curr_pos if p.get("id") != entry_id]
-                    if "balance" in entry:
-                        curr_data["balance"] = float(entry["balance"])
+
+                    # Update individual portfolio balance
+                    port_id = entry.get("portfolioId")
+                    if not port_id:
+                        sym = entry.get("symbol", "XAUUSD")
+                        style = entry.get("style", "scalping")
+                        port_id = ("xau" if "XAU" in sym else "btc") + "_" + ("scalp" if "scalp" in style else "swing")
+
+                    ports = curr_data.get("portfolios", {
+                        "xau_scalp": {"id": "xau_scalp", "name": "🟡 ทองคำ เทรดสั้น (M5 Scalp)", "symbol": "XAUUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+                        "xau_swing": {"id": "xau_swing", "name": "🟡 ทองคำ เทรดยาว (H1 Swing)", "symbol": "XAUUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+                        "btc_scalp": {"id": "btc_scalp", "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)", "symbol": "BTCUSD", "style": "scalping", "initialBalance": 1000.0, "balance": 1000.0},
+                        "btc_swing": {"id": "btc_swing", "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)", "symbol": "BTCUSD", "style": "swing", "initialBalance": 1000.0, "balance": 1000.0},
+                    })
+                    pnl = float(entry.get("pnl", 0.0))
+                    if port_id in ports:
+                        ports[port_id]["balance"] = round(float(ports[port_id].get("balance", 1000.0)) + pnl, 2)
+                    curr_data["portfolios"] = ports
+                    tot = round(sum(float(p.get("balance", 1000.0)) for p in ports.values()), 2)
+                    curr_data["total_balance"] = tot
+                    curr_data["balance"] = tot
                     curr_data["updated_at"] = datetime.now().isoformat()
                     with open(pos_path, "w", encoding="utf-8") as f:
                         json.dump(curr_data, f, indent=2, ensure_ascii=False)
@@ -483,6 +509,8 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
 
             payload = {
                 "positions": data.get("positions", []),
+                "portfolios": data.get("portfolios", {}),
+                "total_balance": float(data.get("total_balance", data.get("balance", 4000.0))),
                 "balance": float(data.get("balance", 1000.0)),
                 "updated_at": datetime.now().isoformat()
             }

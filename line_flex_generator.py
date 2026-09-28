@@ -551,6 +551,15 @@ class LineFlexService:
         is_buy = "BUY" in str(action).upper()
         header_color = "#059669" if is_buy else "#DC2626"
 
+        portfolio_name = trade.get("portfolioName")
+        if not portfolio_name:
+            is_gold = "XAU" in symbol
+            is_scalp = "scalp" in str(trade.get("style", "scalping")).lower()
+            if is_gold:
+                portfolio_name = "🟡 พอร์ตทองคำ สั้น M5 ($1,000)" if is_scalp else "🟡 พอร์ตทองคำ ยาว H1 ($1,000)"
+            else:
+                portfolio_name = "🟠 พอร์ตบิตคอยน์ สั้น M5 ($1,000)" if is_scalp else "🟠 พอร์ตบิตคอยน์ ยาว H1 ($1,000)"
+
         flex_bubble = {
             "type": "bubble",
             "size": "mega",
@@ -579,9 +588,10 @@ class LineFlexService:
                     },
                     {
                         "type": "text",
-                        "text": style_name,
-                        "color": "#D1FAE5" if is_buy else "#FFE4E6",
+                        "text": f"{portfolio_name} • ทุน $1,000",
+                        "color": "#FEF08A" if is_buy else "#FDE047",
                         "size": "xs",
+                        "weight": "bold",
                         "margin": "xs"
                     }
                 ]
@@ -702,6 +712,15 @@ class LineFlexService:
 
         reason_display = reason.split('[')[-1].replace(']', '') if '[' in reason else reason
 
+        portfolio_name = trade.get("portfolioName")
+        if not portfolio_name:
+            is_gold = "XAU" in symbol
+            is_scalp = "scalp" in str(trade.get("style", "scalping")).lower()
+            if is_gold:
+                portfolio_name = "🟡 พอร์ตทองคำ สั้น M5 ($1,000)" if is_scalp else "🟡 พอร์ตทองคำ ยาว H1 ($1,000)"
+            else:
+                portfolio_name = "🟠 พอร์ตบิตคอยน์ สั้น M5 ($1,000)" if is_scalp else "🟠 พอร์ตบิตคอยน์ ยาว H1 ($1,000)"
+
         flex_bubble = {
             "type": "bubble",
             "size": "mega",
@@ -720,6 +739,14 @@ class LineFlexService:
                         ]
                     },
                     {
+                        "type": "text",
+                        "text": f"{portfolio_name} • ทุนเริ่มต้น $1,000",
+                        "color": "#FEF08A",
+                        "size": "xxs",
+                        "weight": "bold",
+                        "margin": "xs"
+                    },
+                    {
                         "type": "box",
                         "layout": "horizontal",
                         "margin": "sm",
@@ -734,7 +761,7 @@ class LineFlexService:
                         "margin": "xs",
                         "contents": [
                             {"type": "text", "text": f"ผลตอบแทน: {pnl_pct}% ของพอร์ต", "color": "#E2E8F0", "size": "xxs", "flex": 6},
-                            {"type": "text", "text": f"ยอดคงเหลือ: ${balance:,.2f}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end", "flex": 6}
+                            {"type": "text", "text": f"ยอดพอร์ตนี้: ${balance:,.2f}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end", "flex": 6}
                         ]
                     }
                 ]
@@ -761,8 +788,8 @@ class LineFlexService:
                                 "layout": "vertical",
                                 "flex": 6,
                                 "contents": [
-                                    {"type": "text", "text": "💰 ยอดเงินคงเหลือสุทธิ:", "color": "#94A3B8", "size": "xxs"},
-                                    {"type": "text", "text": "Current Net Balance", "color": "#64748B", "size": "xxs"}
+                                    {"type": "text", "text": f"💰 ยอดคงเหลือพอร์ตนี้:", "color": "#94A3B8", "size": "xxs"},
+                                    {"type": "text", "text": f"{portfolio_name}", "color": "#FEF08A", "size": "xxs", "weight": "bold"}
                                 ]
                             },
                             {
