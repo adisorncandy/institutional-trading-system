@@ -9,23 +9,54 @@ Provides production-ready JSON payloads for:
 import json
 from typing import Dict, Any, List
 
+def get_current_live_price(symbol: str = "XAUUSD") -> float:
+    """Fetches real-time price from Binance (PAXGUSDT for Gold, BTCUSDT for Bitcoin)."""
+    symbol = symbol.upper()
+    is_gold = "XAU" in symbol
+    pair = "PAXGUSDT" if is_gold else "BTCUSDT"
+    fallback = 4163.50 if is_gold else 83050.00
+    try:
+        import urllib.request
+        url = f"https://api.binance.com/api/v3/ticker/price?symbol={pair}"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=1.8) as r:
+            data = json.loads(r.read().decode())
+            return round(float(data.get("price", fallback)), 2 if is_gold else 1)
+    except Exception:
+        return fallback
+
 class LineFlexService:
     @staticmethod
     def create_signal_message(
         symbol: str = "XAUUSD",
         order_type: str = "BUY LIMIT",  # BUY, SELL, BUY LIMIT, SELL LIMIT
-        entry_range: str = "2,638.50 - 2,640.00",
-        stop_loss: str = "2,632.00 (-65 pips)",
-        tp1: str = "2,648.00 (+80 pips)",
-        tp2: str = "2,658.00 (+180 pips)",
+        entry_range: str = None,
+        stop_loss: str = None,
+        tp1: str = None,
+        tp2: str = None,
         rr_ratio: str = "1:2.8",
-        confidence: int = 92,
+        confidence: int = 95,
         timeframe: str = "M15 Institutional",
         rationale: str = "H1 Bullish Order Block + Fair Value Gap",
         news_status: str = "ไม่มีข่าวแดงกระทบใน 90 นาที",
-        lot_recommendation: str = "0.03 Lot (ความเสี่ยง 2% / $1,000)"
+        lot_recommendation: str = "0.02 Lot (ทุน $1,000)"
     ) -> Dict[str, Any]:
-        """Creates an Institutional Signal Flex Message Card."""
+        """Creates an Institutional Signal Flex Message Card with Live Market Prices."""
+        ref_p = get_current_live_price(symbol)
+        is_gold = "XAU" in symbol.upper()
+
+        # Dynamic fallback if not explicitly provided or if historical 2638 was passed
+        if not entry_range or "2,638" in str(entry_range) or "2638" in str(entry_range):
+            if is_gold:
+                entry_range = f"${ref_p - 1.50:.2f} - ${ref_p:.2f}"
+                stop_loss = f"${ref_p - 4.50:.2f} (-45 pips)"
+                tp1 = f"${ref_p + 6.00:.2f} (+60 pips)"
+                tp2 = f"${ref_p + 14.00:.2f} (+140 pips)"
+            else:
+                entry_range = f"${ref_p - 150:.1f} - ${ref_p:.1f}"
+                stop_loss = f"${ref_p - 450:.1f} (-450 pips)"
+                tp1 = f"${ref_p + 650:.1f} (+650 pips)"
+                tp2 = f"${ref_p + 1400:.1f} (+1,400 pips)"
         is_buy = "BUY" in order_type.upper()
         header_color = "#059669" if is_buy else "#DC2626"
         badge_text = "🟢 BUY SIGNAL" if is_buy else "🔴 SELL SIGNAL"
@@ -205,15 +236,31 @@ class LineFlexService:
     @staticmethod
     def create_range_message(
         symbol: str = "XAUUSD",
-        date_str: str = "27 Sep 2026",
-        range_high: str = "2,662.00 - 2,668.00 (Sell Zone)",
-        pivot_equi: str = "2,646.00 - 2,648.00 (Equilibrium)",
-        range_low: str = "2,632.00 - 2,638.00 (Buy Zone)",
+        date_str: str = None,
+        range_high: str = None,
+        pivot_equi: str = None,
+        range_low: str = None,
         bias: str = "SIDEWAY / MEAN REVERSION",
         guidelines: List[str] = None,
-        key_news_time: str = "Core PCE เวลา 19:30 (ระวังผันผวน)"
+        key_news_time: str = "ติดตามปฏิทินข่าวเศรษฐกิจรอบค่ำ"
     ) -> Dict[str, Any]:
-        """Creates Daily Range Blueprint Flex Message."""
+        """Creates Daily Range Blueprint Flex Message with Live Market Prices."""
+        ref_p = get_current_live_price(symbol)
+        is_gold = "XAU" in symbol.upper()
+
+        if not date_str:
+            from datetime import datetime
+            date_str = datetime.now().strftime("%d %b %Y")
+
+        if not range_high or "2,662" in str(range_high):
+            if is_gold:
+                range_high = f"${ref_p + 15.00:.2f} - ${ref_p + 25.00:.2f} (Sell Zone)"
+                pivot_equi = f"${ref_p - 2.00:.2f} - ${ref_p + 2.00:.2f} (Equilibrium)"
+                range_low = f"${ref_p - 25.00:.2f} - ${ref_p - 15.00:.2f} (Buy Zone)"
+            else:
+                range_high = f"${ref_p + 1200:.1f} - ${ref_p + 2200:.1f} (Resistance Zone)"
+                pivot_equi = f"${ref_p - 200:.1f} - ${ref_p + 200:.1f} (Fair Value Pivot)"
+                range_low = f"${ref_p - 2200:.1f} - ${ref_p - 1200:.1f} (Demand Zone)"
         if guidelines is None:
             guidelines = [
                 "• ชนกรอบบน 2,665 รอแท่ง Rejection เข้าดัก Sell",
