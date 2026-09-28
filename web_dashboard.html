@@ -2217,11 +2217,18 @@
     }
 
     function getPortfolioBalance(portId) {
-      return portfolioBalances[portId] || 1000.0;
+      const val = portfolioBalances[portId];
+      if (val === undefined || val === null) return 1000.0;
+      if (typeof val === 'object') {
+        const b = val.balance !== undefined ? val.balance : 1000.0;
+        return parseFloat(b) || 1000.0;
+      }
+      return parseFloat(val) || 1000.0;
     }
 
     function getTotalPortfolioBalance() {
-      return Object.values(portfolioBalances).reduce((a, b) => a + b, 0);
+      const keys = ['xau_scalp', 'xau_swing', 'btc_scalp', 'btc_swing'];
+      return keys.reduce((sum, pid) => sum + getPortfolioBalance(pid), 0);
     }
 
     let balance = 4000.0;
@@ -2283,9 +2290,15 @@
     // Save Live Positions to Dual Storage (Browser LocalStorage + Server JSON Safe Storage)
     function savePositionsState() {
       balance = getTotalPortfolioBalance();
+      const numBalances = {
+        xau_scalp: getPortfolioBalance('xau_scalp'),
+        xau_swing: getPortfolioBalance('xau_swing'),
+        btc_scalp: getPortfolioBalance('btc_scalp'),
+        btc_swing: getPortfolioBalance('btc_swing')
+      };
       try {
         localStorage.setItem('ad_open_positions', JSON.stringify(openPositions));
-        localStorage.setItem('ad_port_balances', JSON.stringify(portfolioBalances));
+        localStorage.setItem('ad_port_balances', JSON.stringify(numBalances));
         localStorage.setItem('ad_sim_balance', balance.toFixed(2));
       } catch (e) {}
 
@@ -2296,7 +2309,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             positions: openPositions,
-            portfolios: portfolioBalances,
+            portfolios: numBalances,
             total_balance: balance,
             balance: balance
           })
@@ -4889,16 +4902,27 @@
               });
             }
             if (pData.portfolios && typeof pData.portfolios === 'object') {
-              portfolioBalances = { ...portfolioBalances, ...pData.portfolios };
+              for (const [k, v] of Object.entries(pData.portfolios)) {
+                const b = (typeof v === 'object' && v !== null) ? v.balance : v;
+                const num = parseFloat(b);
+                portfolioBalances[k] = isNaN(num) ? 1000.0 : num;
+              }
             }
             if (pData.total_balance !== undefined) {
-              balance = parseFloat(pData.total_balance);
+              const tb = parseFloat(pData.total_balance);
+              balance = isNaN(tb) ? getTotalPortfolioBalance() : tb;
             } else {
               balance = getTotalPortfolioBalance();
             }
+            const cleanBalances = {
+              xau_scalp: getPortfolioBalance('xau_scalp'),
+              xau_swing: getPortfolioBalance('xau_swing'),
+              btc_scalp: getPortfolioBalance('btc_scalp'),
+              btc_swing: getPortfolioBalance('btc_swing')
+            };
             try {
               localStorage.setItem('ad_open_positions', JSON.stringify(openPositions));
-              localStorage.setItem('ad_port_balances', JSON.stringify(portfolioBalances));
+              localStorage.setItem('ad_port_balances', JSON.stringify(cleanBalances));
               localStorage.setItem('ad_sim_balance', balance.toFixed(2));
             } catch(e) {}
             stateChanged = true;
@@ -4967,7 +4991,11 @@
           try {
             const pb = JSON.parse(savedPortBal);
             if (pb && typeof pb === 'object') {
-              portfolioBalances = { ...portfolioBalances, ...pb };
+              for (const [k, v] of Object.entries(pb)) {
+                const b = (typeof v === 'object' && v !== null) ? v.balance : v;
+                const num = parseFloat(b);
+                portfolioBalances[k] = isNaN(num) ? 1000.0 : num;
+              }
             }
           } catch(e) {}
         }
