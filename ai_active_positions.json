@@ -1,8 +1,8 @@
 {
   "positions": [
     {
-      "id": 1790584637951,
-      "ticket": 926095,
+      "id": 1790585503548,
+      "ticket": 396772,
       "symbol": "BTCUSD",
       "type": "SELL",
       "style": "scalping",
@@ -11,24 +11,24 @@
       "riskPct": 1.4,
       "riskDollar": 14,
       "riskRationale": "คุมความเสี่ยง 1.4% ($14.00) / SL 30 Pips ➔ คำนวณ Lot 0.05",
-      "entry": 83550,
-      "sl": 83850,
-      "tp1": 83050,
-      "tp2": 82750,
-      "pnl": 3.50,
-      "pips": 7.0,
-      "timeOpen": "15:37:17",
+      "entry": 83450,
+      "sl": 83750,
+      "tp1": 82950,
+      "tp2": 82650,
+      "pnl": 0,
+      "pips": 0,
+      "timeOpen": "15:51:43",
       "tp1Hit": false,
       "breakevenLocked": false,
       "reason": "SMC M5 Bearish Supply FVG Rejection [คุมความเสี่ยง 1.4% ($14.00) / SL 30 Pips ➔ คำนวณ Lot 0.05] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์",
-      "evalScore": "95.4% Confluence",
-      "evalStatus": "⚡ สัญญาณสั้น M5 SELL: กวาด Liquidity แนวต้าน (Premium Zone) เล็งเป้า Short FVG (คุมความเสี่ยง 1.4%) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Burry Trapped Retail Sweep"
+      "evalScore": "95.6% Confluence",
+      "evalStatus": "⚡ สัญญาณสั้น M5 SELL: กวาด Liquidity แนวต้าน (Premium Zone) เล็งเป้า Short FVG (คุมความเสี่ยง 1.4% ($14.00) / SL 30 Pips ➔ คำนวณ Lot 0.05) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Burry Trapped Retail Sweep"
     },
     {
-      "id": 1790584657953,
-      "ticket": 209542,
+      "id": 1790585523546,
+      "ticket": 809918,
       "symbol": "XAUUSD",
-      "type": "BUY",
+      "type": "SELL",
       "style": "swing",
       "styleName": "🌊 เทรดยาว (H1 Swing)",
       "lot": 0.02,
@@ -36,19 +36,19 @@
       "riskDollar": 18,
       "riskRationale": "คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02",
       "entry": 4205.5,
-      "sl": 4197.5,
-      "tp1": 4223.5,
-      "tp2": 4240.5,
+      "sl": 4213.5,
+      "tp1": 4187.5,
+      "tp2": 4170.5,
       "pnl": 0,
       "pips": 0,
-      "timeOpen": "15:37:37",
+      "timeOpen": "15:52:03",
       "tp1Hit": false,
       "breakevenLocked": false,
-      "reason": "Institutional H4 Order Block + Daily Trend [คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02]",
-      "evalScore": "94.0% Confluence",
-      "evalStatus": "🌊 สวิงเทรนด์สถาบัน: โครงสร้าง H1 แข็งแกร่ง รันเทรนด์สู่เป้า TP (คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02)"
+      "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์",
+      "evalScore": "94.8% Confluence",
+      "evalStatus": "🌊 สวิงเทรนด์สถาบัน SELL: ปะทะ Bearish Supply Block ย่อตัวตามโครงสร้าง H1 (คุมความเสี่ยง 1.8% ($18.00) / SL 80 Pips ➔ คำนวณ Lot 0.02) | 🧠 สภา 5 ปรมาจารย์: Druckenmiller Momentum Exhaustion + Wyckoff Distribution"
     }
   ],
   "balance": 1000.0,
-  "updated_at": "2026-09-28T15:37:37.962174"
+  "updated_at": "2026-09-28T15:52:03.555796"
 }

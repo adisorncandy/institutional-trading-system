@@ -71,14 +71,10 @@
         <button onclick="switchMainTab('terminal')" id="nav-terminal" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all">
           <span>📊 ชาร์ต & เทอร์มินอล</span>
         </button>
-        <!-- Dedicated Live Trading System Page Button in Header -->
+        <!-- Unified Live Trading & Historical Portfolio Page Button in Header -->
         <button onclick="switchMainTab('livetrade')" id="nav-livetrade" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-amber-500/30">
-          <span>⚡ ระบบเทรดสด</span>
+          <span>⚡ พอร์ตเทรดสด & ประวัติ</span>
           <span id="nav-live-count-badge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold border border-amber-500/40">2 ไม้</span>
-        </button>
-        <!-- Dedicated Simulated Trading Portfolio Page View Button in Header -->
-        <button onclick="switchMainTab('portfolio')" id="nav-portfolio" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-emerald-500/30">
-          <span>💼 พอร์ตจำลอง & สเตตเมนต์</span>
         </button>
         <!-- Dedicated World-Class Masters Council Page Button in Header -->
         <button onclick="switchMainTab('council')" id="nav-council" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-purple-500/30">
@@ -1037,37 +1033,37 @@
             <span class="text-slate-500">|</span>
             <span class="text-xs text-amber-400 font-mono font-bold flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>⚡ หน้าระบบเทรดสดแยกเฉพาะ (Dedicated Live Trading Workspace)</span>
+              <span>⚡ พอร์ตการลงทุน & ระบบเทรดสดสถาบัน (Unified Live Portfolio & History)</span>
             </span>
           </div>
 
           <div class="mt-2.5 flex items-center flex-wrap gap-2.5">
             <h1 class="text-xl md:text-2xl font-black text-white font-mono tracking-tight flex items-center gap-2">
-              <span>ระบบเทรดสด & ติดตามคำสั่งเรียลไทม์</span>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">#SIM-884920</span>
+              <span>พอร์ตเทรดสด & ประวัติสเตตเมนต์</span>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">#LIVE-PORTFOLIO</span>
             </h1>
             <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Server: AD-Institutional-Cloud</span>
-            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">0.02 Lot / ไม้</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Leverage: 1:100</span>
             <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 font-mono border border-emerald-500/30 flex items-center gap-1 font-bold">🛡️ Zero-Loss Safe Reload (ป้องกันไม้สด 100%)</span>
           </div>
           <p class="text-slate-400 text-xs mt-1.5">
-            มอนิเตอร์สถานะออเดอร์ที่กำลังวิ่งในตลาดแบบแยกหน้าเต็มจอ พร้อมระบบ Auto Breakeven (+8 Pips ขยับกันทุนอัตโนมัติ) และ Real-Time AI Score
+            รวมศูนย์หน้าเดียว: คำสั่งเทรดสดที่กำลังวิ่งมอนิเตอร์อยู่ส่วนบน และประวัติผลการเทรดพร้อมสเตตเมนต์โบรกเกอร์อยู่ส่วนล่างในหน้าเดียวกัน
           </p>
         </div>
 
         <!-- Live Trade Quick Execution Toolbar -->
         <div class="flex items-center flex-wrap gap-2">
           <button onclick="triggerScalpDemoTrade()" class="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-bold border border-amber-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>⚡ + เปิดไม้เทรดสั้น M5 (0.02)</span>
+            <span>⚡ + เปิดไม้เทรดสั้น M5</span>
           </button>
           <button onclick="triggerSwingDemoTrade()" class="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 font-bold border border-cyan-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>🌊 + เปิดไม้เทรดยาว H1 (0.02)</span>
+            <span>🌊 + เปิดไม้เทรดยาว H1</span>
+          </button>
+          <button onclick="exportPortfolioStatementCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold border border-emerald-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>📥 ส่งออก Statement (CSV)</span>
           </button>
           <button onclick="closeAllPositions()" class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>❌ ปิดออเดอร์ทั้งหมด (Close All)</span>
-          </button>
-          <button onclick="switchMainTab('portfolio')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold border border-slate-700 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>💼 ดูหน้าพอร์ตสะสม →</span>
+            <span>❌ ปิดออเดอร์ทั้งหมด</span>
           </button>
         </div>
       </div>
@@ -1289,60 +1285,34 @@
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <!-- ==================== VIEW PAGE 3: DEDICATED SIMULATED TRADING PORTFOLIO & EVALUATION PAGE ==================== -->
-  <div id="view-page-portfolio" class="hidden min-h-screen bg-[#070B13] p-4 md:p-8 space-y-6">
-    <div class="max-w-7xl mx-auto space-y-6">
-      
-      <!-- Top Account Navigation & Portfolio Meta Header -->
-      <div class="p-5 rounded-2xl bg-gradient-to-r from-[#0C1220] via-[#0D1526] to-[#0A101C] border border-[#1A253A] shadow-2xl flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
-        <div>
-          <div class="flex items-center gap-3">
-            <button onclick="switchMainTab('terminal')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all border border-slate-700 shadow-sm">
-              <span>← กลับสู่หน้ากราฟ & เทอร์มินอล</span>
+      <!-- ==================== LOWER SECTION: HISTORICAL PERFORMANCE, JOURNAL & BROKER STATEMENT ==================== -->
+      <div id="historical-portfolio-section" class="mt-8 pt-8 border-t border-[#1C283E] space-y-6">
+        <!-- Section Header -->
+        <div class="p-5 rounded-2xl bg-gradient-to-r from-[#0C1220] via-[#0D1526] to-[#0A101C] border border-[#1A253A] shadow-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-emerald-400 font-mono">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>📜 HISTORICAL STATEMENT & CLOSED TRADES LEDGER</span>
+            </div>
+            <h2 class="text-lg md:text-xl font-black text-white font-mono mt-1 flex items-center gap-2">
+              <span>ประวัติการเทรด, สมุดบันทึก AI & สเตตเมนต์พอร์ต</span>
+            </h2>
+            <p class="text-slate-400 text-xs mt-0.5">
+              เก็บบันทึกประวัติและสถิติแบบพอร์ตการลงทุนจริง แยกการประเมินผลระหว่างพอร์ตเทรดสั้น (Scalp M5) และเทรดยาว (Swing H1)
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="exportPortfolioStatementCSV()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-1.5 transition-all shadow-md">
+              <span>📥 ส่งออก Statement (CSV)</span>
             </button>
-            <span class="text-slate-500">|</span>
-            <span class="text-xs text-amber-400 font-mono font-bold flex items-center gap-1">
-              <span>💼 บัญชีพอร์ตจำลองสถาบัน</span>
-            </span>
+            <button onclick="resetSimulatedAccount()" class="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-bold border border-rose-500/30 text-xs transition-all">
+              <span>🔄 รีเซ็ตพอร์ต $1,000</span>
+            </button>
           </div>
-
-          <div class="mt-2.5 flex items-center flex-wrap gap-2.5">
-            <h1 class="text-xl md:text-2xl font-black text-white font-mono tracking-tight flex items-center gap-2">
-              <span>พอร์ตการลงทุนจำลองสถาบัน</span>
-              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">#SIM-884920</span>
-            </h1>
-            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Server: AD-Institutional-Cloud</span>
-            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Leverage: 1:100</span>
-            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Currency: USD ($)</span>
-            <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 font-mono border border-emerald-500/30 flex items-center gap-1 font-bold">🛡️ Zero-Loss Safe Reload (ป้องกันไม้สด 100%)</span>
-          </div>
-          <p class="text-slate-400 text-xs mt-1.5">
-            เก็บบันทึกประวัติและสถิติแบบพอร์ตการลงทุนจริง แยกการประเมินผลอย่างเหมาะสมระหว่าง <strong class="text-amber-300">พอร์ตเทรดสั้น (Scalp M5)</strong> และ <strong class="text-cyan-300">พอร์ตเทรดยาว (Swing H1)</strong>
-          </p>
         </div>
 
-        <!-- Portfolio Quick Action Toolbar -->
-        <div class="flex items-center flex-wrap gap-2">
-          <button onclick="triggerScalpDemoTrade()" class="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-bold border border-amber-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>⚡ + เปิดไม้เทรดสั้น (0.02)</span>
-          </button>
-          <button onclick="triggerSwingDemoTrade()" class="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 font-bold border border-cyan-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>🌊 + เปิดไม้เทรดยาว (0.02)</span>
-          </button>
-          <button onclick="exportPortfolioStatementCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold border border-emerald-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
-            <span>📥 ส่งออก Statement (CSV)</span>
-          </button>
-          <button onclick="resetSimulatedAccount()" class="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-bold border border-rose-500/30 text-xs transition-all">
-            <span>🔄 รีเซ็ตพอร์ต $1,000</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Broker Financial Statement Overview (4 Master KPI Cards - เสมือนดูพอร์ตจริง) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+        <!-- Broker Financial Statement Overview (4 Master KPI Cards - เสมือนดูพอร์ตจริง) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
         <!-- 1. Account Balance Card -->
         <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
@@ -3990,13 +3960,11 @@
     function switchMainTab(tab) {
       const navTerminal = document.getElementById('nav-terminal');
       const navLiveTrade = document.getElementById('nav-livetrade');
-      const navPortfolio = document.getElementById('nav-portfolio');
       const navSignals = document.getElementById('nav-signals');
       const navCouncil = document.getElementById('nav-council');
 
       const pageTerminal = document.getElementById('view-page-terminal');
       const pageLiveTrade = document.getElementById('view-page-livetrade');
-      const pagePortfolio = document.getElementById('view-page-portfolio');
       const pageCouncil = document.getElementById('view-page-council');
 
       const defClass = "px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent";
@@ -4004,26 +3972,34 @@
       const actPurpleClass = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/20 to-purple-600/10 text-purple-300 border border-purple-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all";
 
       if (navTerminal) navTerminal.className = tab === 'terminal' ? actClass : defClass;
-      if (navLiveTrade) navLiveTrade.className = tab === 'livetrade' ? actClass : defClass;
-      if (navPortfolio) navPortfolio.className = tab === 'portfolio' ? actClass : defClass;
+      if (navLiveTrade) navLiveTrade.className = (tab === 'livetrade' || tab === 'portfolio') ? actClass : defClass;
       if (navSignals) navSignals.className = tab === 'signals' ? actClass : defClass;
       if (navCouncil) navCouncil.className = tab === 'council' ? actPurpleClass : defClass;
 
       // Hide all pages by default
       if (pageTerminal) pageTerminal.classList.add('hidden');
       if (pageLiveTrade) pageLiveTrade.classList.add('hidden');
-      if (pagePortfolio) pagePortfolio.classList.add('hidden');
       if (pageCouncil) pageCouncil.classList.add('hidden');
 
-      if (tab === 'livetrade') {
+      if (tab === 'livetrade' || tab === 'portfolio') {
         if (pageLiveTrade) pageLiveTrade.classList.remove('hidden');
         renderPositions();
         evaluateLivePositions();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (tab === 'portfolio') {
-        if (pagePortfolio) pagePortfolio.classList.remove('hidden');
         renderPortfolioPage();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        renderJournal();
+
+        if (tab === 'portfolio') {
+          setTimeout(() => {
+            const histSection = document.getElementById('historical-portfolio-section');
+            if (histSection) {
+              histSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }, 50);
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       } else if (tab === 'council') {
         if (pageCouncil) pageCouncil.classList.remove('hidden');
         renderCouncilPage();
