@@ -71,23 +71,26 @@
         <button onclick="switchMainTab('terminal')" id="nav-terminal" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all">
           <span>📊 ชาร์ต & เทอร์มินอล</span>
         </button>
-        <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
-          <span>⚡ สัญญาณ AI 90%+</span>
+        <!-- Dedicated Live Trading System Page Button in Header -->
+        <button onclick="switchMainTab('livetrade')" id="nav-livetrade" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-amber-500/30">
+          <span>⚡ ระบบเทรดสด</span>
+          <span id="nav-live-count-badge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold border border-amber-500/40">2 ไม้</span>
         </button>
         <!-- Dedicated Simulated Trading Portfolio Page View Button in Header -->
         <button onclick="switchMainTab('portfolio')" id="nav-portfolio" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-emerald-500/30">
-          <span>💼 พอร์ตจำลองเทรด & ประเมินผล</span>
-          <span id="header-orders-badge" class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-500/40">2 ไม้</span>
+          <span>💼 พอร์ตจำลอง & สเตตเมนต์</span>
+        </button>
+        <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
+          <span>🎯 เรดาร์สัญญาณ AI</span>
         </button>
         <button onclick="openModal('line-modal')" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
           <span>🔔 LINE Alert</span>
-          <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono border border-emerald-500/30">108</span>
         </button>
         <button onclick="openModal('ai-memory-modal')" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
           <span>🗄️ AI Memory</span>
         </button>
         <button onclick="openModal('news-analysis-modal')" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
-          <span>📰 ปฏิทินข่าว 10Y</span>
+          <span>📰 ปฏิทินข่าว</span>
         </button>
       </nav>
     </div>
@@ -504,242 +507,29 @@
     </div>
   </main>
 
-  <!-- 3.5 DEDICATED LIVE ORDERS & PERFORMANCE EVALUATION SUB-MENU SYSTEM (เมนูย่อย: ออเดอร์กำลังรันตามระบบ & การประเมินผล AI) -->
-  <section id="orders-evaluation-section" class="p-4 md:p-6 bg-[#070B13] border-b border-[#162033]">
-    <div class="max-w-7xl mx-auto space-y-4">
-      
-      <!-- Sub-Menu Header Bar & Filter Navigation -->
-      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 pb-3 border-b border-[#182338]">
-        <div>
-          <div class="flex items-center gap-2.5">
-            <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs border border-emerald-500/30">
-              📋
-            </div>
-            <h2 class="text-base font-black text-white flex items-center flex-wrap gap-2">
-              <span>เมนูย่อย: ออเดอร์กำลังรันตามระบบ & การประเมินผล AI</span>
-              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono text-[10px] font-bold border border-emerald-500/40">Real-Time Evaluation</span>
-              <span class="px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-300 font-mono text-[10px] font-bold border border-blue-500/30 flex items-center gap-1">🛡️ ป้องกันสถานะไม้สด 100% (Zero-Loss Safe Reload)</span>
-            </h2>
-          </div>
-          <p class="text-slate-400 text-xs mt-1">
-            ติดตามสถานะออเดอร์แยกหมวดหมู่ <strong class="text-amber-300">เทรดสั้น (Scalp M1/M5)</strong> และ <strong class="text-cyan-300">เทรดยาว (Swing H1/H4)</strong> พร้อมวิเคราะห์และประเมินผลสดจาก AI
-          </p>
-        </div>
-
-        <!-- Sub-Menu Filter Tabs (คลิกเลือกดู เทรดสั้น / เทรดยาว / ทั้งหมด / สรุปประเมินผล) -->
-        <div class="flex items-center flex-wrap bg-[#0C121F] p-1 rounded-xl border border-[#1C273C] text-xs">
-          <button onclick="switchOrderFilter('all')" id="subtab-all" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all">
-            <span>⚡ ออเดอร์ทั้งหมด</span>
-            <span id="sub-all-count" class="px-1.5 py-0.2 rounded-full bg-black/30 text-white font-mono text-[10px]">2</span>
-          </button>
-          <button onclick="switchOrderFilter('scalping')" id="subtab-scalping" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>⚡ เทรดสั้น (M1/M5)</span>
-            <span id="sub-scalp-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-amber-300 font-mono text-[10px]">1</span>
-          </button>
-          <button onclick="switchOrderFilter('swing')" id="subtab-swing" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>🌊 เทรดยาว (H1/H4)</span>
-            <span id="sub-swing-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-cyan-300 font-mono text-[10px]">1</span>
-          </button>
-          <button onclick="switchOrderFilter('matrix')" id="subtab-matrix" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>📊 เมทริกซ์ประเมินผล AI</span>
-          </button>
-          <button onclick="switchOrderFilter('journal')" id="subtab-journal" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>📔 บันทึกประวัติ (Journal)</span>
-            <span id="sub-journal-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-purple-300 font-mono text-[10px]">0</span>
-          </button>
-        </div>
+  <!-- Quick Status Strip linking to Dedicated Live Trading Page (แยกหน้าเพื่อความสบายตา ไม่เกะกะด้านล่างชาร์ต) -->
+  <div class="bg-[#080D17] border-b border-[#162033] px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+      <div class="flex items-center flex-wrap gap-3">
+        <span class="flex items-center gap-1.5 text-emerald-400 font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span>⚡ สถานะระบบเทรดสด:</span>
+        </span>
+        <span class="text-amber-300 font-bold bg-[#101826] px-2.5 py-1 rounded-lg border border-amber-500/30 flex items-center gap-1.5" id="terminal-bottom-pos-count">
+          <span>กำลังรัน 2 ไม้</span>
+        </span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-400">Equity: <strong class="text-emerald-400" id="acc-equity">$1,000.00</strong></span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-400">กำไรสุทธิ: <strong class="text-emerald-400" id="acc-profit">+$0.00 (+0.00%)</strong></span>
+        <span class="text-slate-600">|</span>
+        <span class="text-slate-400 text-[11px] hidden sm:inline">🛡️ แยกหน้าระบบเทรดสดเรียบร้อยตามคำขอ เพื่อไม่บังพื้นที่ดูกราฟ</span>
       </div>
-
-      <!-- Real-Time Evaluation Ribbon (4 Quick KPI Cards) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-        <!-- 1. Portfolio Capital & Equity Status -->
-        <div class="p-3.5 rounded-xl bg-[#0B101D] border border-[#1A253A] flex flex-col justify-between">
-          <div class="flex justify-between items-center text-slate-400">
-            <span class="font-bold flex items-center gap-1.5">
-              <span>💼 พอร์ตจำลอง ($1,000)</span>
-            </span>
-            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30">0.02 Lot/ไม้</span>
-          </div>
-          <div class="mt-2 flex justify-between items-baseline">
-            <span class="text-xs text-slate-400">Equity สด:</span>
-            <strong id="eval-equity-val" class="text-base text-emerald-400 font-mono font-black">$1,007.80</strong>
-          </div>
-          <div class="mt-1 flex justify-between items-baseline pt-1 border-t border-slate-800/80">
-            <span class="text-[11px] text-slate-400">กำไรลอยตัวรวม:</span>
-            <strong id="eval-floating-val" class="text-xs text-emerald-400 font-mono font-bold">+$7.80 (+0.78%)</strong>
-          </div>
-        </div>
-
-        <!-- 2. Scalping Evaluation KPI -->
-        <div class="p-3.5 rounded-xl bg-[#0B101D] border border-amber-500/30 flex flex-col justify-between">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-amber-300 font-mono flex items-center gap-1.5">
-              <span>⚡ เทรดสั้น (Scalp M5)</span>
-            </span>
-            <span class="text-[10px] text-amber-300 bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30 font-bold">Win Rate 88.5%</span>
-          </div>
-          <div class="mt-2 text-[11px] text-slate-300 space-y-0.5 font-mono">
-            <div><span class="text-slate-400">กลยุทธ์:</span> <strong class="text-white">SMC M5 FVG + Fast Momentum</strong></div>
-            <div><span class="text-slate-400">เป้าหมาย:</span> <span class="text-amber-300 font-bold">Micro-TP 6-10 Pips (กันทุนทันที)</span></div>
-          </div>
-          <div class="mt-2 pt-1.5 border-t border-slate-800/80 text-[10px]" id="eval-scalp-verdict">
-            🟢 <strong class="text-emerald-400">สถานะประเมินผล:</strong> ล็อค Breakeven หน้าทุนแล้ว ไร้ความเสี่ยง 100%
-          </div>
-        </div>
-
-        <!-- 3. Swing Evaluation KPI -->
-        <div class="p-3.5 rounded-xl bg-[#0B101D] border border-cyan-500/30 flex flex-col justify-between">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-cyan-300 font-mono flex items-center gap-1.5">
-              <span>🌊 เทรดยาว (Swing H1/H4)</span>
-            </span>
-            <span class="text-[10px] text-cyan-300 bg-cyan-950/60 px-1.5 py-0.5 rounded border border-cyan-500/30 font-bold">Win Rate 92.4%</span>
-          </div>
-          <div class="mt-2 text-[11px] text-slate-300 space-y-0.5 font-mono">
-            <div><span class="text-slate-400">กลยุทธ์:</span> <strong class="text-white">H4 Institutional Order Block</strong></div>
-            <div><span class="text-slate-400">เป้าหมาย:</span> <span class="text-cyan-300 font-bold">ถือรันเทรนด์ 25-60 Pips (R:R 1:2.8)</span></div>
-          </div>
-          <div class="mt-2 pt-1.5 border-t border-slate-800/80 text-[10px]" id="eval-swing-verdict">
-            🟢 <strong class="text-cyan-300">สถานะประเมินผล:</strong> โครงสร้างเทรนด์แข็งแกร่ง กำลังมุ่งหน้าสู่เป้า TP1
-          </div>
-        </div>
-
-        <!-- 4. Quick Execution Actions -->
-        <div class="p-3.5 rounded-xl bg-[#0B101D] border border-[#1A253A] flex flex-col justify-between">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-white text-xs">🕹️ คำสั่งทดสอบระบบด่วน</span>
-            <span class="text-[10px] text-slate-400 font-mono">Lot: 0.02</span>
-          </div>
-          <div class="grid grid-cols-2 gap-1.5 my-1.5">
-            <button onclick="triggerScalpDemoTrade()" class="py-1.5 px-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 text-center transition-all text-[11px]">
-              + เปิดไม้เทรดสั้น
-            </button>
-            <button onclick="triggerSwingDemoTrade()" class="py-1.5 px-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 text-center transition-all text-[11px]">
-              + เปิดไม้เทรดยาว
-            </button>
-          </div>
-          <button onclick="closeAllPositions()" class="w-full py-1 rounded-lg bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/30 transition-all text-[10px]">
-            ❌ ปิดออเดอร์ทั้งหมด (Close All)
-          </button>
-        </div>
-      </div>
-
-      <!-- MAIN TAB 1: LIVE ACTIVE ORDERS TABLE (แสดงผลออเดอร์เทรดสั้น / เทรดยาว แบบ Real-Time) -->
-      <div id="subtab-content-orders" class="rounded-xl border border-[#1A2538] bg-[#0A0F1A] overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-[#0D1424] text-slate-400 uppercase text-[10px] border-b border-[#182338]">
-              <tr>
-                <th class="py-3 px-3">สไตล์ & สินทรัพย์</th>
-                <th class="py-3 px-3">คำสั่ง / ขนาด</th>
-                <th class="py-3 px-3">ราคาเข้า (Entry)</th>
-                <th class="py-3 px-3">ราคาตลาดสด (Live)</th>
-                <th class="py-3 px-3">กำไรสด (PnL)</th>
-                <th class="py-3 px-3">เป้าหมาย SL / TP / BE</th>
-                <th class="py-3 px-3">การประเมินผล AI สด (AI Live Evaluation)</th>
-                <th class="py-3 px-3 text-right">การจัดการ</th>
-              </tr>
-            </thead>
-            <tbody id="active-orders-table-body" class="divide-y divide-[#141E30] text-slate-300">
-              <!-- Dynamically Populated by renderPositions() -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- MAIN TAB 2: AI EVALUATION MATRIX (ตารางประเมินผลความแม่นยำ AI สถิติย้อนหลังและสด) -->
-      <div id="subtab-content-matrix" class="rounded-xl border border-[#1A2538] bg-[#0A0F1A] p-5 hidden space-y-4">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="font-bold text-white text-sm">📊 ผลการประเมินประสิทธิภาพโมเดล AI (Institutional Evaluation Matrix)</h3>
-            <p class="text-slate-400 text-xs mt-0.5">เปรียบเทียบสถิติและความแม่นยำระหว่างระบบเทรดสั้น (M5 Scalp) กับเทรดยาว (H1 Swing)</p>
-          </div>
-          <span class="px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-mono text-xs border border-purple-500/40 font-bold">
-            🧠 Continuous Self-Learning Active
-          </span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <!-- Scalp Matrix -->
-          <div class="p-4 rounded-xl bg-[#0D1424] border border-amber-500/30 space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-amber-300 text-sm">⚡ ระบบเทรดสั้น (Scalp M1/M5)</span>
-              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold font-mono">Win Rate 88.5%</span>
-            </div>
-            <div class="space-y-1.5 text-slate-300 text-[11px]">
-              <div class="flex justify-between py-1 border-b border-slate-800">
-                <span class="text-slate-400">เป้าหมายกำไรเฉลี่ย:</span>
-                <strong class="text-emerald-400 font-mono">+8.5 Pips / ไม้</strong>
-              </div>
-              <div class="flex justify-between py-1 border-b border-slate-800">
-                <span class="text-slate-400">ระยะเวลาถือครองเฉลี่ย:</span>
-                <strong class="text-white font-mono">12 - 25 นาที</strong>
-              </div>
-              <div class="flex justify-between py-1 border-b border-slate-800">
-                <span class="text-slate-400">การบริหารความเสี่ยง:</span>
-                <strong class="text-amber-300 font-mono">Micro-Breakeven ทันทีเมื่อ +8 Pips</strong>
-              </div>
-              <div class="flex justify-between py-1">
-                <span class="text-slate-400">Profit Factor:</span>
-                <strong class="text-emerald-400 font-mono">2.68</strong>
-              </div>
-            </div>
-            <div class="p-2.5 rounded-lg bg-amber-950/30 border border-amber-500/20 text-amber-200 text-[11px] leading-relaxed">
-              💡 <strong>สรุปการประเมิน:</strong> เหมาะสำหรับเก็บกระแสเงินสดรายวัน สัญญาณสอดคล้องกับจังหวะ Liquidity Sweep ของสถาบัน
-            </div>
-          </div>
-
-          <!-- Swing Matrix -->
-          <div class="p-4 rounded-xl bg-[#0D1424] border border-cyan-500/30 space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-cyan-300 text-sm">🌊 ระบบเทรดยาว (Swing H1/H4)</span>
-              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold font-mono">Win Rate 92.4%</span>
-            </div>
-            <div class="space-y-1.5 text-slate-300 text-[11px]">
-              <div class="flex justify-between py-1 border-b border-slate-800">
-                <span class="text-slate-400">เป้าหมายกำไรเฉลี่ย:</span>
-                <strong class="text-emerald-400 font-mono">+38.0 Pips / ไม้</strong>
-              </div>
-              <div class="flex justify-between py-1 border-b border-slate-800">
-                <span class="text-slate-400">ระยะเวลาถือครองเฉลี่ย:</span>
-                <strong class="text-white font-mono">3 - 8 ชั่วโมง</strong>
-              </div>
-              <div class="flex justify-between py-1 border-b border-slate-800">
-                <span class="text-slate-400">Risk : Reward (R:R):</span>
-                <strong class="text-cyan-300 font-mono">1 : 2.80</strong>
-              </div>
-              <div class="flex justify-between py-1">
-                <span class="text-slate-400">Profit Factor:</span>
-                <strong class="text-emerald-400 font-mono">3.45</strong>
-              </div>
-            </div>
-            <div class="p-2.5 rounded-lg bg-cyan-950/30 border border-cyan-500/20 text-cyan-200 text-[11px] leading-relaxed">
-              💡 <strong>สรุปการประเมิน:</strong> เหมาะสำหรับการสร้างพอร์ตเติบโตระยะยาว รันเทรนด์ตามทิศทางเม็ดเงินใหญ่ (Smart Money Flow)
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MAIN TAB 3: TRADE JOURNAL TAB VIEW -->
-      <div id="subtab-content-journal" class="rounded-xl border border-[#1A2538] bg-[#0A0F1A] p-4 hidden space-y-3">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <h3 class="font-bold text-white text-xs flex items-center gap-2">
-            <span>📔 สมุดบันทึกประวัติไม้ที่ปิดแล้ว (Closed Trade Journal)</span>
-            <span class="text-slate-400 font-normal text-[11px]">ข้อมูลถูกนำไปปรับปรุง AI อย่างต่อเนื่อง</span>
-          </h3>
-          <button onclick="resetSimulatedAccount()" class="text-rose-400 hover:underline text-[11px]">
-            🔄 รีเซ็ตพอร์ต $1,000
-          </button>
-        </div>
-        <div id="full-journal-list" class="space-y-2 max-h-64 overflow-y-auto">
-          <div class="text-center py-6 text-slate-500 text-xs font-mono">
-            ยังไม่มีประวัติการปิดไม้ (เมื่อออเดอร์ปิดลง จะถูกบันทึกและประเมินผล AI ทันที)
-          </div>
-        </div>
-      </div>
-
+      <button onclick="switchMainTab('livetrade')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black flex items-center gap-2 transition-all shadow-md text-xs">
+        <span>⚡ สลับไปหน้าระบบเทรดสด (แยกหน้าเต็มจอ) ➔</span>
+      </button>
     </div>
-  </section>
+  </div>
 
   <!-- 4. INSTITUTIONAL AI MULTI-CONFLUENCE SIGNAL VERIFICATION (AS IN DRAFT) -->
   <section class="p-4 md:p-6 bg-[#06090E]">
@@ -1183,7 +973,276 @@
 
   </div> <!-- ==================== END VIEW PAGE 1: TERMINAL & CHART WORKSPACE ==================== -->
 
-  <!-- ==================== VIEW PAGE 2: DEDICATED SIMULATED TRADING PORTFOLIO & EVALUATION PAGE ==================== -->
+  <!-- ==================== VIEW PAGE 2: DEDICATED LIVE TRADING SYSTEM (แยกหน้าเมนูระบบเทรดสดโดยเฉพาะ) ==================== -->
+  <div id="view-page-livetrade" class="hidden min-h-screen bg-[#070B13] p-4 md:p-8 space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
+      
+      <!-- Live Trading Meta Header & Toolbar -->
+      <div class="p-5 rounded-2xl bg-gradient-to-r from-[#0C1220] via-[#0E1729] to-[#0A101C] border border-[#1A253A] shadow-2xl flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <button onclick="switchMainTab('terminal')" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all border border-slate-700 shadow-sm">
+              <span>← กลับสู่หน้าชาร์ต & เทอร์มินอล</span>
+            </button>
+            <span class="text-slate-500">|</span>
+            <span class="text-xs text-amber-400 font-mono font-bold flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>⚡ หน้าระบบเทรดสดแยกเฉพาะ (Dedicated Live Trading Workspace)</span>
+            </span>
+          </div>
+
+          <div class="mt-2.5 flex items-center flex-wrap gap-2.5">
+            <h1 class="text-xl md:text-2xl font-black text-white font-mono tracking-tight flex items-center gap-2">
+              <span>ระบบเทรดสด & ติดตามคำสั่งเรียลไทม์</span>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">#SIM-884920</span>
+            </h1>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Server: AD-Institutional-Cloud</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">0.02 Lot / ไม้</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 font-mono border border-emerald-500/30 flex items-center gap-1 font-bold">🛡️ Zero-Loss Safe Reload (ป้องกันไม้สด 100%)</span>
+          </div>
+          <p class="text-slate-400 text-xs mt-1.5">
+            มอนิเตอร์สถานะออเดอร์ที่กำลังวิ่งในตลาดแบบแยกหน้าเต็มจอ พร้อมระบบ Auto Breakeven (+8 Pips ขยับกันทุนอัตโนมัติ) และ Real-Time AI Score
+          </p>
+        </div>
+
+        <!-- Live Trade Quick Execution Toolbar -->
+        <div class="flex items-center flex-wrap gap-2">
+          <button onclick="triggerScalpDemoTrade()" class="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-bold border border-amber-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>⚡ + เปิดไม้เทรดสั้น M5 (0.02)</span>
+          </button>
+          <button onclick="triggerSwingDemoTrade()" class="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 font-bold border border-cyan-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>🌊 + เปิดไม้เทรดยาว H1 (0.02)</span>
+          </button>
+          <button onclick="closeAllPositions()" class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>❌ ปิดออเดอร์ทั้งหมด (Close All)</span>
+          </button>
+          <button onclick="switchMainTab('portfolio')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold border border-slate-700 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>💼 ดูหน้าพอร์ตสะสม →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Real-Time Evaluation Ribbon (4 Quick KPI Cards) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <!-- 1. Portfolio Capital & Equity Status -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] flex flex-col justify-between shadow-xl">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="font-bold flex items-center gap-1.5">
+              <span>💼 พอร์ตจำลอง ($1,000)</span>
+            </span>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">0.02 Lot/ไม้</span>
+          </div>
+          <div class="my-2.5 flex justify-between items-baseline">
+            <span class="text-xs text-slate-400">Equity สด:</span>
+            <strong id="eval-equity-val" class="text-xl text-emerald-400 font-mono font-black">$1,007.80</strong>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 flex justify-between items-baseline">
+            <span class="text-[11px] text-slate-400">กำไรลอยตัวรวม:</span>
+            <strong id="eval-floating-val" class="text-xs text-emerald-400 font-mono font-bold">+$7.80 (+0.78%)</strong>
+          </div>
+        </div>
+
+        <!-- 2. Scalping Evaluation KPI -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-amber-500/30 flex flex-col justify-between shadow-xl">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-amber-300 font-mono flex items-center gap-1.5">
+              <span>⚡ เทรดสั้น (Scalp M5)</span>
+            </span>
+            <span class="text-[10px] text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30 font-bold">Win Rate 88.5%</span>
+          </div>
+          <div class="my-2 text-[11px] text-slate-300 space-y-0.5 font-mono">
+            <div><span class="text-slate-400">กลยุทธ์:</span> <strong class="text-white">SMC M5 FVG + Fast Momentum</strong></div>
+            <div><span class="text-slate-400">เป้าหมาย:</span> <span class="text-amber-300 font-bold">Micro-TP 6-10 Pips (กันทุนทันที)</span></div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 text-[10px]" id="eval-scalp-verdict">
+            🟢 <strong class="text-emerald-400">สถานะประเมินผล:</strong> ล็อค Breakeven หน้าทุนแล้ว ไร้ความเสี่ยง 100%
+          </div>
+        </div>
+
+        <!-- 3. Swing Evaluation KPI -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-cyan-500/30 flex flex-col justify-between shadow-xl">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-cyan-300 font-mono flex items-center gap-1.5">
+              <span>🌊 เทรดยาว (Swing H1/H4)</span>
+            </span>
+            <span class="text-[10px] text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">Win Rate 92.4%</span>
+          </div>
+          <div class="my-2 text-[11px] text-slate-300 space-y-0.5 font-mono">
+            <div><span class="text-slate-400">กลยุทธ์:</span> <strong class="text-white">H4 Institutional Order Block</strong></div>
+            <div><span class="text-slate-400">เป้าหมาย:</span> <span class="text-cyan-300 font-bold">ถือรันเทรนด์ 25-60 Pips (R:R 1:2.8)</span></div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 text-[10px]" id="eval-swing-verdict">
+            🟢 <strong class="text-cyan-300">สถานะประเมินผล:</strong> โครงสร้างเทรนด์แข็งแกร่ง กำลังมุ่งหน้าสู่เป้า TP1
+          </div>
+        </div>
+
+        <!-- 4. Quick Execution Actions -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] flex flex-col justify-between shadow-xl">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-white text-xs">🕹️ คำสั่งทดสอบระบบด่วน</span>
+            <span class="text-[10px] text-slate-400 font-mono">Lot: 0.02</span>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 my-2">
+            <button onclick="triggerScalpDemoTrade()" class="py-1.5 px-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 text-center transition-all text-[11px]">
+              + เปิดไม้เทรดสั้น
+            </button>
+            <button onclick="triggerSwingDemoTrade()" class="py-1.5 px-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 text-center transition-all text-[11px]">
+              + เปิดไม้เทรดยาว
+            </button>
+          </div>
+          <button onclick="closeAllPositions()" class="w-full py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/30 transition-all text-[10px]">
+            ❌ ปิดออเดอร์ทั้งหมด (Close All)
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-Menu Filter Tabs & Controls -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-2.5 bg-[#0A0F1D] rounded-2xl border border-[#182338]">
+        <div class="flex items-center flex-wrap gap-1.5 text-xs">
+          <button onclick="switchOrderFilter('all')" id="subtab-all" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all">
+            <span>⚡ ออเดอร์ทั้งหมด</span>
+            <span id="sub-all-count" class="px-1.5 py-0.2 rounded-full bg-black/30 text-white font-mono text-[10px]">2</span>
+          </button>
+          <button onclick="switchOrderFilter('scalping')" id="subtab-scalping" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>⚡ เทรดสั้น (M1/M5)</span>
+            <span id="sub-scalp-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-amber-300 font-mono text-[10px]">1</span>
+          </button>
+          <button onclick="switchOrderFilter('swing')" id="subtab-swing" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>🌊 เทรดยาว (H1/H4)</span>
+            <span id="sub-swing-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-cyan-300 font-mono text-[10px]">1</span>
+          </button>
+          <button onclick="switchOrderFilter('matrix')" id="subtab-matrix" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>📊 เมทริกซ์ประเมินผล AI</span>
+          </button>
+          <button onclick="switchOrderFilter('journal')" id="subtab-journal" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>📔 บันทึกประวัติ (Journal)</span>
+            <span id="sub-journal-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-purple-300 font-mono text-[10px]">0</span>
+          </button>
+        </div>
+        <span class="text-[11px] text-slate-400 font-mono flex items-center gap-1.5 px-3">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>WebSocket Real-Time Sync (0ms)</span>
+        </span>
+      </div>
+
+      <!-- MAIN TAB 1: LIVE ACTIVE ORDERS TABLE (แสดงผลออเดอร์เทรดสั้น / เทรดยาว แบบ Real-Time) -->
+      <div id="subtab-content-orders" class="rounded-2xl border border-[#1A2538] bg-[#0A0F1A] overflow-hidden shadow-2xl">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-[#0D1424] text-slate-400 uppercase text-[10px] border-b border-[#182338]">
+              <tr>
+                <th class="py-3.5 px-4">สไตล์ & สินทรัพย์</th>
+                <th class="py-3.5 px-4">คำสั่ง / ขนาด</th>
+                <th class="py-3.5 px-4">ราคาเข้า (Entry)</th>
+                <th class="py-3.5 px-4">ราคาตลาดสด (Live)</th>
+                <th class="py-3.5 px-4">กำไรสด (PnL)</th>
+                <th class="py-3.5 px-4">เป้าหมาย SL / TP / BE</th>
+                <th class="py-3.5 px-4">การประเมินผล AI สด (AI Live Evaluation)</th>
+                <th class="py-3.5 px-4 text-right">การจัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="active-orders-table-body" class="divide-y divide-[#141E30] text-slate-300">
+              <!-- Dynamically Populated by renderPositions() -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MAIN TAB 2: AI EVALUATION MATRIX (ตารางประเมินผลความแม่นยำ AI สถิติย้อนหลังและสด) -->
+      <div id="subtab-content-matrix" class="rounded-2xl border border-[#1A2538] bg-[#0A0F1A] p-6 hidden space-y-4 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-bold text-white text-sm">📊 ผลการประเมินประสิทธิภาพโมเดล AI (Institutional Evaluation Matrix)</h3>
+            <p class="text-slate-400 text-xs mt-0.5">เปรียบเทียบสถิติและความแม่นยำระหว่างระบบเทรดสั้น (M5 Scalp) กับเทรดยาว (H1 Swing)</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-mono text-xs border border-purple-500/40 font-bold">
+            🧠 Continuous Self-Learning Active
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <!-- Scalp Matrix -->
+          <div class="p-4 rounded-xl bg-[#0D1424] border border-amber-500/30 space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-amber-300 text-sm">⚡ ระบบเทรดสั้น (Scalp M1/M5)</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold font-mono">Win Rate 88.5%</span>
+            </div>
+            <div class="space-y-1.5 text-slate-300 text-[11px]">
+              <div class="flex justify-between py-1 border-b border-slate-800">
+                <span class="text-slate-400">เป้าหมายกำไรเฉลี่ย:</span>
+                <strong class="text-emerald-400 font-mono">+8.5 Pips / ไม้</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-800">
+                <span class="text-slate-400">ระยะเวลาถือครองเฉลี่ย:</span>
+                <strong class="text-white font-mono">12 - 25 นาที</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-800">
+                <span class="text-slate-400">การบริหารความเสี่ยง:</span>
+                <strong class="text-amber-300 font-mono">Micro-Breakeven ทันทีเมื่อ +8 Pips</strong>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-slate-400">Profit Factor:</span>
+                <strong class="text-emerald-400 font-mono">2.68</strong>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-amber-950/30 border border-amber-500/20 text-amber-200 text-[11px] leading-relaxed">
+              💡 <strong>สรุปการประเมิน:</strong> เหมาะสำหรับเก็บกระแสเงินสดรายวัน สัญญาณสอดคล้องกับจังหวะ Liquidity Sweep ของสถาบัน
+            </div>
+          </div>
+
+          <!-- Swing Matrix -->
+          <div class="p-4 rounded-xl bg-[#0D1424] border border-cyan-500/30 space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-cyan-300 text-sm">🌊 ระบบเทรดยาว (Swing H1/H4)</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold font-mono">Win Rate 92.4%</span>
+            </div>
+            <div class="space-y-1.5 text-slate-300 text-[11px]">
+              <div class="flex justify-between py-1 border-b border-slate-800">
+                <span class="text-slate-400">เป้าหมายกำไรเฉลี่ย:</span>
+                <strong class="text-emerald-400 font-mono">+38.0 Pips / ไม้</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-800">
+                <span class="text-slate-400">ระยะเวลาถือครองเฉลี่ย:</span>
+                <strong class="text-white font-mono">3 - 8 ชั่วโมง</strong>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-800">
+                <span class="text-slate-400">Risk : Reward (R:R):</span>
+                <strong class="text-cyan-300 font-mono">1 : 2.80</strong>
+              </div>
+              <div class="flex justify-between py-1">
+                <span class="text-slate-400">Profit Factor:</span>
+                <strong class="text-emerald-400 font-mono">3.45</strong>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-cyan-950/30 border border-cyan-500/20 text-cyan-200 text-[11px] leading-relaxed">
+              💡 <strong>สรุปการประเมิน:</strong> เหมาะสำหรับการสร้างพอร์ตเติบโตระยะยาว รันเทรนด์ตามทิศทางเม็ดเงินใหญ่ (Smart Money Flow)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN TAB 3: TRADE JOURNAL TAB VIEW -->
+      <div id="subtab-content-journal" class="rounded-2xl border border-[#1A2538] bg-[#0A0F1A] p-6 hidden space-y-3 shadow-2xl">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <h3 class="font-bold text-white text-xs flex items-center gap-2">
+            <span>📔 สมุดบันทึกประวัติไม้ที่ปิดแล้ว (Closed Trade Journal)</span>
+            <span class="text-slate-400 font-normal text-[11px]">ข้อมูลถูกนำไปปรับปรุง AI อย่างต่อเนื่อง</span>
+          </h3>
+          <button onclick="resetSimulatedAccount()" class="text-rose-400 hover:underline text-[11px]">
+            🔄 รีเซ็ตพอร์ต $1,000
+          </button>
+        </div>
+        <div id="full-journal-list" class="space-y-2 max-h-64 overflow-y-auto">
+          <div class="text-center py-6 text-slate-500 text-xs font-mono">
+            ยังไม่มีประวัติการปิดไม้ (เมื่อออเดอร์ปิดลง จะถูกบันทึกและประเมินผล AI ทันที)
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== VIEW PAGE 3: DEDICATED SIMULATED TRADING PORTFOLIO & EVALUATION PAGE ==================== -->
   <div id="view-page-portfolio" class="hidden min-h-screen bg-[#070B13] p-4 md:p-8 space-y-6">
     <div class="max-w-7xl mx-auto space-y-6">
       
@@ -2752,9 +2811,8 @@
       showToastAlert("⚡ [เรดาร์เทรดสั้น M5] กำลังจำลองเปิดคำสั่ง Scalp 0.02 Lot (เป้า Micro-TP)...");
       setTimeout(() => {
         autoExecuteSignalTrade('BUY', 'BTCUSD', null, 'scalping');
+        switchMainTab('livetrade');
         switchOrderFilter('scalping');
-        const el = document.getElementById('orders-evaluation-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 350);
     }
 
@@ -2764,9 +2822,8 @@
       showToastAlert("🌊 [เรดาร์เทรดยาว H1] กำลังจำลองเปิดคำสั่ง Swing 0.02 Lot (เป้า Run Trend)...");
       setTimeout(() => {
         autoExecuteSignalTrade('BUY', 'XAUUSD', null, 'swing');
+        switchMainTab('livetrade');
         switchOrderFilter('swing');
-        const el = document.getElementById('orders-evaluation-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 350);
     }
 
@@ -3003,15 +3060,21 @@
       const bScalp = document.getElementById('sub-scalp-count');
       const bSwing = document.getElementById('sub-swing-count');
       const bHeader = document.getElementById('header-orders-badge');
+      const bLiveNav = document.getElementById('nav-live-count-badge');
+      const bTerminalBottom = document.getElementById('terminal-bottom-pos-count');
       const bPosCount = document.getElementById('pos-count');
       const bCockpit = document.getElementById('cockpit-pos-count');
+      const liveMarginUsed = document.getElementById('live-margin-used');
 
       if (bAll) bAll.innerText = totalCount;
       if (bScalp) bScalp.innerText = scalpCount;
       if (bSwing) bSwing.innerText = swingCount;
       if (bHeader) bHeader.innerText = `${totalCount} ไม้`;
+      if (bLiveNav) bLiveNav.innerText = `${totalCount} ไม้`;
+      if (bTerminalBottom) bTerminalBottom.innerText = `กำลังรัน ${totalCount} ไม้`;
       if (bPosCount) bPosCount.innerText = `${totalCount} ไม้`;
       if (bCockpit) bCockpit.innerText = totalCount;
+      if (liveMarginUsed) liveMarginUsed.innerText = `$${(totalCount * 10).toFixed(2)}`;
 
       // Filter positions for the Sub-Menu Table View
       let filteredPositions = openPositions;
@@ -3587,28 +3650,38 @@
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
     function switchMainTab(tab) {
       const navTerminal = document.getElementById('nav-terminal');
-      const navSignals = document.getElementById('nav-signals');
+      const navLiveTrade = document.getElementById('nav-livetrade');
       const navPortfolio = document.getElementById('nav-portfolio');
+      const navSignals = document.getElementById('nav-signals');
 
       const pageTerminal = document.getElementById('view-page-terminal');
+      const pageLiveTrade = document.getElementById('view-page-livetrade');
       const pagePortfolio = document.getElementById('view-page-portfolio');
 
       const defClass = "px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent";
       const actClass = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all";
 
       if (navTerminal) navTerminal.className = tab === 'terminal' ? actClass : defClass;
-      if (navSignals) navSignals.className = tab === 'signals' ? actClass : defClass;
+      if (navLiveTrade) navLiveTrade.className = tab === 'livetrade' ? actClass : defClass;
       if (navPortfolio) navPortfolio.className = tab === 'portfolio' ? actClass : defClass;
+      if (navSignals) navSignals.className = tab === 'signals' ? actClass : defClass;
 
-      if (tab === 'portfolio') {
-        if (pageTerminal) pageTerminal.classList.add('hidden');
+      // Hide all pages by default
+      if (pageTerminal) pageTerminal.classList.add('hidden');
+      if (pageLiveTrade) pageLiveTrade.classList.add('hidden');
+      if (pagePortfolio) pagePortfolio.classList.add('hidden');
+
+      if (tab === 'livetrade') {
+        if (pageLiveTrade) pageLiveTrade.classList.remove('hidden');
+        renderPositions();
+        evaluateLivePositions();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (tab === 'portfolio') {
         if (pagePortfolio) pagePortfolio.classList.remove('hidden');
         renderPortfolioPage();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        if (pagePortfolio) pagePortfolio.classList.add('hidden');
         if (pageTerminal) pageTerminal.classList.remove('hidden');
-
         if (tab === 'signals') {
           switchCockpitTab('signals');
           window.scrollTo({ top: 120, behavior: 'smooth' });
