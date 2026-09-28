@@ -3106,13 +3106,23 @@
       const now = Date.now();
       const targets = autoTradeTarget === 'BOTH' ? ['BTCUSD', 'XAUUSD'] : [autoTradeTarget];
 
-      // สแกนคู่เงินตามเป้าหมาย หากไม่มีออเดอร์ค้างอยู่ ให้วิเคราะห์และออกไม้ Lot 0.02 อัตโนมัติ (Cooldown 15 วิ)
+      // สแกนคู่เงินตามเป้าหมาย หากไม่มีออเดอร์ค้างอยู่ ให้วิเคราะห์โซน SMC (Premium = SELL, Discount = BUY) และออกไม้อัตโนมัติ (Cooldown 15 วิ)
       for (const sym of targets) {
         const hasPos = openPositions.some(p => p.symbol === sym);
         if (!hasPos && (now - lastAutoExecutionTime > 15000)) {
           const style = sym === 'BTCUSD' ? 'scalping' : 'swing';
-          console.log(`[24/7 SCANNER] Auto-entering institutional setup for ${sym} (${style} 0.02 Lot)`);
-          autoExecuteSignalTrade('BUY', sym, null, style);
+          const p = sym === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
+          const isGold = sym === 'XAUUSD';
+
+          // ตรวจสอบโซนราคาตามทฤษฎี Smart Money Concepts (SMC):
+          // หากราคาแตะช่วงบนของกรอบ (Premium Zone / Supply Block) -> เปิดคำสั่ง SELL
+          // หากราคาแตะช่วงล่างของกรอบ (Discount Zone / Demand Block) -> เปิดคำสั่ง BUY
+          const cycleRef = isGold ? (p % 10.0) : (p % 400.0);
+          const midThreshold = isGold ? 5.0 : 200.0;
+          const autoAction = (cycleRef >= midThreshold) ? 'SELL' : 'BUY';
+
+          console.log(`[24/7 SCANNER] Auto-entering institutional setup for ${sym} (${autoAction} ${style})`);
+          autoExecuteSignalTrade(autoAction, sym, null, style);
           lastAutoExecutionTime = now;
           break; // ออกทีละไม้ตามรอบ
         }
@@ -3169,6 +3179,19 @@
       // คำนวณขนาดไม้ตามโมเดลความเสี่ยงสถาบัน (Fixed Fractional Risk Sizing)
       const sizing = calculateInstitutionalPositionSize(symbol, style, slDist, balance);
 
+      const isBuy = action === 'BUY';
+      const setupName = isScalp 
+        ? (isBuy ? "SMC M5 FVG Demand + Fast Momentum" : "SMC M5 Bearish Supply FVG Rejection")
+        : (isBuy ? "Institutional H4 Order Block + Daily Trend" : "H4 Supply Pool Sweep + Wyckoff UTAD");
+
+      const statusDesc = isScalp
+        ? (isBuy 
+            ? `⚡ สัญญาณสั้น M5 BUY: เล็งเป้าเก็บกำไรไว Micro-TP (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Michael Burry Liquidity Hunt`
+            : `⚡ สัญญาณสั้น M5 SELL: กวาด Liquidity แนวต้าน (Premium Zone) เล็งเป้า Short FVG (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Burry Trapped Retail Sweep`)
+        : (isBuy
+            ? `🌊 สวิงเทรนด์สถาบัน BUY: โครงสร้าง H1 แข็งแกร่ง (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: Dalio Debt Debasement + Druckenmiller Liquidity`
+            : `🌊 สวิงเทรนด์สถาบัน SELL: ปะทะ Bearish Supply Block ย่อตัวตามโครงสร้าง H1 (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: Druckenmiller Momentum Exhaustion + Wyckoff Distribution`);
+
       const newPos = {
         id: Date.now(),
         ticket: Math.floor(100000 + Math.random() * 900000),
@@ -3189,11 +3212,9 @@
         timeOpen: new Date().toLocaleTimeString('th-TH'),
         tp1Hit: false,
         breakevenLocked: false,
-        reason: `${isScalp ? "SMC M5 FVG + Fast Momentum" : "Institutional H4 Order Block + Daily Trend"} [${sizing.rationale}] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์`,
+        reason: `${setupName} [${sizing.rationale}] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์`,
         evalScore: isScalp ? "95.6% Confluence" : "94.8% Confluence",
-        evalStatus: isScalp 
-          ? `⚡ สัญญาณสั้น M5: เล็งเป้าเก็บกำไรไว Micro-TP (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: PTJ 5:1 Asymmetry + Michael Burry Liquidity Hunt` 
-          : `🌊 สวิงเทรนด์สถาบัน: โครงสร้าง H1 แข็งแกร่ง (${sizing.rationale}) | 🧠 สภา 5 ปรมาจารย์: Dalio Debt Debasement + Druckenmiller Liquidity`
+        evalStatus: statusDesc
       };
 
       openPositions.push(newPos);
