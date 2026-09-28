@@ -538,6 +538,7 @@ class LineFlexService:
         reason = pos.get("reason", "Institutional Setup")
         eval_score = pos.get("evalScore", "95% Confluence")
         time_open = pos.get("timeOpen", "")
+        risk_rationale = pos.get("riskRationale", "")
 
         is_buy = "BUY" in str(action).upper()
         header_color = "#059669" if is_buy else "#DC2626"
@@ -635,8 +636,9 @@ class LineFlexService:
                         "spacing": "xs",
                         "contents": [
                             {"type": "text", "text": f"💡 Confluence: {reason}", "color": "#38BDF8", "size": "xxs", "wrap": True},
+                            {"type": "text", "text": f"⚖️ Risk Sizing: {risk_rationale}" if risk_rationale else f"⚖️ ขนาดไม้: {lot:.2f} Lot (คำนวณตามความเสี่ยงพอร์ต)", "color": "#FCD34D", "size": "xxs", "wrap": True},
                             {"type": "text", "text": f"🧠 AI Score: {eval_score}", "color": "#A7F3D0", "size": "xxs", "wrap": True},
-                            {"type": "text", "text": f"⏱️ เวลาเปิด: {time_open} (ทุน $1,000)", "color": "#94A3B8", "size": "xxs"}
+                            {"type": "text", "text": f"⏱️ เวลาเปิด: {time_open}", "color": "#94A3B8", "size": "xxs"}
                         ]
                     }
                 ]

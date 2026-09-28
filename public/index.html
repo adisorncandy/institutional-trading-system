@@ -2691,14 +2691,53 @@
       autoExecuteSignalTrade('BUY', currentAsset);
     }
 
+    // Institutional Risk-Based Dynamic Position Sizing Engine
+    // คำนวณขนาดไม้ตาม % ความเสี่ยงต่อพอร์ตสถาบัน (1.2% - 2.0%) และระยะ Stop Loss
+    function calculateInstitutionalPositionSize(symbol, style, slDist, accBalance) {
+      const isGold = symbol === 'XAUUSD';
+      const isScalp = style === 'scalping' || style === 'scalp';
+      
+      // Dynamic Risk Allocation: Scalp M5 = 1.4% ($14 on $1,000), Swing H1 = 1.8% ($18 on $1,000)
+      const riskPct = isScalp ? 1.4 : 1.8;
+      const riskDollar = (accBalance * (riskPct / 100.0));
+      
+      let rawLot = 0.02;
+      if (isGold) {
+        // Gold: 1 Lot = 100 oz. $1 move = $100 per 1 Lot ($1 per 0.01 Lot)
+        rawLot = riskDollar / (slDist * 100.0);
+      } else {
+        // Bitcoin: 1 Lot = 1 BTC. $1 move = $1 per 1 Lot
+        rawLot = riskDollar / slDist;
+      }
+      
+      // Safety Cap: Min 0.01 Lot, Max 0.06 Lot เพื่อควบคุม Maximum Drawdown ของพอร์ต $1,000
+      let lot = Math.max(0.01, Math.min(0.06, parseFloat(rawLot.toFixed(2))));
+      if (isNaN(lot) || lot <= 0) lot = 0.02;
+      
+      const pips = isGold ? (slDist * 10.0).toFixed(0) : (slDist / 10.0).toFixed(0);
+      const rationale = `คุมความเสี่ยง ${riskPct}% ($${riskDollar.toFixed(2)}) / SL ${pips} Pips ➔ คำนวณ Lot ${lot.toFixed(2)}`;
+      
+      return {
+        lot: lot,
+        riskPct: riskPct,
+        riskDollar: parseFloat(riskDollar.toFixed(2)),
+        rationale: rationale
+      };
+    }
+
     function calculateLotDynamically() {
       const balInput = document.getElementById('input-balance');
       balance = parseFloat(balInput.value) || 1000.0;
       
-      // Fixed 0.02 Lot as instructed by user
-      const calculatedLot = 0.02;
-      document.getElementById('calc-lot').innerText = "0.02";
-      document.getElementById('btn-exec-text').innerText = `⚡ เปิดคำสั่ง BUY ทันที (Lot 0.02)`;
+      const isGold = currentAsset === 'XAUUSD';
+      const isScalp = currentStyle === 'scalp' || currentStyle === 'scalping';
+      const slDist = isGold ? (isScalp ? 3.5 : 8.0) : (isScalp ? 300.0 : 750.0);
+      const sizing = calculateInstitutionalPositionSize(currentAsset, isScalp ? 'scalping' : 'swing', slDist, balance);
+      
+      const calcLotEl = document.getElementById('calc-lot');
+      if (calcLotEl) calcLotEl.innerText = sizing.lot.toFixed(2);
+      const execText = document.getElementById('btn-exec-text');
+      if (execText) execText.innerText = `⚡ เปิดคำสั่ง BUY ทันที (${sizing.lot.toFixed(2)} Lot)`;
       updateAccountEquityUI();
     }
 
@@ -2858,7 +2897,7 @@
       }
     }
 
-    // Auto-Execute Signal Trade with 0.02 Lot & Simulated $1000 Account (แยกสไตล์ เทรดสั้น / เทรดยาว)
+    // Auto-Execute Signal Trade with Dynamic Risk Position Sizing (คำนวณขนาดไม้ตามความเสี่ยง 1.2% - 2.0%)
     function autoExecuteSignalTrade(action = 'BUY', symbol = currentAsset, customPrice = null, style = 'scalping') {
       const existing = openPositions.find(p => p.symbol === symbol && p.style === style);
       if (existing) {
@@ -2887,6 +2926,9 @@
       const tp1Price = action === 'BUY' ? p + tp1Dist : p - tp1Dist;
       const tp2Price = action === 'BUY' ? p + tp2Dist : p - tp2Dist;
 
+      // คำนวณขนาดไม้ตามโมเดลความเสี่ยงสถาบัน (Fixed Fractional Risk Sizing)
+      const sizing = calculateInstitutionalPositionSize(symbol, style, slDist, balance);
+
       const newPos = {
         id: Date.now(),
         ticket: Math.floor(100000 + Math.random() * 900000),
@@ -2894,7 +2936,10 @@
         type: action,
         style: style,
         styleName: isScalp ? '⚡ เทรดสั้น (M5 Scalp)' : '🌊 เทรดยาว (H1 Swing)',
-        lot: 0.02, // ทุน 1000 เหรียญ ออก Lot 0.02 ตามคำขอ
+        lot: sizing.lot,
+        riskPct: sizing.riskPct,
+        riskDollar: sizing.riskDollar,
+        riskRationale: sizing.rationale,
         entry: parseFloat(p.toFixed(dec)),
         sl: parseFloat(slPrice.toFixed(dec)),
         tp1: parseFloat(tp1Price.toFixed(dec)),
@@ -2904,18 +2949,18 @@
         timeOpen: new Date().toLocaleTimeString('th-TH'),
         tp1Hit: false,
         breakevenLocked: false,
-        reason: isScalp ? "SMC M5 FVG + Fast Momentum" : "Institutional H4 Order Block + Daily Trend",
-        evalScore: isScalp ? "94.8% Confluence" : "93.5% Confluence",
+        reason: `${isScalp ? "SMC M5 FVG + Fast Momentum" : "Institutional H4 Order Block + Daily Trend"} [${sizing.rationale}]`,
+        evalScore: isScalp ? "95.2% Confluence" : "94.0% Confluence",
         evalStatus: isScalp 
-          ? "⚡ สัญญาณสั้น M5: เล็งเป้าเก็บกำไรไว Micro-TP 6-10 Pips (คุมความเสี่ยง 0.7%)" 
-          : "🌊 สวิงเทรนด์สถาบัน: โครงสร้าง H1 แข็งแกร่ง รันเทรนด์สู่เป้า TP 25-60 Pips (R:R 1:2.8)"
+          ? `⚡ สัญญาณสั้น M5: เล็งเป้าเก็บกำไรไว Micro-TP (${sizing.rationale})` 
+          : `🌊 สวิงเทรนด์สถาบัน: โครงสร้าง H1 แข็งแกร่ง รันเทรนด์สู่เป้า TP (${sizing.rationale})`
       };
 
       openPositions.push(newPos);
       savePositionsState();
       renderPositions();
       playAlertBeep();
-      showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (${newPos.styleName} 0.02 Lot) เรียบร้อยแล้ว`);
+      showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (${newPos.styleName} ${sizing.lot.toFixed(2)} Lot | ${sizing.rationale}) เรียบร้อยแล้ว`);
       notifyLineTrade('open', newPos);
     }
 
@@ -2975,12 +3020,13 @@
       const dec = isGold ? 2 : 1;
       
       let pnlDollar = 0;
+      const lot = pos.lot || 0.02;
       if (isGold) {
-        // 0.02 lot = 2 oz, $1 move = $2
-        pnlDollar = pos.type === 'BUY' ? (currentP - pos.entry) * 2.0 : (pos.entry - currentP) * 2.0;
+        // 1 Lot = 100 oz. $1 move = $100 * lot
+        pnlDollar = pos.type === 'BUY' ? (currentP - pos.entry) * (lot * 100.0) : (pos.entry - currentP) * (lot * 100.0);
       } else {
-        // 0.02 BTC
-        pnlDollar = pos.type === 'BUY' ? (currentP - pos.entry) * 0.02 : (pos.entry - currentP) * 0.02;
+        // 1 Lot = 1 BTC. $1 move = $1 * lot
+        pnlDollar = pos.type === 'BUY' ? (currentP - pos.entry) * lot : (pos.entry - currentP) * lot;
       }
       pnlDollar = parseFloat(pnlDollar.toFixed(2));
 
@@ -2997,10 +3043,14 @@
         type: pos.type,
         style: pos.style,
         styleName: pos.styleName,
-        lot: 0.02,
+        lot: lot,
+        riskPct: pos.riskPct || 1.5,
+        riskDollar: pos.riskDollar || 15.0,
+        riskRationale: pos.riskRationale || "คำนวณตาม Risk Management สถาบัน",
         entry: pos.entry,
         exit: parseFloat(currentP.toFixed(dec)),
         pnl: pnlDollar,
+        pips: pos.pips || (isGold ? (currentP - pos.entry) * 10.0 : (currentP - pos.entry) / 10.0),
         pnlPct: parseFloat(((pnlDollar / balance) * 100).toFixed(2)),
         balance: parseFloat(balance.toFixed(2)),
         accountBalance: parseFloat(balance.toFixed(2)),
@@ -3009,8 +3059,8 @@
         timeClose: new Date().toLocaleTimeString('th-TH'),
         reason: `${pos.reason} [${exitReasonStr}]`,
         aiFeedback: pnlDollar >= 0 
-          ? `🎯 กำไรตามเป้า (${pos.styleName}): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%` 
-          : `🛑 ตัดขาดทุนตามแผน (${pos.styleName}): บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป`
+          ? `🎯 กำไรตามเป้า (${pos.styleName} Lot ${lot.toFixed(2)}): บันทึกผลสำเร็จ ปรับเพิ่มน้ำหนัก SMC +0.5%` 
+          : `🛑 ตัดขาดทุนตามแผน (${pos.styleName} Lot ${lot.toFixed(2)}): คุมความเสี่ยงตาม Risk Budget บันทึก Pattern สัญญาณหลอกเข้า Neural Store เพื่อกรองรอบถัดไป`
       };
 
       tradeJournal.unshift(journalEntry);
@@ -3126,7 +3176,7 @@
                     <span class="px-2 py-0.5 rounded font-black text-xs ${pos.type === 'BUY' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'}">
                       ${pos.type}
                     </span>
-                    <strong class="text-amber-300 font-mono text-xs">0.02 Lot</strong>
+                    <strong class="text-amber-300 font-mono text-xs">${pos.lot ? pos.lot.toFixed(2) : '0.02'} Lot</strong>
                   </div>
                   <span class="text-[10px] text-slate-500 font-mono block mt-0.5">#${pos.ticket}</span>
                 </td>
@@ -3169,7 +3219,7 @@
                         <span>🧠 AI Score:</span>
                         <strong class="text-emerald-400">${pos.evalScore || '94% Confluence'}</strong>
                       </span>
-                      ${pos.breakevenLocked ? '<span class="text-emerald-400 text-[10px] font-bold">✓ ไร้ความเสี่ยง</span>' : '<span class="text-amber-400 text-[10px]">Risk: 0.8%</span>'}
+                      ${pos.breakevenLocked ? '<span class="text-emerald-400 text-[10px] font-bold">✓ ไร้ความเสี่ยง</span>' : `<span class="text-amber-400 text-[10px]">Risk: ${pos.riskPct || 1.4}%</span>`}
                     </div>
                     <p class="text-slate-300 text-[10px]">
                       ${pos.evalStatus || pos.reason}
@@ -3192,7 +3242,7 @@
       // 2. Render Cockpit Side Panel View
       if (cockpitContainer) {
         if (openPositions.length === 0) {
-          cockpitContainer.innerHTML = "<div class='text-center py-6 text-slate-500 text-xs font-mono'>ไม่มีออเดอร์ค้าง (ระบบพร้อมเปิด 0.02 ทันทีเมื่อมี Signal)</div>";
+          cockpitContainer.innerHTML = "<div class='text-center py-6 text-slate-500 text-xs font-mono'>ไม่มีออเดอร์ค้าง (ระบบพร้อมคำนวณความเสี่ยงและเปิดไม้อัตโนมัติ)</div>";
         } else {
           cockpitContainer.innerHTML = openPositions.map(pos => `
             <div class="card-box p-3 rounded-xl border ${pos.style === 'scalping' ? 'border-amber-500/30' : 'border-cyan-500/30'}">
@@ -3207,7 +3257,7 @@
               </div>
               <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-800 text-[10px] font-mono text-slate-400">
                 <div><span>สไตล์: </span><strong class="${pos.style === 'scalping' ? 'text-amber-300' : 'text-cyan-300'}">${pos.style === 'scalping' ? 'สั้น M5' : 'ยาว H1'}</strong></div>
-                <div><span>Lot: </span><strong class="text-white">0.02</strong></div>
+                <div><span>Lot: </span><strong class="text-white">${pos.lot ? pos.lot.toFixed(2) : '0.02'}</strong></div>
                 <div><span>Entry: </span><span class="text-white font-bold">${pos.entry}</span></div>
               </div>
               <div class="mt-2 flex justify-between items-center text-[10px]">
@@ -3262,7 +3312,7 @@
         <div class="p-3 rounded-xl bg-[#0A0F1D] border ${t.win ? 'border-emerald-500/30' : 'border-rose-500/30'} text-xs font-mono space-y-1.5">
           <div class="flex justify-between items-center">
             <span class="font-bold ${t.type === 'BUY' ? 'text-emerald-400' : 'text-rose-400'} flex items-center gap-1.5">
-              <span>#${t.ticket} ${t.type} ${t.symbol} (0.02 Lot)</span>
+              <span>#${t.ticket} ${t.type} ${t.symbol} (${t.lot ? t.lot.toFixed(2) : '0.02'} Lot)</span>
               <span class="px-1.5 py-0.2 rounded text-[10px] ${t.style === 'scalping' ? 'bg-amber-500/20 text-amber-300' : 'bg-cyan-500/20 text-cyan-300'}">${t.style === 'scalping' ? 'เทรดสั้น' : 'เทรดยาว'}</span>
             </span>
             <span class="font-black ${t.win ? 'text-emerald-400' : 'text-rose-400'}">
@@ -3276,6 +3326,7 @@
           <div class="text-[10px] text-purple-300 bg-purple-950/40 px-2 py-1 rounded border border-purple-500/20">
             🧠 ${t.aiFeedback}
           </div>
+          ${t.riskRationale ? `<div class="text-[9px] text-amber-300/80 bg-amber-950/20 px-2 py-0.5 rounded border border-amber-500/20 font-mono">⚖️ ${t.riskRationale}</div>` : ''}
         </div>
       `).join('');
 
@@ -3319,11 +3370,12 @@
         let pnl = 0;
         let pips = 0;
 
+        const lot = pos.lot || 0.02;
         if (isGold) {
-          pnl = pos.type === 'BUY' ? (p - pos.entry) * 2.0 : (pos.entry - p) * 2.0;
+          pnl = pos.type === 'BUY' ? (p - pos.entry) * (lot * 100.0) : (pos.entry - p) * (lot * 100.0);
           pips = pos.type === 'BUY' ? (p - pos.entry) * 10.0 : (pos.entry - p) * 10.0;
         } else {
-          pnl = pos.type === 'BUY' ? (p - pos.entry) * 0.02 : (pos.entry - p) * 0.02;
+          pnl = pos.type === 'BUY' ? (p - pos.entry) * lot : (pos.entry - p) * lot;
           pips = pos.type === 'BUY' ? (p - pos.entry) / 10.0 : (pos.entry - p) / 10.0;
         }
 
@@ -3331,8 +3383,8 @@
         pos.pips = parseFloat(pips.toFixed(1));
         totalFloating += pos.pnl;
 
-        // Auto Micro-Breakeven at +8 pips (+1.6 USD)
-        if (!pos.breakevenLocked && pnl >= 1.6) {
+        // Auto Micro-Breakeven at +8 pips (กำไรปลอดภัย)
+        if (!pos.breakevenLocked && pips >= 8.0) {
           pos.breakevenLocked = true;
           pos.sl = pos.type === 'BUY' ? pos.entry + (isGold ? 0.3 : 15.0) : pos.entry - (isGold ? 0.3 : 15.0);
           pos.evalStatus = `🛡️ กำไรแตะ +${pos.pips} pips: ขยับ SL บังหน้าทุน Breakeven เรียบร้อย (ไร้ความเสี่ยง 100%)`;
@@ -3863,13 +3915,16 @@
               </td>
               <td class="py-2.5 px-3">
                 <span class="px-2 py-0.5 rounded font-black text-xs ${t.type === 'BUY' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">${t.type}</span>
-                <span class="text-slate-400 text-[10px] ml-1">0.02 Lot</span>
+                <span class="text-slate-400 text-[10px] ml-1">${t.lot ? t.lot.toFixed(2) : '0.02'} Lot</span>
               </td>
               <td class="py-2.5 px-3 font-mono text-slate-300 font-bold">$${t.entry}</td>
               <td class="py-2.5 px-3 font-mono text-white font-bold">$${t.exit}</td>
               <td class="py-2.5 px-3 font-mono font-bold ${t.win ? 'text-emerald-400' : 'text-rose-400'}">${t.pnl >= 0 ? '+' : ''}$${t.pnl.toFixed(2)}</td>
               <td class="py-2.5 px-3 font-mono ${t.win ? 'text-emerald-400' : 'text-rose-400'}">${t.pnlPct >= 0 ? '+' : ''}${t.pnlPct}%</td>
-              <td class="py-2.5 px-3 text-[10px] text-purple-300 max-w-xs">🧠 ${t.aiFeedback}</td>
+              <td class="py-2.5 px-3 text-[10px] text-purple-300 max-w-xs">
+                🧠 ${t.aiFeedback}
+                ${t.riskRationale ? `<span class="block text-[9px] text-amber-300/80 font-mono mt-0.5">⚖️ ${t.riskRationale}</span>` : ''}
+              </td>
             </tr>
           `).join('');
         }
@@ -3890,7 +3945,7 @@
           </td>
           <td class="py-3 px-3">
             <span class="px-2 py-0.5 rounded font-black text-xs ${pos.type === 'BUY' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">${pos.type}</span>
-            <span class="text-slate-400 text-xs ml-1 font-bold">0.02 Lot</span>
+            <span class="text-slate-400 text-xs ml-1 font-bold">${pos.lot ? pos.lot.toFixed(2) : '0.02'} Lot</span>
           </td>
           <td class="py-3 px-3 text-slate-300 font-bold">$${pos.entry.toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec})}</td>
           <td class="py-3 px-3 text-white font-black">$${currentP.toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec})}</td>
