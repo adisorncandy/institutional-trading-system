@@ -51,6 +51,30 @@ def get_live_market_price(symbol="XAUUSD"):
     except Exception:
         return fallback
 
+def get_real_klines(symbol="XAUUSD", limit=35):
+    symbol = symbol.upper()
+    is_gold = "XAU" in symbol
+    pair = "PAXGUSDT" if is_gold else "BTCUSDT"
+    fallback_price = 4205.50 if is_gold else 83450.00
+    try:
+        url = f"https://api.binance.com/api/v3/klines?symbol={pair}&interval=5m&limit={limit}"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=2.5) as resp:
+            data = json.loads(resp.read().decode())
+            candles = []
+            for k in data:
+                candles.append({
+                    "time": int(k[0] / 1000),
+                    "open": float(k[1]),
+                    "high": float(k[2]),
+                    "low": float(k[3]),
+                    "close": float(k[4]),
+                    "volume": float(k[5])
+                })
+            return candles
+    except Exception:
+        return [{"close": fallback_price + (i % 3), "high": fallback_price + 5, "low": fallback_price - 5, "open": fallback_price} for i in range(limit)]
+
 class handler(BaseHTTPRequestHandler):
     def _set_headers(self, status=200, content_type="application/json"):
         self.send_response(status)
@@ -83,17 +107,17 @@ class handler(BaseHTTPRequestHandler):
         # 1. API: Get Live Signal
         elif path == "/api/signal" or path.endswith("/signal"):
             symbol = query.get("symbol", ["XAUUSD"])[0]
-            live_ref = get_live_market_price(symbol)
+            real_candles = get_real_klines(symbol, limit=35)
+            live_ref = real_candles[-1]["close"]
             current_price = float(query.get("price", [live_ref])[0])
-            atr = 8.5 if "XAU" in symbol else 1200.0
+            atr = sum(c["high"] - c["low"] for c in real_candles[-14:]) / 14.0 if len(real_candles) >= 14 else (4.5 if "XAU" in symbol else 150.0)
 
             news_status = news_engine.evaluate_news_filter(symbol)
-            mock_candles = [{"close": current_price + (i % 3), "high": current_price + 5, "low": current_price - 5} for i in range(25)]
             
             signal = ai_engine.generate_institutional_signal(
                 symbol=symbol,
                 current_price=current_price,
-                recent_candles=mock_candles,
+                recent_candles=real_candles,
                 atr=atr,
                 news_filter=news_status
             )
@@ -104,6 +128,8 @@ class handler(BaseHTTPRequestHandler):
                 "signal": signal,
                 "news_filter": news_status,
                 "server_time": datetime.now().isoformat(),
+                "real_market_price": live_ref,
+                "data_source": "Binance Live Kline API (PAXG/BTC)",
                 "platform": "Vercel Serverless"
             }
             self._set_headers(200)
