@@ -364,63 +364,98 @@
           </div>
         </div>
 
-        <!-- Dynamic Lot & Balance Controller -->
+        <!-- Dynamic Lot & Balance Controller (ทุนจำลอง 1,000 เหรียญ ออก Lot 0.02) -->
         <div class="card-box p-3 rounded-xl border border-[#1A2338] flex items-center justify-between text-xs">
           <div>
-            <span class="text-slate-400 text-[10px] block">ทุน: <input type="number" id="input-balance" value="31430" oninput="calculateLotDynamically()" class="w-16 bg-[#141C2E] border border-slate-700 text-amber-400 font-mono font-bold px-1 rounded text-[11px]"></span>
-            <span class="text-[10px] text-slate-400 block mt-0.5">เสี่ยง: 
-              <select id="select-risk" onchange="calculateLotDynamically()" class="bg-[#141C2E] border border-slate-700 text-white rounded text-[10px]">
-                <option value="1.5">1.5%</option>
-                <option value="1.0">1.0%</option>
-                <option value="2.0">2.0%</option>
-              </select>
-            </span>
+            <span class="text-slate-400 text-[10px] block">ทุนจำลอง: <input type="number" id="input-balance" value="1000" oninput="calculateLotDynamically()" class="w-16 bg-[#141C2E] border border-slate-700 text-amber-400 font-mono font-bold px-1 rounded text-[11px]"> $</span>
+            <span class="text-[10px] text-emerald-400 block mt-0.5">⚡ Auto-Trade: <span class="font-bold">ออกไม้ทันทีตาม Signal</span></span>
           </div>
           <div class="text-right">
-            <span class="text-[10px] text-slate-400 block">Lot แนะนำ: <strong class="text-amber-400 font-mono text-sm" id="calc-lot">0.39</strong></span>
-            <span class="text-[10px] text-rose-400 block font-mono" id="calc-loss">Max Loss: -$471.45</span>
+            <span class="text-[10px] text-slate-400 block">Lot อัตโนมัติ: <strong class="text-amber-400 font-mono text-sm" id="calc-lot">0.02</strong></span>
+            <span class="text-[10px] text-rose-400 block font-mono" id="calc-loss">Risk / ไม้: ~$8.00 (0.8%)</span>
           </div>
         </div>
 
         <!-- Execution Action Button directly on the right cockpit -->
         <div class="pt-1">
           <button onclick="executeOrderFromPanel('BUY')" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
-            <span id="btn-exec-text">⚡ เปิดคำสั่ง BUY ทันที (Lot 0.39)</span>
+            <span id="btn-exec-text">⚡ เปิดคำสั่ง BUY ทันที (Lot 0.02)</span>
           </button>
         </div>
       </div>
 
-      <!-- TAB CONTENT 2: ACTIVE TRADES & QUICK TRADE (HIDDEN BY DEFAULT) -->
+      <!-- TAB CONTENT 2: ACTIVE TRADES & TRADE JOURNAL (HIDDEN BY DEFAULT) -->
       <div id="cockpit-view-positions" class="p-4 space-y-3.5 flex-1 hidden">
+        <!-- Quick Trade Manual Override -->
         <div class="pb-3 border-b border-[#1A2333] space-y-2">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-white text-xs">⚡ สั่งคำสั่งด่วน (Quick Trade)</span>
+            <span class="font-bold text-white text-xs">⚡ สั่งคำสั่งด่วน (Lot 0.02 อัตโนมัติ)</span>
             <div class="text-[10px] text-slate-400 font-mono">
-              Spread: <span class="text-amber-400 font-bold">0.2</span> | Slip: <span class="text-emerald-400 font-bold">0.0ms</span>
+              ทุน: <span class="text-amber-400 font-bold">$1,000.00</span> | Lot: <span class="text-emerald-400 font-bold">0.02</span>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2">
             <button onclick="executeQuickTrade('BUY')" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black shadow-lg flex flex-col items-center justify-center transition-all">
-              <span class="text-xs">BUY MARKET</span>
+              <span class="text-xs">BUY 0.02 MARKET</span>
               <span class="font-mono text-[10px] text-emerald-200" id="quick-ask">$84,802.0</span>
             </button>
             <button onclick="executeQuickTrade('SELL')" class="py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black shadow-lg flex flex-col items-center justify-center transition-all">
-              <span class="text-xs">SELL MARKET</span>
+              <span class="text-xs">SELL 0.02 MARKET</span>
               <span class="font-mono text-[10px] text-rose-200" id="quick-bid">$84,801.5</span>
             </button>
           </div>
         </div>
 
+        <!-- 1. Active Positions List -->
         <div class="flex justify-between items-center py-1 border-b border-[#1A2333]">
-          <h3 class="font-bold text-white text-xs">📋 รายการออเดอร์ค้าง (Active Trades)</h3>
+          <h3 class="font-bold text-white text-xs flex items-center gap-1.5">
+            <span>📋 ออเดอร์ถือครอง (Active Trades)</span>
+            <span id="pos-count" class="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px]">0 ไม้</span>
+          </h3>
           <button onclick="closeAllPositions()" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-300 border border-slate-700 transition-colors text-[10px]">
             ปิดทั้งหมด (Close All)
           </button>
         </div>
 
-        <div class="space-y-2" id="position-list">
-          <div class="text-center py-8 text-slate-500 text-xs font-mono">
-            ไม่มีออเดอร์ค้าง (พร้อมรับสัญญาณใหม่)
+        <div class="space-y-2 max-h-48 overflow-y-auto" id="position-list">
+          <div class="text-center py-6 text-slate-500 text-xs font-mono">
+            ไม่มีออเดอร์ค้าง (ระบบพร้อมเปิด 0.02 ทันทีเมื่อมี Signal)
+          </div>
+        </div>
+
+        <!-- 2. Trade Journal & Self-Learning Log Section -->
+        <div class="pt-2 border-t border-[#1A2333] space-y-2">
+          <div class="flex justify-between items-center">
+            <h3 class="font-bold text-white text-xs flex items-center gap-1.5">
+              <span>📔 สมุดบันทึกการเทรด & ปรับปรุง AI</span>
+              <span class="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono text-[10px]">Self-Learning</span>
+            </h3>
+            <button onclick="resetSimulatedAccount()" class="text-[10px] text-rose-400 hover:underline">
+              รีเซ็ตพอร์ต $1,000
+            </button>
+          </div>
+
+          <!-- Trade Performance Mini Stats -->
+          <div class="grid grid-cols-3 gap-1.5 p-2 rounded-lg bg-[#070B14] border border-slate-800 text-[10px] font-mono text-center">
+            <div>
+              <span class="text-slate-500 block">Win Rate</span>
+              <strong id="journal-winrate" class="text-emerald-400 font-bold">100%</strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block">กำไรสะสม</span>
+              <strong id="journal-net-pnl" class="text-emerald-400 font-bold">+$0.00</strong>
+            </div>
+            <div>
+              <span class="text-slate-500 block">จำนวนไม้</span>
+              <strong id="journal-total-count" class="text-amber-400 font-bold">0 ไม้</strong>
+            </div>
+          </div>
+
+          <!-- Journal Table / List -->
+          <div class="space-y-1.5 max-h-44 overflow-y-auto pr-1" id="journal-list">
+            <div class="text-center py-4 text-slate-500 text-[11px] font-mono">
+              ยังไม่มีประวัติการเทรด (ไม้ที่ปิดจะถูกบันทึกเพื่อจูน AI ที่นี่)
+            </div>
           </div>
         </div>
       </div>
@@ -448,8 +483,8 @@
 
       <!-- Bottom Account Equity Mini-Bar -->
       <div class="p-3 bg-[#0B0F19] border-t border-[#161F2E] flex justify-between items-center text-[11px] font-mono">
-        <span class="text-slate-400">Equity: <strong class="text-emerald-400" id="acc-equity">$31,694.50</strong></span>
-        <span class="text-slate-400">กำไรวันนี้: <strong class="text-emerald-400">+$528.50 (+1.68%)</strong></span>
+        <span class="text-slate-400">Equity: <strong class="text-emerald-400" id="acc-equity">$1,000.00</strong></span>
+        <span class="text-slate-400">กำไรสุทธิ: <strong class="text-emerald-400" id="acc-profit">+$0.00 (+0.00%)</strong></span>
       </div>
 
     </div>
@@ -1085,9 +1120,10 @@
   <script>
     let currentAsset = 'BTCUSD';
     let currentTimeframe = '5';
-    let isAutoPilot = true;
-    let balance = 31430.0;
+    let balance = 1000.0;
+    let initialBalance = 1000.0;
     let openPositions = [];
+    let tradeJournal = [];
 
     // Real-time Live Market Prices (Gold Spot & Bitcoin)
     let livePrices = { XAUUSD: 4205.50, BTCUSD: 83450.00 };
@@ -1824,29 +1860,64 @@
       document.getElementById('signal-popup-modal').classList.add('hidden');
     }
 
+    function showToastAlert(msg) {
+      let toast = document.getElementById('app-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-toast';
+        toast.className = "fixed top-16 right-4 z-50 px-4 py-2.5 rounded-xl bg-emerald-950 border border-emerald-500/60 text-emerald-200 font-bold text-xs shadow-2xl transition-all duration-300 flex items-center gap-2";
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<span class="animate-bounce">⚡</span> <span>${msg}</span>`;
+      toast.classList.remove('hidden');
+      setTimeout(() => { toast.classList.add('hidden'); }, 4000);
+    }
+
+    // Trigger Signal & Auto-Execute Trade (0.02 Lot)
+    function triggerSignalPopupDemo() {
+      playAlertBeep();
+      const profile = timeframeProfiles[currentTimeframe] || timeframeProfiles['5'];
+      const p = currentAsset === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
+      const isGold = currentAsset === 'XAUUSD';
+      const slDist = isGold ? profile.xauSL : profile.btcSL;
+      const tp1Dist = isGold ? profile.xauTP1 : profile.btcTP1;
+      const tp2Dist = isGold ? profile.xauTP2 : profile.btcTP2;
+
+      const sl = isGold ? (p - slDist).toFixed(2) : (p - slDist).toFixed(1);
+      const tp1 = isGold ? (p + tp1Dist).toFixed(2) : (p + tp1Dist).toFixed(1);
+      const tp2 = isGold ? (p + tp2Dist).toFixed(2) : (p + tp2Dist).toFixed(1);
+
+      document.getElementById('popup-title').innerHTML = `${currentAsset} ↗ STRONG BUY <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">${profile.name}</span>`;
+      document.getElementById('popup-score').innerText = `${profile.score} (A+ Grade Confluence)`;
+      document.getElementById('popup-entry').innerText = `$${p}`;
+      document.getElementById('popup-sl').innerText = `$${sl}`;
+      document.getElementById('popup-tp1').innerText = `$${tp1}`;
+      document.getElementById('popup-tp2').innerText = `$${tp2}`;
+
+      document.getElementById('signal-popup-modal').classList.remove('hidden');
+
+      // ⚡ Auto-Execute Trade immediately on Signal (Lot 0.02, ทุน 1,000 เหรียญ)
+      autoExecuteSignalTrade('BUY', currentAsset, p);
+    }
+
+    function closeSignalPopup() {
+      document.getElementById('signal-popup-modal').classList.add('hidden');
+    }
+
     function confirmPopupExecution() {
       closeSignalPopup();
-      executeQuickTrade('BUY');
+      autoExecuteSignalTrade('BUY', currentAsset);
     }
 
     function calculateLotDynamically() {
       const balInput = document.getElementById('input-balance');
-      balance = parseFloat(balInput.value) || 31430.0;
-      const riskPct = parseFloat(document.getElementById('select-risk').value);
-      const riskDollar = balance * (riskPct / 100.0);
-
-      document.getElementById('calc-loss').innerText = `-$${riskDollar.toFixed(2)}`;
-
-      // Lot Calculation formula based on asset pip distance
-      let calculatedLot = 0.01;
-      if (currentAsset === 'XAUUSD') {
-        calculatedLot = (riskDollar / 800.0).toFixed(2); // ~80 pips risk
-      } else {
-        calculatedLot = (riskDollar / 1200.0).toFixed(2); // ~$1,200 risk per BTC
-      }
-      calculatedLot = Math.max(0.01, calculatedLot);
-      document.getElementById('calc-lot').innerText = calculatedLot;
-      document.getElementById('btn-exec-text').innerText = `⚡ จำลองเปิดคำสั่ง BUY ในเทอร์มินอล (Lot ${calculatedLot})`;
+      balance = parseFloat(balInput.value) || 1000.0;
+      
+      // Fixed 0.02 Lot as instructed by user
+      const calculatedLot = 0.02;
+      document.getElementById('calc-lot').innerText = "0.02";
+      document.getElementById('btn-exec-text').innerText = `⚡ เปิดคำสั่ง BUY ทันที (Lot 0.02)`;
+      updateAccountEquityUI();
     }
 
     function toggleAutoPilot() {
@@ -1859,6 +1930,7 @@
         btn.className = "px-3 py-1 rounded-lg bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 font-bold flex items-center gap-1.5 transition-all";
         dot.className = "w-2 h-2 rounded-full bg-emerald-400";
         lbl.innerText = "Auto-Pilot: เปิด";
+        showToastAlert("Auto-Pilot เปิดใช้งาน: พร้อมเปิดออเดอร์ 0.02 ทันทีเมื่อมี Signal");
       } else {
         btn.className = "px-3 py-1 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 font-bold flex items-center gap-1.5 transition-all";
         dot.className = "w-2 h-2 rounded-full bg-slate-500";
@@ -1866,48 +1938,115 @@
       }
     }
 
-    let isTradingInProgress = false;
-
-    function executeQuickTrade(action) {
-      if (isTradingInProgress) return;
-
-      // Institutional Risk Rule: Maximum 1 active position per asset (Prevent Overtrading & High DD)
-      const existing = openPositions.find(p => p.symbol === currentAsset);
+    // Auto-Execute Signal Trade with 0.02 Lot & Simulated $1000 Account
+    function autoExecuteSignalTrade(action = 'BUY', symbol = currentAsset, customPrice = null) {
+      // Risk Rule: Maximum 1 active position per asset (Prevent Overtrading)
+      const existing = openPositions.find(p => p.symbol === symbol);
       if (existing) {
-        alert(`⚠️ มีออเดอร์ ${currentAsset} ถือครองอยู่แล้วในพอร์ต!\n\nตามหลักการบริหารความเสี่ยงระดับสถาบัน (Risk Cap 1.5%): ไม่อนุญาตให้ออกไม้ซ้ำซ้อนเพื่อรักษา Max Drawdown ต่ำกว่า 2.7%\n\nกรุณากด 'ปิดทำกำไร' ออเดอร์เดิมก่อนเปิดออเดอร์ใหม่ครับ`);
+        console.log(`[RISK CAP] ออเดอร์ ${symbol} กำลังถือครองอยู่แล้ว`);
         return;
       }
 
-      isTradingInProgress = true;
-      const lot = parseFloat(document.getElementById('calc-lot').innerText) || 0.39;
-      const p = currentAsset === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
-      const slDist = currentAsset === 'XAUUSD' ? 8.5 : 450.0;
+      const p = customPrice || (symbol === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD);
+      const isGold = symbol === 'XAUUSD';
+      const dec = isGold ? 2 : 1;
+      const slDist = isGold ? 4.5 : 450.0;
+      const tp1Dist = isGold ? 6.5 : 650.0;
+      const tp2Dist = isGold ? 14.0 : 1400.0;
+
       const slPrice = action === 'BUY' ? p - slDist : p + slDist;
+      const tp1Price = action === 'BUY' ? p + tp1Dist : p - tp1Dist;
+      const tp2Price = action === 'BUY' ? p + tp2Dist : p - tp2Dist;
 
-      openPositions.push({
+      const newPos = {
         id: Date.now(),
-        symbol: currentAsset,
+        ticket: Math.floor(100000 + Math.random() * 900000),
+        symbol: symbol,
         type: action,
-        lot: lot,
-        entry: p,
-        sl: slPrice,
-        pnl: 0.0
-      });
+        lot: 0.02, // ทุน 1000 เหรียญ ออก Lot 0.02 ตามคำขอ
+        entry: parseFloat(p.toFixed(dec)),
+        sl: parseFloat(slPrice.toFixed(dec)),
+        tp1: parseFloat(tp1Price.toFixed(dec)),
+        tp2: parseFloat(tp2Price.toFixed(dec)),
+        pnl: 0.0,
+        timeOpen: new Date().toLocaleTimeString('th-TH'),
+        tp1Hit: false,
+        breakevenLocked: false,
+        reason: "Smart Money A+ Setup (Liquidity Sweep + FVG Rebalance)"
+      };
 
+      openPositions.push(newPos);
       renderPositions();
-      alert(`✅ สั่งเปิดคำสั่ง ${action} ${currentAsset} (Lot ${lot}) สำเร็จเรียบร้อย!\nEntry: ${p} | SL: ${slPrice} (ส่งคำสั่งเข้า MT5 EA เรียบร้อยแล้ว)`);
-      
-      setTimeout(() => { isTradingInProgress = false; }, 1000);
+      playAlertBeep();
+      showToastAlert(`⚡ [Signal Triggered] เปิดคำสั่ง ${action} ${symbol} (Lot 0.02) เรียบร้อยแล้ว`);
+    }
+
+    function executeQuickTrade(action) {
+      autoExecuteSignalTrade(action, currentAsset);
     }
 
     function executeOrderFromPanel(action) {
-      executeQuickTrade(action);
+      autoExecuteSignalTrade(action, currentAsset);
     }
 
+    // Close Position & Record to Trade Journal for AI Continuous Improvement
     function closePosition(btn, id) {
+      const pos = openPositions.find(p => p.id === id);
+      if (!pos) return;
+
+      const currentP = pos.symbol === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
+      const isGold = pos.symbol === 'XAUUSD';
+      const dec = isGold ? 2 : 1;
+      
+      let pnlDollar = 0;
+      if (isGold) {
+        // 0.02 lot = 2 oz, $1 move = $2
+        pnlDollar = pos.type === 'BUY' ? (currentP - pos.entry) * 2.0 : (pos.entry - currentP) * 2.0;
+      } else {
+        // 0.02 BTC
+        pnlDollar = pos.type === 'BUY' ? (currentP - pos.entry) * 0.02 : (pos.entry - currentP) * 0.02;
+      }
+      pnlDollar = parseFloat(pnlDollar.toFixed(2));
+
+      // Update Simulated Balance
+      balance += pnlDollar;
+
+      // Create Trade Journal Entry
+      const journalEntry = {
+        id: pos.id,
+        ticket: pos.ticket,
+        symbol: pos.symbol,
+        type: pos.type,
+        lot: 0.02,
+        entry: pos.entry,
+        exit: parseFloat(currentP.toFixed(dec)),
+        pnl: pnlDollar,
+        pnlPct: parseFloat(((pnlDollar / balance) * 100).toFixed(2)),
+        win: pnlDollar >= 0,
+        timeOpen: pos.timeOpen,
+        timeClose: new Date().toLocaleTimeString('th-TH'),
+        reason: pos.reason,
+        aiFeedback: pnlDollar >= 0 
+          ? "🎯 กำไรตามเป้า: เสริมน้ำหนัก SMC +0.5% เข้าสู่ Neural Feature Store" 
+          : "🛑 ตัดขาดทุนตามแผน: ปรับเกณฑ์ความมั่นใจขึ้น +0.5% เพื่อความแม่นยำสูงขึ้น"
+      };
+
+      tradeJournal.unshift(journalEntry);
       openPositions = openPositions.filter(p => p.id !== id);
+      saveTradeJournal();
       renderPositions();
-      alert("✅ ปิดสถานะและล็อคกำไรเข้า Equity สำเร็จเรียบร้อย!");
+      renderJournal();
+
+      // Post to backend journal API for persistence & AI adaptation
+      try {
+        fetch('/api/journal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(journalEntry)
+        });
+      } catch (e) {}
+
+      showToastAlert(`✅ ปิดคำสั่ง #${pos.ticket} สำเร็จ! กำไร: ${pnlDollar >= 0 ? '+' : ''}$${pnlDollar} USD (บันทึกเข้า Journal แล้ว)`);
     }
 
     function closeAllPositions() {
@@ -1915,18 +2054,19 @@
         alert("ไม่มีออเดอร์ค้างในพอร์ต");
         return;
       }
-      openPositions = [];
-      renderPositions();
-      alert("✅ ปิดสถานะทั้งหมดเรียบร้อยแล้ว");
+      const ids = openPositions.map(p => p.id);
+      ids.forEach(id => closePosition(null, id));
     }
 
     function renderPositions() {
       const container = document.getElementById('position-list');
       const countEl = document.getElementById('pos-count');
-      countEl.innerText = `${openPositions.length} ไม้`;
+      if (countEl) countEl.innerText = `${openPositions.length} ไม้`;
+
+      if (!container) return;
 
       if (openPositions.length === 0) {
-        container.innerHTML = "<div class='text-center py-8 text-slate-500 text-xs font-mono'>ไม่มีออเดอร์ค้าง (พร้อมรับสัญญาณใหม่)</div>";
+        container.innerHTML = "<div class='text-center py-6 text-slate-500 text-xs font-mono'>ไม่มีออเดอร์ค้าง (ระบบพร้อมเปิด 0.02 ทันทีเมื่อมี Signal)</div>";
         return;
       }
 
@@ -1934,24 +2074,141 @@
         <div class="card-box p-3 rounded-xl border border-emerald-500/30">
           <div class="flex justify-between items-center">
             <span class="font-bold text-emerald-400 flex items-center gap-1 font-mono">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-              ${pos.type} ${pos.symbol}
+              <span class="w-2 h-2 rounded-full ${pos.pnl >= 0 ? 'bg-emerald-500' : 'bg-rose-500'} animate-pulse"></span>
+              #${pos.ticket} ${pos.type} ${pos.symbol}
             </span>
-            <span class="font-mono text-emerald-400 font-black text-sm">+$${pos.pnl.toFixed(2)} (+0.84%)</span>
+            <span class="font-mono ${pos.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-black text-sm">
+              ${pos.pnl >= 0 ? '+' : ''}$${pos.pnl.toFixed(2)} (${pos.pnl >= 0 ? '+' : ''}${((pos.pnl / balance) * 100).toFixed(2)}%)
+            </span>
           </div>
           <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-800 text-[10px] font-mono text-slate-400">
-            <div><span>Lot: </span><span class="text-white font-bold">${pos.lot}</span></div>
-            <div><span>Entry: </span><span class="text-white font-bold">${pos.entry.toFixed(1)}</span></div>
-            <div><span>SL: </span><span class="text-rose-400 font-bold">${pos.sl.toFixed(1)}</span></div>
+            <div><span>Lot: </span><strong class="text-amber-300">0.02</strong></div>
+            <div><span>Entry: </span><span class="text-white font-bold">${pos.entry}</span></div>
+            <div><span>SL: </span><span class="text-rose-400 font-bold">${pos.sl}</span></div>
           </div>
           <div class="mt-2 flex justify-between items-center text-[10px]">
-            <span class="text-slate-400">สถานะ: <span class="text-emerald-400 font-bold">SL เลื่อนบังหน้าทุนแล้ว (Breakeven)</span></span>
-            <button onclick="closePosition(this, ${pos.id})" class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500 hover:text-white transition-colors">
+            <span class="text-slate-400 font-mono">
+              ${pos.breakevenLocked ? '🛡️ <span class="text-emerald-400 font-bold">SL กันทุนแล้ว (BE)</span>' : '⏱️ ถือครอง: ' + pos.timeOpen}
+            </span>
+            <button onclick="closePosition(this, ${pos.id})" class="px-2.5 py-1 rounded bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white transition-colors font-bold">
               ปิดทำกำไร
             </button>
           </div>
         </div>
       `).join('');
+    }
+
+    // Trade Journal Rendering & Stats
+    function renderJournal() {
+      const listEl = document.getElementById('journal-list');
+      const winrateEl = document.getElementById('journal-winrate');
+      const netPnlEl = document.getElementById('journal-net-pnl');
+      const countEl = document.getElementById('journal-total-count');
+
+      if (!listEl) return;
+
+      const total = tradeJournal.length;
+      if (total === 0) {
+        listEl.innerHTML = `<div class="text-center py-4 text-slate-500 text-[11px] font-mono">ยังไม่มีประวัติการเทรด (ไม้ที่ปิดจะถูกบันทึกเพื่อจูน AI ที่นี่)</div>`;
+        if (winrateEl) winrateEl.innerText = "100%";
+        if (netPnlEl) netPnlEl.innerText = "+$0.00";
+        if (countEl) countEl.innerText = "0 ไม้";
+        return;
+      }
+
+      const wins = tradeJournal.filter(t => t.win).length;
+      const winRate = ((wins / total) * 100).toFixed(1);
+      const netProfit = tradeJournal.reduce((sum, t) => sum + (t.pnl || 0), 0);
+
+      if (winrateEl) winrateEl.innerText = `${winRate}%`;
+      if (netPnlEl) {
+        netPnlEl.innerText = `${netProfit >= 0 ? '+' : ''}$${netProfit.toFixed(2)}`;
+        netPnlEl.className = netProfit >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
+      }
+      if (countEl) countEl.innerText = `${total} ไม้ (${wins}W / ${total - wins}L)`;
+
+      listEl.innerHTML = tradeJournal.map(t => `
+        <div class="p-2 rounded-lg bg-[#0A0F1D] border ${t.win ? 'border-emerald-500/30' : 'border-rose-500/30'} text-[10px] font-mono space-y-1">
+          <div class="flex justify-between items-center">
+            <span class="font-bold ${t.type === 'BUY' ? 'text-emerald-400' : 'text-rose-400'}">
+              #${t.ticket} ${t.type} ${t.symbol} (0.02 Lot)
+            </span>
+            <span class="font-bold ${t.win ? 'text-emerald-400' : 'text-rose-400'}">
+              ${t.pnl >= 0 ? '+' : ''}$${t.pnl.toFixed(2)} (${t.pnlPct >= 0 ? '+' : ''}${t.pnlPct}%)
+            </span>
+          </div>
+          <div class="flex justify-between text-slate-400 text-[9px]">
+            <span>เข้า: $${t.entry} ➔ ออก: $${t.exit}</span>
+            <span>⏱️ ${t.timeClose}</span>
+          </div>
+          <div class="text-[9px] text-purple-300 bg-purple-950/40 px-1.5 py-0.5 rounded border border-purple-500/20">
+            🧠 ${t.aiFeedback}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateAccountEquityUI(floatingPnl = 0) {
+      const eqEl = document.getElementById('acc-equity');
+      const profEl = document.getElementById('acc-profit');
+      const equity = balance + floatingPnl;
+      const profitDollar = equity - 1000.0;
+      const profitPct = ((profitDollar / 1000.0) * 100).toFixed(2);
+
+      if (eqEl) eqEl.innerText = `$${equity.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      if (profEl) {
+        profEl.innerText = `${profitDollar >= 0 ? '+' : ''}$${profitDollar.toFixed(2)} (${profitDollar >= 0 ? '+' : ''}${profitPct}%)`;
+        profEl.className = profitDollar >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
+      }
+    }
+
+    function evaluateLivePositions() {
+      let totalFloating = 0;
+      openPositions.forEach(pos => {
+        const p = pos.symbol === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
+        const isGold = pos.symbol === 'XAUUSD';
+        let pnl = 0;
+        if (isGold) {
+          pnl = pos.type === 'BUY' ? (p - pos.entry) * 2.0 : (pos.entry - p) * 2.0;
+        } else {
+          pnl = pos.type === 'BUY' ? (p - pos.entry) * 0.02 : (pos.entry - p) * 0.02;
+        }
+        pos.pnl = parseFloat(pnl.toFixed(2));
+        totalFloating += pos.pnl;
+
+        // Auto Micro-Breakeven at +8 pips (+1.6 USD)
+        if (!pos.breakevenLocked && pnl >= 1.6) {
+          pos.breakevenLocked = true;
+          pos.sl = pos.type === 'BUY' ? pos.entry + (isGold ? 0.3 : 15.0) : pos.entry - (isGold ? 0.3 : 15.0);
+          showToastAlert(`🛡️ ออเดอร์ #${pos.ticket} เลื่อน SL บังหน้าทุน Breakeven เรียบร้อย (ไร้ความเสี่ยง 100%)`);
+        }
+      });
+
+      updateAccountEquityUI(totalFloating);
+      renderPositions();
+    }
+
+    function saveTradeJournal() {
+      try {
+        localStorage.setItem('ad_trade_journal', JSON.stringify(tradeJournal.slice(0, 100)));
+        localStorage.setItem('ad_sim_balance', balance.toFixed(2));
+      } catch (e) {}
+      renderJournal();
+      updateAccountEquityUI();
+    }
+
+    function resetSimulatedAccount() {
+      if (confirm("ต้องการรีเซ็ตพอร์ตจำลองเป็นทุนเริ่มต้น $1,000.00 และล้างประวัติเทรดใช่หรือไม่?")) {
+        balance = 1000.0;
+        openPositions = [];
+        tradeJournal = [];
+        localStorage.removeItem('ad_trade_journal');
+        localStorage.setItem('ad_sim_balance', '1000.00');
+        renderPositions();
+        renderJournal();
+        updateAccountEquityUI();
+        alert("✅ รีเซ็ตพอร์ตจำลอง $1,000.00 สำเร็จเรียบร้อย!");
+      }
     }
 
     function triggerNewsSpike() {
@@ -2226,6 +2483,7 @@
       if (bidEl) bidEl.innerText = `$${bid ? bid.toFixed(dec) : price.toFixed(dec)}`;
 
       updateNativeChartLiveTick(price);
+      evaluateLivePositions();
     }
 
     let binanceWs = null;
@@ -2298,6 +2556,9 @@
 
       // Connect World-Class Ultra Real-Time Binance WebSocket Feed (0ms delay)
       initBinanceWebSocket();
+
+      // Load Persisted Trade Journal & Balance ($1,000)
+      loadJournalAndState();
 
       // Immediate initial load via REST fallback
       fetchLiveMarketPrices().then(() => {

@@ -195,6 +195,26 @@ class handler(BaseHTTPRequestHandler):
                 "auto_broadcast_enabled": True
             }).encode("utf-8"))
 
+        # 4.5 API: Trade Journal & Memory
+        elif path == "/api/journal" or path.endswith("/journal"):
+            trades = []
+            for check_dir in ["/tmp", root_dir]:
+                p = os.path.join(check_dir, "ai_trade_journal.json")
+                if os.path.exists(p):
+                    try:
+                        with open(p, "r", encoding="utf-8") as f:
+                            trades = json.load(f)
+                            break
+                    except Exception:
+                        pass
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "trades": trades,
+                "ai_weights": ai_engine.adaptive_weights,
+                "total_trades": len(trades)
+            }).encode("utf-8"))
+
         else:
             self._set_headers(404)
             self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode("utf-8"))
@@ -203,8 +223,44 @@ class handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
 
+        # 0. Trade Journal Entry & Self-Learning Loop
+        if path == "/api/journal" or path.endswith("/journal"):
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            entry = json.loads(post_data.decode('utf-8'))
+            
+            trades = []
+            for check_dir in ["/tmp", root_dir]:
+                p = os.path.join(check_dir, "ai_trade_journal.json")
+                if os.path.exists(p):
+                    try:
+                        with open(p, "r", encoding="utf-8") as f:
+                            trades = json.load(f)
+                            break
+                    except Exception:
+                        pass
+            trades.insert(0, entry)
+            trades = trades[:200]
+            for save_dir in ["/tmp", root_dir]:
+                p = os.path.join(save_dir, "ai_trade_journal.json")
+                try:
+                    with open(p, "w", encoding="utf-8") as f:
+                        json.dump(trades, f, indent=2, ensure_ascii=False)
+                except Exception:
+                    pass
+
+            # Update AI Adaptive weights
+            ai_engine.record_trade_feedback(entry)
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "message": "บันทึกข้อมูลการเทรดเข้าสมุดบันทึก และ AI ปรับแต่งน้ำหนักโมเดลเรียบร้อย!",
+                "ai_weights": ai_engine.adaptive_weights,
+                "total_trades": len(trades)
+            }).encode("utf-8"))
+
         # 1. Feedback endpoint
-        if path == "/api/feedback" or path.endswith("/feedback"):
+        elif path == "/api/feedback" or path.endswith("/feedback"):
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
             data = json.loads(post_data.decode('utf-8'))
