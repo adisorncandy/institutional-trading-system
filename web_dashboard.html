@@ -74,9 +74,9 @@
         <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
           <span>⚡ สัญญาณ AI 90%+</span>
         </button>
-        <!-- Dedicated Orders & Evaluation Sub-Menu Button in Header -->
-        <button onclick="switchMainTab('orders')" id="nav-orders" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-emerald-500/30">
-          <span>📋 ออเดอร์ & ประเมินผล</span>
+        <!-- Dedicated Simulated Trading Portfolio Page View Button in Header -->
+        <button onclick="switchMainTab('portfolio')" id="nav-portfolio" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent hover:border-emerald-500/30">
+          <span>💼 พอร์ตจำลองเทรด & ประเมินผล</span>
           <span id="header-orders-badge" class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-500/40">2 ไม้</span>
         </button>
         <button onclick="openModal('line-modal')" class="px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs">
@@ -116,8 +116,10 @@
     </div>
   </header>
 
-  <!-- 2. UNIFIED SUB-TOOLBAR: ASSET SELECTOR, TRADING STYLE & TIME FRAME -->
-  <div class="bg-[#0A0F1A] border-b border-[#162033] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+  <!-- ==================== VIEW PAGE 1: TERMINAL & CHART WORKSPACE ==================== -->
+  <div id="view-page-terminal">
+    <!-- 2. UNIFIED SUB-TOOLBAR: ASSET SELECTOR, TRADING STYLE & TIME FRAME -->
+    <div class="bg-[#0A0F1A] border-b border-[#162033] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
     
     <!-- Left Section: Asset & Trade Style Controls -->
     <div class="flex items-center flex-wrap gap-2.5">
@@ -1178,7 +1180,373 @@
     </div>
   </section>
 
-  <!-- MODAL: LINE ALERT SETTINGS -->
+  </div> <!-- ==================== END VIEW PAGE 1: TERMINAL & CHART WORKSPACE ==================== -->
+
+  <!-- ==================== VIEW PAGE 2: DEDICATED SIMULATED TRADING PORTFOLIO & EVALUATION PAGE ==================== -->
+  <div id="view-page-portfolio" class="hidden min-h-screen bg-[#070B13] p-4 md:p-8 space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
+      
+      <!-- Top Account Navigation & Portfolio Meta Header -->
+      <div class="p-5 rounded-2xl bg-gradient-to-r from-[#0C1220] via-[#0D1526] to-[#0A101C] border border-[#1A253A] shadow-2xl flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <button onclick="switchMainTab('terminal')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center gap-1.5 transition-all border border-slate-700 shadow-sm">
+              <span>← กลับสู่หน้ากราฟ & เทอร์มินอล</span>
+            </button>
+            <span class="text-slate-500">|</span>
+            <span class="text-xs text-amber-400 font-mono font-bold flex items-center gap-1">
+              <span>💼 บัญชีพอร์ตจำลองสถาบัน</span>
+            </span>
+          </div>
+
+          <div class="mt-2.5 flex items-center flex-wrap gap-2.5">
+            <h1 class="text-xl md:text-2xl font-black text-white font-mono tracking-tight flex items-center gap-2">
+              <span>พอร์ตการลงทุนจำลองสถาบัน</span>
+              <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-mono font-bold">#SIM-884920</span>
+            </h1>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Server: AD-Institutional-Cloud</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Leverage: 1:100</span>
+            <span class="text-[11px] px-2 py-0.5 rounded-md bg-[#131C2E] text-slate-300 font-mono border border-slate-700">Currency: USD ($)</span>
+          </div>
+          <p class="text-slate-400 text-xs mt-1.5">
+            เก็บบันทึกประวัติและสถิติแบบพอร์ตการลงทุนจริง แยกการประเมินผลอย่างเหมาะสมระหว่าง <strong class="text-amber-300">พอร์ตเทรดสั้น (Scalp M5)</strong> และ <strong class="text-cyan-300">พอร์ตเทรดยาว (Swing H1)</strong>
+          </p>
+        </div>
+
+        <!-- Portfolio Quick Action Toolbar -->
+        <div class="flex items-center flex-wrap gap-2">
+          <button onclick="triggerScalpDemoTrade()" class="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 font-bold border border-amber-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>⚡ + เปิดไม้เทรดสั้น (0.02)</span>
+          </button>
+          <button onclick="triggerSwingDemoTrade()" class="px-3.5 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 font-bold border border-cyan-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>🌊 + เปิดไม้เทรดยาว (0.02)</span>
+          </button>
+          <button onclick="exportPortfolioStatementCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-bold border border-emerald-500/40 text-xs flex items-center gap-1.5 transition-all shadow-sm">
+            <span>📥 ส่งออก Statement (CSV)</span>
+          </button>
+          <button onclick="resetSimulatedAccount()" class="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-bold border border-rose-500/30 text-xs transition-all">
+            <span>🔄 รีเซ็ตพอร์ต $1,000</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Broker Financial Statement Overview (4 Master KPI Cards - เสมือนดูพอร์ตจริง) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+        <!-- 1. Account Balance Card -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="font-bold flex items-center gap-1.5">
+              <span>💰 Balance (ยอดเงินในบัญชี)</span>
+            </span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">ทุนตั้งต้น $1,000</span>
+          </div>
+          <div class="my-2.5">
+            <strong class="text-2xl text-white font-black" id="port-bal-val">$1,000.00</strong>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 flex justify-between text-[11px]">
+            <span class="text-slate-400">กำไรสุทธิที่ปิดแล้ว:</span>
+            <strong id="port-realized-pnl" class="text-emerald-400">+$0.00 (+0.00%)</strong>
+          </div>
+        </div>
+
+        <!-- 2. Account Equity Card -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-emerald-500/30 shadow-xl flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+              <span>📈 Equity (มูลค่าสินทรัพย์สด)</span>
+            </span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 font-bold">Real-Time WS</span>
+          </div>
+          <div class="my-2.5">
+            <strong class="text-2xl text-emerald-400 font-black" id="port-equity-val">$1,007.80</strong>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 flex justify-between text-[11px]">
+            <span class="text-slate-400">กำไรลอยตัว (Floating):</span>
+            <strong id="port-floating-pnl" class="text-emerald-400 font-bold">+$7.80 (+0.78%)</strong>
+          </div>
+        </div>
+
+        <!-- 3. Margin & Safety Card -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="font-bold flex items-center gap-1.5">
+              <span>🛡️ Margin & Free Margin</span>
+            </span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Margin Level: 5,039%</span>
+          </div>
+          <div class="my-2 text-[11px] space-y-1">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Margin ที่ใช้:</span>
+              <strong class="text-amber-300" id="port-margin-val">$20.00 (0.02 Lot)</strong>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Free Margin ว่าง:</span>
+              <strong class="text-white" id="port-free-margin">$987.80</strong>
+            </div>
+          </div>
+          <div class="pt-1.5 border-t border-slate-800/80 text-[10px] text-emerald-400 font-bold">
+            ✓ สถานะพอร์ต: ปลอดภัยระดับสูงสุด ไร้ความเสี่ยง Margin Call
+          </div>
+        </div>
+
+        <!-- 4. Institutional Health Score Card -->
+        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
+          <div class="flex justify-between items-center text-slate-400">
+            <span class="font-bold flex items-center gap-1.5">
+              <span>🎯 Institutional Health</span>
+            </span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">AI Confluence</span>
+          </div>
+          <div class="my-2 grid grid-cols-2 gap-2 text-[11px]">
+            <div>
+              <span class="text-slate-400 block text-[10px]">Win Rate รวม:</span>
+              <strong class="text-emerald-400 font-bold text-sm" id="port-stat-winrate">89.5%</strong>
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[10px]">Profit Factor:</span>
+              <strong class="text-amber-300 font-bold text-sm" id="port-stat-pf">2.85</strong>
+            </div>
+          </div>
+          <div class="pt-1.5 border-t border-slate-800/80 flex justify-between text-[10px]">
+            <span class="text-slate-400">Max DD: <strong class="text-white">1.2%</strong></span>
+            <span class="text-slate-400">Risk / ไม้: <strong class="text-emerald-400">0.8%</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portfolio Dedicated Tabs (แยกการประเมินตามความเหมาะสมใช้งาน 4 หมวดหมู่) -->
+      <div class="rounded-2xl border border-[#1A2538] bg-[#0A0F1A] p-4 md:p-6 space-y-6 shadow-2xl">
+        
+        <!-- Tab Navigation Bar -->
+        <div class="flex items-center flex-wrap gap-2 border-b border-[#182338] pb-3 text-xs font-semibold">
+          <button onclick="switchPortTab('scalp')" id="btn-ptab-scalp" class="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 shadow-sm transition-all">
+            <span>⚡ 1. พอร์ตเทรดสั้น (M1/M5 Scalping Portfolio)</span>
+            <span id="ptab-scalp-cnt" class="px-2 py-0.5 rounded-full bg-amber-950 text-amber-200 text-[10px] font-mono">1</span>
+          </button>
+          <button onclick="switchPortTab('swing')" id="btn-ptab-swing" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all">
+            <span>🌊 2. พอร์ตเทรดยาว (H1/H4 Swing Trading Portfolio)</span>
+            <span id="ptab-swing-cnt" class="px-2 py-0.5 rounded-full bg-slate-800 text-cyan-200 text-[10px] font-mono">1</span>
+          </button>
+          <button onclick="switchPortTab('hybrid')" id="btn-ptab-hybrid" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all">
+            <span>⚖️ 3. กลยุทธ์สถาบัน & การเติบโตของพอร์ต (Institutional Hybrid Growth)</span>
+          </button>
+          <button onclick="switchPortTab('statement')" id="btn-ptab-statement" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all">
+            <span>📜 4. รายงานประวัติคำสั่งทั้งหมด (Account Statement)</span>
+            <span id="ptab-stmt-cnt" class="px-2 py-0.5 rounded-full bg-slate-800 text-purple-200 text-[10px] font-mono">0</span>
+          </button>
+        </div>
+
+        <!-- ==================== TAB 1: SCALPING PORTFOLIO ==================== -->
+        <div id="port-view-scalp" class="space-y-4">
+          <!-- Scalp Assessment Banner -->
+          <div class="p-4 rounded-xl bg-[#0D1424] border border-amber-500/30 space-y-2">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <h3 class="font-bold text-amber-300 text-sm flex items-center gap-2">
+                <span>🎯 บทวิเคราะห์ความเหมาะสมและการใช้งาน: ระบบเทรดสั้น (M5 Scalping)</span>
+              </h3>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono text-[11px] font-bold">
+                Win Rate สถิติ 10 ปี: 88.5%
+              </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs text-slate-300">
+              <div class="p-2.5 rounded-lg bg-[#070B14] border border-slate-800">
+                <span class="text-slate-400 block text-[10px]">วัตถุประสงค์หลัก:</span>
+                <strong class="text-white">สร้างกระแสเงินสดรายวัน (Daily Cash Flow)</strong>
+                <p class="text-[10px] text-slate-400 mt-1">เก็บกำไรเร็ว 6-10 Pips ต่อไม้ ปิดจบในวัน ไม่ถือข้ามคืน ไร้ค่าธรรมเนียม Swap</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070B14] border border-slate-800">
+                <span class="text-slate-400 block text-[10px]">กลยุทธ์เข้าทำ (Setup):</span>
+                <strong class="text-amber-300">SMC Liquidity Sweep + Fair Value Gap (FVG)</strong>
+                <p class="text-[10px] text-slate-400 mt-1">ตรวจจับจังหวะสถาบันกวาดสภาพคล่องแล้วรีบาลานซ์ช่องว่างราคาบนไทม์เฟรม M5</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070B14] border border-slate-800">
+                <span class="text-slate-400 block text-[10px]">การจัดการความเสี่ยง (Risk Management):</span>
+                <strong class="text-emerald-400">Micro-Breakeven ทันทีเมื่อ +8 Pips</strong>
+                <p class="text-[10px] text-slate-400 mt-1">เมื่อกำไรแตะ +8 Pips (+1.60 USD) ระบบจะย้าย SL มากันหน้าทุนทันที ทำให้ไม้นั้นไร้ความเสี่ยง 100%</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Scalp Orders List -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold text-white text-xs flex items-center gap-2">
+                <span>📋 ออเดอร์เทรดสั้นที่กำลังรันอยู่ (Active Scalping Trades)</span>
+              </h4>
+              <button onclick="triggerScalpDemoTrade()" class="text-amber-300 hover:underline text-xs font-mono">
+                + ยิงทดสอบคำสั่งสั้น 0.02 Lot
+              </button>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left text-xs font-mono">
+                <thead class="bg-[#0D1424] text-slate-400 uppercase text-[10px] border-b border-slate-800">
+                  <tr>
+                    <th class="py-2.5 px-3">Ticket / คู่เงิน</th>
+                    <th class="py-2.5 px-3">คำสั่ง / ขนาด</th>
+                    <th class="py-2.5 px-3">ราคาเข้า (Entry)</th>
+                    <th class="py-2.5 px-3">ราคาตลาดสด</th>
+                    <th class="py-2.5 px-3">กำไรสด (PnL)</th>
+                    <th class="py-2.5 px-3">เป้าหมาย SL / TP</th>
+                    <th class="py-2.5 px-3">การประเมินผล AI สด</th>
+                    <th class="py-2.5 px-3 text-right">การจัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="port-table-scalp-body" class="divide-y divide-slate-800/80 text-slate-300">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB 2: SWING PORTFOLIO ==================== -->
+        <div id="port-view-swing" class="hidden space-y-4">
+          <!-- Swing Assessment Banner -->
+          <div class="p-4 rounded-xl bg-[#0D1424] border border-cyan-500/30 space-y-2">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <h3 class="font-bold text-cyan-300 text-sm flex items-center gap-2">
+                <span>🌊 บทวิเคราะห์ความเหมาะสมและการใช้งาน: ระบบเทรดยาว (H1 Swing Trading)</span>
+              </h3>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono text-[11px] font-bold">
+                Win Rate สถิติ 10 ปี: 92.4% | R:R 1:2.80
+              </span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 text-xs text-slate-300">
+              <div class="p-2.5 rounded-lg bg-[#070B14] border border-slate-800">
+                <span class="text-slate-400 block text-[10px]">วัตถุประสงค์หลัก:</span>
+                <strong class="text-white">ปั้นพอร์ตเติบโตระยะยาว (Capital Growth & Compounding)</strong>
+                <p class="text-[10px] text-slate-400 mt-1">กินกำไรคำใหญ่ 25-60 Pips ต่อไม้ เหมาะสำหรับผู้ที่ไม่ต้องการเฝ้าจอตลอดทั้งวัน</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070B14] border border-slate-800">
+                <span class="text-slate-400 block text-[10px]">กลยุทธ์เข้าทำ (Setup):</span>
+                <strong class="text-cyan-300">H1/H4 Institutional Order Block + Trend Alignment</strong>
+                <p class="text-[10px] text-slate-400 mt-1">จับทิศทางต้นน้ำของเม็ดเงินกองทุนใหญ่ อาศัยการเบรคแนวต้านสำคัญระดับ Daily/H4</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#070B14] border border-slate-800">
+                <span class="text-slate-400 block text-[10px]">การจัดการความเสี่ยง (Risk Management):</span>
+                <strong class="text-emerald-400">Partial Close 75% ที่ TP1 + รันเทรนด์ 25% สู่ TP2</strong>
+                <p class="text-[10px] text-slate-400 mt-1">เมื่อแตะ TP1 แบ่งปิดล็อกกำไร 75% ทันที และปล่อยอีก 25% รันเทรนด์ยาวสู่เป้าหมาย TP2 ไร้แรงกดดัน</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Swing Orders List -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold text-white text-xs flex items-center gap-2">
+                <span>📋 ออเดอร์เทรดยาวที่กำลังรันอยู่ (Active Swing Trades)</span>
+              </h4>
+              <button onclick="triggerSwingDemoTrade()" class="text-cyan-300 hover:underline text-xs font-mono">
+                + ยิงทดสอบคำสั่งยาว 0.02 Lot
+              </button>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left text-xs font-mono">
+                <thead class="bg-[#0D1424] text-slate-400 uppercase text-[10px] border-b border-slate-800">
+                  <tr>
+                    <th class="py-2.5 px-3">Ticket / คู่เงิน</th>
+                    <th class="py-2.5 px-3">คำสั่ง / ขนาด</th>
+                    <th class="py-2.5 px-3">ราคาเข้า (Entry)</th>
+                    <th class="py-2.5 px-3">ราคาตลาดสด</th>
+                    <th class="py-2.5 px-3">กำไรสด (PnL)</th>
+                    <th class="py-2.5 px-3">เป้าหมาย SL / TP</th>
+                    <th class="py-2.5 px-3">การประเมินผล AI สด</th>
+                    <th class="py-2.5 px-3 text-right">การจัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="port-table-swing-body" class="divide-y divide-slate-800/80 text-slate-300">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB 3: HYBRID STRATEGY & GROWTH ==================== -->
+        <div id="port-view-hybrid" class="hidden space-y-4">
+          <div class="p-4 rounded-xl bg-[#0D1424] border border-purple-500/30 space-y-3">
+            <h3 class="font-bold text-purple-300 text-sm flex items-center gap-2">
+              <span>⚖️ กลยุทธ์การบริหารพอร์ตแบบผสมผสานสถาบัน (Hedge Fund Hybrid Execution)</span>
+            </h3>
+            <p class="text-slate-300 text-xs leading-relaxed">
+              ในระดับกองทุนสถาบัน การเทรดจะไม่พึ่งพาวิธีใดวิธีหนึ่งเพียงอย่างเดียว แต่จะใช้หลักการ <strong>"เทรดสั้นเป็นเกราะคุ้มกัน เทรดยาวเป็นตัวสร้างความมั่งคั่ง"</strong>:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1 text-xs">
+              <div class="p-3.5 rounded-xl bg-[#080C16] border border-amber-500/20 space-y-1.5">
+                <strong class="text-amber-300">1. บทบาทของพอร์ตเทรดสั้น (Profit Buffer)</strong>
+                <p class="text-slate-400 text-[11px] leading-relaxed">
+                  กำไรที่เก็บได้เป็นรายวันจาก M5 จะถูกนำมาเป็นเบาะรองรับความเสี่ยง (Risk Cushion) ทำให้ผู้ใช้มีกระแสเงินสดหมุนเวียนต่อเนื่อง และไม่เกิดความตึงเครียดทางอารมณ์
+                </p>
+              </div>
+              <div class="p-3.5 rounded-xl bg-[#080C16] border border-cyan-500/20 space-y-1.5">
+                <strong class="text-cyan-300">2. บทบาทของพอร์ตเทรดยาว (Wealth Driver)</strong>
+                <p class="text-slate-400 text-[11px] leading-relaxed">
+                  เมื่อมีกำไรจากเทรดสั้นคอยหนุนหลัง พอร์ตเทรดยาว H1 จะสามารถถือรันเทรนด์กินระยะ 30-60 Pips ได้อย่างใจเย็นโดยไม่ต้องกังวลการย่อตัวระยะสั้น
+                </p>
+              </div>
+            </div>
+
+            <!-- Capital Allocation Blueprint -->
+            <div class="pt-3 border-t border-slate-800">
+              <h4 class="font-bold text-white text-xs mb-2">📊 สัดส่วนการจัดสรรเงินทุนจำลอง ($1,000 Capital Allocation):</h4>
+              <div class="grid grid-cols-3 gap-2 text-center font-mono text-[11px]">
+                <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+                  <span class="text-slate-400 block text-[10px]">ทุนสำรองสภาพคล่อง:</span>
+                  <strong class="text-emerald-400 text-sm">$700 (70%)</strong>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+                  <span class="text-slate-400 block text-[10px]">โควต้าเทรดสั้น (Scalp):</span>
+                  <strong class="text-amber-300 text-sm">$150 (Margin $10)</strong>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+                  <span class="text-slate-400 block text-[10px]">โควต้าเทรดยาว (Swing):</span>
+                  <strong class="text-cyan-300 text-sm">$150 (Margin $10)</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB 4: COMPLETE ACCOUNT STATEMENT ==================== -->
+        <div id="port-view-statement" class="hidden space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                <span>📜 รายงานประวัติคำสั่งทั้งหมด (Broker Account Statement Ledger)</span>
+              </h3>
+              <p class="text-slate-400 text-xs mt-0.5">บันทึกข้อมูลทุกออเดอร์อย่างละเอียดตามมาตรฐานโบรกเกอร์ระดับสากล</p>
+            </div>
+            <button onclick="exportPortfolioStatementCSV()" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md">
+              <span>📥 ดาวน์โหลดไฟล์ CSV</span>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-800">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-[#0D1424] text-slate-400 uppercase text-[10px] border-b border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">Ticket ID</th>
+                  <th class="py-2.5 px-3">วันเวลา (Open/Close)</th>
+                  <th class="py-2.5 px-3">คู่เงิน / สไตล์</th>
+                  <th class="py-2.5 px-3">คำสั่ง / Lot</th>
+                  <th class="py-2.5 px-3">ราคาเปิด</th>
+                  <th class="py-2.5 px-3">ราคาปิด</th>
+                  <th class="py-2.5 px-3">กำไรสุทธิ ($)</th>
+                  <th class="py-2.5 px-3">ผลตอบแทน (%)</th>
+                  <th class="py-2.5 px-3">เหตุผล & AI Learning Note</th>
+                </tr>
+              </thead>
+              <tbody id="port-statement-table-body" class="divide-y divide-slate-800/80 text-slate-300">
+                <!-- Dynamically populated from tradeJournal -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div> <!-- ==================== END VIEW PAGE 2: PORTFOLIO & EVALUATION ==================== -->
   <div id="line-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
     <div class="card-box w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl">
       <div class="flex justify-between items-center pb-3 border-b border-slate-800">
@@ -2760,6 +3128,7 @@
           `).join('');
         }
       }
+      renderPortfolioPage();
     }
 
     // Trade Journal Rendering & Stats
@@ -2818,6 +3187,7 @@
 
       if (listEl) listEl.innerHTML = journalHtml;
       if (fullListEl) fullListEl.innerHTML = journalHtml;
+      renderPortfolioPage();
     }
 
     function updateAccountEquityUI(floatingPnl = 0) {
@@ -3187,24 +3557,243 @@
     function switchMainTab(tab) {
       const navTerminal = document.getElementById('nav-terminal');
       const navSignals = document.getElementById('nav-signals');
-      const navOrders = document.getElementById('nav-orders');
+      const navPortfolio = document.getElementById('nav-portfolio');
 
-      const defClass = "px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs";
+      const pageTerminal = document.getElementById('view-page-terminal');
+      const pagePortfolio = document.getElementById('view-page-portfolio');
+
+      const defClass = "px-3.5 py-1.5 rounded-xl hover:bg-[#121A2A] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-2 text-xs border border-transparent";
       const actClass = "px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/10 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 text-xs shadow-sm transition-all";
 
       if (navTerminal) navTerminal.className = tab === 'terminal' ? actClass : defClass;
       if (navSignals) navSignals.className = tab === 'signals' ? actClass : defClass;
-      if (navOrders) navOrders.className = tab === 'orders' ? actClass : defClass;
+      if (navPortfolio) navPortfolio.className = tab === 'portfolio' ? actClass : defClass;
 
-      if (tab === 'signals') {
-        switchCockpitTab('signals');
-        window.scrollTo({ top: 120, behavior: 'smooth' });
-      } else if (tab === 'orders') {
-        const el = document.getElementById('orders-evaluation-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else {
+      if (tab === 'portfolio') {
+        if (pageTerminal) pageTerminal.classList.add('hidden');
+        if (pagePortfolio) pagePortfolio.classList.remove('hidden');
+        renderPortfolioPage();
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        if (pagePortfolio) pagePortfolio.classList.add('hidden');
+        if (pageTerminal) pageTerminal.classList.remove('hidden');
+
+        if (tab === 'signals') {
+          switchCockpitTab('signals');
+          window.scrollTo({ top: 120, behavior: 'smooth' });
+        } else {
+          setTimeout(resizeNativeCharts, 50);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
+    }
+
+    // Switch between Portfolio tabs: 'scalp' | 'swing' | 'hybrid' | 'statement'
+    function switchPortTab(tab) {
+      ['scalp', 'swing', 'hybrid', 'statement'].forEach(t => {
+        const view = document.getElementById(`port-view-${t}`);
+        const btn = document.getElementById(`btn-ptab-${t}`);
+        if (view) {
+          if (t === tab) view.classList.remove('hidden');
+          else view.classList.add('hidden');
+        }
+        if (btn) {
+          if (t === tab) {
+            btn.className = "px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-600/15 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 shadow-sm transition-all text-xs";
+          } else {
+            btn.className = "px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all text-xs";
+          }
+        }
+      });
+      renderPortfolioPage();
+    }
+
+    // Export Portfolio Statement to CSV (Download real statement ledger)
+    function exportPortfolioStatementCSV() {
+      if (tradeJournal.length === 0) {
+        alert("ยังไม่มีประวัติการเทรดที่ปิดแล้วในพอร์ต กรุณารอให้ออเดอร์ปิดทำกำไร หรือกดปิดออเดอร์เพื่อดูรายงาน Statement");
+        return;
+      }
+
+      let csv = "Ticket,Symbol,Style,Type,Lot,EntryPrice,ExitPrice,TimeOpen,TimeClose,NetProfit_USD,Return_Pct,AI_Feedback\n";
+      tradeJournal.forEach(t => {
+        const line = [
+          t.ticket,
+          t.symbol,
+          t.style === 'scalping' ? 'Scalp_M5' : 'Swing_H1',
+          t.type,
+          t.lot,
+          t.entry,
+          t.exit,
+          `"${t.timeOpen}"`,
+          `"${t.timeClose}"`,
+          t.pnl,
+          `${t.pnlPct}%`,
+          `"${(t.aiFeedback || '').replace(/"/g, '""')}"`
+        ].join(",");
+        csv += line + "\n";
+      });
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Institutional_Portfolio_Statement_SIM884920_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToastAlert("📥 ส่งออกรายงานพอร์ต Statement (CSV) เรียบร้อยแล้ว!");
+    }
+
+    // Render the Dedicated Portfolio Page
+    function renderPortfolioPage() {
+      const balEl = document.getElementById('port-bal-val');
+      const realizedEl = document.getElementById('port-realized-pnl');
+      const eqEl = document.getElementById('port-equity-val');
+      const floatEl = document.getElementById('port-floating-pnl');
+      const marginEl = document.getElementById('port-margin-val');
+      const freeMarginEl = document.getElementById('port-free-margin');
+      const winrateEl = document.getElementById('port-stat-winrate');
+      const pfEl = document.getElementById('port-stat-pf');
+
+      const scalpCntEl = document.getElementById('ptab-scalp-cnt');
+      const swingCntEl = document.getElementById('ptab-swing-cnt');
+      const stmtCntEl = document.getElementById('ptab-stmt-cnt');
+
+      const scalpTable = document.getElementById('port-table-scalp-body');
+      const swingTable = document.getElementById('port-table-swing-body');
+      const stmtTable = document.getElementById('port-statement-table-body');
+
+      let totalFloating = 0;
+      openPositions.forEach(p => totalFloating += (p.pnl || 0));
+
+      const equity = balance + totalFloating;
+      const realizedProfit = balance - 1000.0;
+      const realizedPct = ((realizedProfit / 1000.0) * 100).toFixed(2);
+      const marginUsed = openPositions.length * 10.0; // 0.02 Lot on 1:100 leverage ~= $10
+      const freeMargin = Math.max(0, equity - marginUsed);
+
+      if (balEl) balEl.innerText = `$${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      if (realizedEl) {
+        realizedEl.innerText = `${realizedProfit >= 0 ? '+' : ''}$${realizedProfit.toFixed(2)} (${realizedProfit >= 0 ? '+' : ''}${realizedPct}%)`;
+        realizedEl.className = realizedProfit >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
+      }
+      if (eqEl) eqEl.innerText = `$${equity.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      if (floatEl) {
+        floatEl.innerText = `${totalFloating >= 0 ? '+' : ''}$${totalFloating.toFixed(2)} (${totalFloating >= 0 ? '+' : ''}${((totalFloating / balance) * 100).toFixed(2)}%)`;
+        floatEl.className = totalFloating >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
+      }
+      if (marginEl) marginEl.innerText = `$${marginUsed.toFixed(2)} (${(openPositions.length * 0.02).toFixed(2)} Lot)`;
+      if (freeMarginEl) freeMarginEl.innerText = `$${freeMargin.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+      const totalClosed = tradeJournal.length;
+      if (stmtCntEl) stmtCntEl.innerText = totalClosed;
+      
+      const scalpPositions = openPositions.filter(p => p.style === 'scalping');
+      const swingPositions = openPositions.filter(p => p.style === 'swing');
+
+      if (scalpCntEl) scalpCntEl.innerText = scalpPositions.length;
+      if (swingCntEl) swingCntEl.innerText = swingPositions.length;
+
+      // Stats
+      if (totalClosed > 0) {
+        const wins = tradeJournal.filter(t => t.win).length;
+        const wr = ((wins / totalClosed) * 100).toFixed(1);
+        if (winrateEl) winrateEl.innerText = `${wr}%`;
+        const grossWin = tradeJournal.filter(t => t.win).reduce((sum, t) => sum + (t.pnl || 0), 0);
+        const grossLoss = Math.abs(tradeJournal.filter(t => !t.win).reduce((sum, t) => sum + (t.pnl || 0), 0));
+        const pf = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : '3.50';
+        if (pfEl) pfEl.innerText = pf;
+      }
+
+      // Render Active Scalp Table
+      if (scalpTable) {
+        if (scalpPositions.length === 0) {
+          scalpTable.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-500 text-xs font-mono">ไม่มีออเดอร์เทรดสั้นค้าง (กดปุ่ม '+ เปิดไม้เทรดสั้น' ด้านบนเพื่อทดสอบ)</td></tr>`;
+        } else {
+          scalpTable.innerHTML = scalpPositions.map(pos => renderPortfolioTableRow(pos)).join('');
+        }
+      }
+
+      // Render Active Swing Table
+      if (swingTable) {
+        if (swingPositions.length === 0) {
+          swingTable.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-slate-500 text-xs font-mono">ไม่มีออเดอร์เทรดยาวค้าง (กดปุ่ม '+ เปิดไม้เทรดยาว' ด้านบนเพื่อทดสอบ)</td></tr>`;
+        } else {
+          swingTable.innerHTML = swingPositions.map(pos => renderPortfolioTableRow(pos)).join('');
+        }
+      }
+
+      // Render Statement Table
+      if (stmtTable) {
+        if (totalClosed === 0) {
+          stmtTable.innerHTML = `<tr><td colspan="9" class="text-center py-6 text-slate-500 text-xs font-mono">ยังไม่มีประวัติคำสั่งที่ปิดแล้ว (เมื่อออเดอร์ปิดทำกำไร ระบบจะลงบัญชีสเตตเมนต์ทันที)</td></tr>`;
+        } else {
+          stmtTable.innerHTML = tradeJournal.map(t => `
+            <tr class="hover:bg-[#0E1526] transition-colors border-b border-slate-800/80">
+              <td class="py-2.5 px-3 font-mono font-bold text-amber-300">#${t.ticket}</td>
+              <td class="py-2.5 px-3 text-[10px] text-slate-400">เข้า: ${t.timeOpen}<br>ปิด: ${t.timeClose}</td>
+              <td class="py-2.5 px-3">
+                <span class="font-bold text-white">${t.symbol}</span>
+                <span class="block text-[10px] ${t.style === 'scalping' ? 'text-amber-400' : 'text-cyan-400'} font-bold">${t.style === 'scalping' ? '⚡ เทรดสั้น M5' : '🌊 เทรดยาว H1'}</span>
+              </td>
+              <td class="py-2.5 px-3">
+                <span class="px-2 py-0.5 rounded font-black text-xs ${t.type === 'BUY' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">${t.type}</span>
+                <span class="text-slate-400 text-[10px] ml-1">0.02 Lot</span>
+              </td>
+              <td class="py-2.5 px-3 font-mono text-slate-300 font-bold">$${t.entry}</td>
+              <td class="py-2.5 px-3 font-mono text-white font-bold">$${t.exit}</td>
+              <td class="py-2.5 px-3 font-mono font-bold ${t.win ? 'text-emerald-400' : 'text-rose-400'}">${t.pnl >= 0 ? '+' : ''}$${t.pnl.toFixed(2)}</td>
+              <td class="py-2.5 px-3 font-mono ${t.win ? 'text-emerald-400' : 'text-rose-400'}">${t.pnlPct >= 0 ? '+' : ''}${t.pnlPct}%</td>
+              <td class="py-2.5 px-3 text-[10px] text-purple-300 max-w-xs">🧠 ${t.aiFeedback}</td>
+            </tr>
+          `).join('');
+        }
+      }
+    }
+
+    function renderPortfolioTableRow(pos) {
+      const currentP = pos.symbol === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
+      const isGold = pos.symbol === 'XAUUSD';
+      const dec = isGold ? 2 : 1;
+      const isProfit = pos.pnl >= 0;
+
+      return `
+        <tr class="hover:bg-[#0E1526] transition-colors border-b border-slate-800/80">
+          <td class="py-3 px-3">
+            <span class="text-amber-300 font-bold block">#${pos.ticket}</span>
+            <strong class="text-white text-xs">${pos.symbol}</strong>
+          </td>
+          <td class="py-3 px-3">
+            <span class="px-2 py-0.5 rounded font-black text-xs ${pos.type === 'BUY' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">${pos.type}</span>
+            <span class="text-slate-400 text-xs ml-1 font-bold">0.02 Lot</span>
+          </td>
+          <td class="py-3 px-3 text-slate-300 font-bold">$${pos.entry.toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec})}</td>
+          <td class="py-3 px-3 text-white font-black">$${currentP.toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec})}</td>
+          <td class="py-3 px-3">
+            <strong class="font-mono text-sm font-black ${isProfit ? 'text-emerald-400' : 'text-rose-400'}">
+              ${isProfit ? '+' : ''}$${pos.pnl.toFixed(2)}
+            </strong>
+            <span class="block text-[10px] ${isProfit ? 'text-emerald-400/80' : 'text-rose-400/80'}">
+              ${pos.pips >= 0 ? '+' : ''}${pos.pips.toFixed(1)} Pips
+            </span>
+          </td>
+          <td class="py-3 px-3 text-[11px] space-y-0.5">
+            <div class="text-rose-400">SL: $${pos.sl} ${pos.breakevenLocked ? '<span class="text-emerald-400 font-bold">(กันทุน)</span>' : ''}</div>
+            <div class="text-emerald-400">TP1: $${pos.tp1}</div>
+          </td>
+          <td class="py-3 px-3 max-w-xs text-[10px] text-slate-300">
+            <div class="p-1.5 rounded bg-[#0A0E17] border border-slate-800 leading-tight">
+              ${pos.evalStatus || pos.reason}
+            </div>
+          </td>
+          <td class="py-3 px-3 text-right">
+            <button onclick="closePosition(this, ${pos.id})" class="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white font-bold text-xs transition-colors">
+              ปิดทำกำไร
+            </button>
+          </td>
+        </tr>
+      `;
     }
 
     function updateRealtimeUI(symbol, price, changePct, ask, bid) {
