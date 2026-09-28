@@ -1,0 +1,2 @@
+# Python dependencies for Vercel Serverless
+# Core engines use Python Standard Library (urllib, json, datetime, math)

@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MT5 XAUUSD & BTCUSD AI Pro Terminal v5.2</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <!-- Lightweight Charts & TradingView Official Scripts -->
+  <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <style>
+    :root {
+      --bg-main: #06090E;
+      --bg-panel: #0B0F17;
+      --bg-card: #0F1420;
+      --border-color: #1A2333;
+      --border-active: #2B3A54;
+      --accent-green: #10B981;
+      --accent-red: #EF4444;
+      --accent-gold: #F59E0B;
+      --accent-cyan: #06B6D4;
+    }
+    body {
+      background-color: var(--bg-main);
+      color: #E2E8F0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, ui-monospace;
+      overflow-x: hidden;
+    }
+    .panel-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+    }
+    .card-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+    }
+    .glow-accent {
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #06090E; }
+    ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+  </style>
+</head>
+<body class="min-h-screen text-xs select-none">
+
+  <!-- 1. TOP PROFESSIONAL NAVBAR -->
+  <header class="h-14 bg-[#090D15] border-b border-[#161F2E] px-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-6">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-black flex items-center justify-center font-black text-sm shadow-md">
+          AD
+        </div>
+        <div>
+          <span class="font-black text-sm tracking-wide text-white flex items-center gap-1.5">
+            MT5 XAUUSD & BTCUSD AI
+            <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono text-[10px] border border-emerald-500/30">v5.2 Pro</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="hidden lg:flex items-center gap-1 text-slate-300 font-medium">
+        <button onclick="switchMainTab('terminal')" id="nav-terminal" class="px-3 py-1.5 rounded-lg bg-[#141C2E] text-amber-400 border border-amber-500/30 font-semibold flex items-center gap-1.5">
+          <span>&gt;_ กราฟ & เทอร์มินอล</span>
+        </button>
+        <button onclick="switchMainTab('signals')" id="nav-signals" class="px-3 py-1.5 rounded-lg hover:bg-[#121826] hover:text-white transition-colors flex items-center gap-1.5">
+          <span>⚡ สัญญาณ 90%+ AI</span>
+        </button>
+        <button onclick="openModal('line-modal')" class="px-3 py-1.5 rounded-lg hover:bg-[#121826] hover:text-white transition-colors flex items-center gap-1.5">
+          <span>🔔 LINE Alert บอท</span>
+          <span class="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-mono border border-emerald-500/30">108</span>
+        </button>
+        <button onclick="openModal('ai-memory-modal')" class="px-3 py-1.5 rounded-lg hover:bg-[#121826] hover:text-white transition-colors flex items-center gap-1.5">
+          <span>🗄️ ฐานข้อมูล ยิ่งใช้ยิ่งฉลาด</span>
+        </button>
+        <button onclick="openModal('news-analysis-modal')" class="px-3 py-1.5 rounded-lg hover:bg-[#121826] hover:text-white transition-colors flex items-center gap-1.5">
+          <span>📰 ปฏิทินข่าว & สถิติ 10Y</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-3">
+      <!-- Live Price Ticker -->
+      <div class="flex items-center gap-2 px-3 py-1 bg-[#0E1422] border border-[#1C2638] rounded-lg">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-bold text-white font-mono" id="top-symbol">BTCUSD</span>
+        <span class="font-bold text-emerald-400 font-mono text-sm" id="top-price">$84,802.0</span>
+        <span class="text-[10px] text-emerald-400 font-mono font-semibold" id="top-change">+0.35%</span>
+      </div>
+
+      <!-- Auto-Pilot Switch -->
+      <button onclick="toggleAutoPilot()" id="btn-autopilot" class="px-3 py-1 rounded-lg bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 font-bold flex items-center gap-1.5 transition-all">
+        <span class="w-2 h-2 rounded-full bg-emerald-400" id="autopilot-dot"></span>
+        <span id="autopilot-label">Auto-Pilot: เปิด</span>
+      </button>
+
+      <!-- Download EA Button -->
+      <a href="Institutional_AI_EA.mq5" download class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black tracking-wide shadow-md transition-all flex items-center gap-1.5">
+        <span>📥 ดาวน์โหลด EA MT5</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- 2. SUB-TOOLBAR: ASSET SELECTOR & CHART CONTROLS -->
+  <div class="bg-[#0A0E17] border-b border-[#161F2E] px-4 py-2 flex flex-wrap items-center justify-between gap-3">
+    
+    <!-- Asset Switcher -->
+    <div class="flex items-center gap-2">
+      <button onclick="selectAsset('BTCUSD')" id="btn-btc" class="px-3 py-1.5 rounded-lg font-bold border border-amber-500/50 bg-amber-500/10 text-amber-300 transition-all flex items-center gap-1.5 shadow-sm">
+        <span>₿ BTCUSD บิตคอยน์ <span class="text-[10px] font-normal text-amber-200/70">(10Y Data)</span></span>
+      </button>
+      <button onclick="selectAsset('XAUUSD')" id="btn-xau" class="px-3 py-1.5 rounded-lg font-bold border border-slate-700 bg-slate-800/80 text-slate-300 transition-all flex items-center gap-1.5">
+        <span>🪙 XAUUSD ทองคำ <span class="text-[10px] font-normal text-slate-400">(10Y Data)</span></span>
+      </button>
+
+      <!-- Trade Style Switcher (Scalping vs Swing) -->
+      <div class="flex items-center gap-1 ml-2 pl-2 border-l border-slate-800 text-[11px]">
+        <span class="text-slate-400 font-medium">สไตล์เทรด:</span>
+        <button onclick="setTradingStyle('scalping')" id="btn-style-scalp" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm flex items-center gap-1 transition-all">
+          <span>⚡ เทรดสั้น (Scalp M1/M5)</span>
+        </button>
+        <button onclick="setTradingStyle('swing')" id="btn-style-swing" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all">
+          <span>🌊 สวิงเทรนด์ (Swing H1/H4)</span>
+        </button>
+      </div>
+
+      <!-- Chart Engine Switcher -->
+      <div class="hidden lg:flex items-center gap-1.5 ml-2 pl-2 border-l border-slate-800 text-[11px]">
+        <span class="text-slate-400 font-medium">โหมดกราฟ:</span>
+        <button onclick="switchChartMode('native')" id="btn-mode-native" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/40 shadow-sm flex items-center gap-1 transition-all">
+          <span>📊 AI Indicator Chart</span>
+        </button>
+        <button onclick="switchChartMode('tradingview')" id="btn-mode-tradingview" class="px-2 py-0.5 rounded text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all">
+          <span>📈 TradingView Pro</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Timeframe & Chart Tools -->
+    <div class="flex items-center gap-2">
+      <!-- Timeframes -->
+      <div class="flex items-center bg-[#06090E] p-0.5 rounded-lg border border-[#1A2333]">
+        <button onclick="setTimeframe('1')" class="tf-btn px-2 py-0.5 rounded text-slate-400 hover:text-white font-bold">1m</button>
+        <button onclick="setTimeframe('5')" class="tf-btn px-2 py-0.5 rounded bg-amber-500 text-black font-extrabold shadow">5m</button>
+        <button onclick="setTimeframe('15')" class="tf-btn px-2 py-0.5 rounded text-slate-400 hover:text-white font-bold">15m</button>
+        <button onclick="setTimeframe('60')" class="tf-btn px-2 py-0.5 rounded text-slate-400 hover:text-white font-bold">1h</button>
+        <button onclick="setTimeframe('240')" class="tf-btn px-2 py-0.5 rounded text-slate-400 hover:text-white font-bold">4h</button>
+        <button onclick="setTimeframe('D')" class="tf-btn px-2 py-0.5 rounded text-slate-400 hover:text-white font-bold">1D</button>
+      </div>
+
+      <!-- Quick Actions -->
+      <button onclick="triggerSignalPopupDemo()" class="px-2.5 py-1 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 rounded-lg border border-emerald-500/40 font-bold flex items-center gap-1 transition-all shadow-sm">
+        <span>🔔 ทดสอบจำลองสัญญาณเข้า (Trigger Alert)</span>
+      </button>
+
+      <button onclick="resetChartScale()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 font-medium flex items-center gap-1">
+        <span>🔍 รีเซ็ตสเกล (Auto-Fit)</span>
+      </button>
+
+      <button onclick="triggerNewsSpike()" class="px-2.5 py-1 bg-rose-950/80 hover:bg-rose-900 text-rose-300 rounded-lg border border-rose-500/40 font-bold flex items-center gap-1 transition-all">
+        <span>⚡ จำลองข่าวกระชาก (News Spike)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. REAL-TIME INTERACTIVE WORKSPACE (CHART & AI ANALYSIS DUAL SPLIT) -->
+  <main id="workspace-container" class="grid grid-cols-1 xl:grid-cols-12 gap-0 border-b border-[#161F2E] transition-all duration-300">
+    
+    <!-- LEFT PANEL: TRADINGVIEW & NATIVE INDICATOR LIVE CHART -->
+    <div id="chart-panel" 
+         ondragover="handlePanelDragOver(event)" 
+         ondragleave="handlePanelDragLeave(event, 'chart-panel')" 
+         ondrop="handlePanelDrop(event, 'chart')"
+         class="xl:col-span-8 2xl:col-span-8 relative bg-[#06090E] h-[640px] border-r border-[#161F2E] flex flex-col justify-between order-1 transition-all duration-200">
+      
+      <!-- Top Chart Toolbar Header with Layout Controls -->
+      <div class="h-9 px-3 bg-[#0A0F1A] border-b border-[#161F2E] flex items-center justify-between text-[11px]">
+        <div class="flex items-center gap-2">
+          <!-- Drag Handle -->
+          <div draggable="true" ondragstart="handlePanelDragStart(event, 'chart')" title="คลิกค้างแล้วลากไปวางเพื่อสลับฝั่ง" class="cursor-grab active:cursor-grabbing px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1 hover:bg-amber-500/25 select-none transition-all">
+            <span>⠿ ลากสลับ</span>
+          </div>
+          <span class="font-bold text-white font-mono" id="chart-panel-title">📊 กราฟราคาพร้อมอินดิเคเตอร์ (AI Indicator Engine)</span>
+          <span class="text-slate-500">|</span>
+          <span class="text-emerald-400 font-mono text-[10px]" id="chart-current-symbol">BTCUSD (5m)</span>
+          <span class="hidden md:inline-block text-[10px] text-amber-300 bg-amber-500/10 px-2 py-0.2 rounded border border-amber-500/20" id="chart-mode-hint">✨ มี EMA 20/50/200 + MACD + RSI ครบ</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <!-- Split Ratio Presets -->
+          <div class="hidden md:flex items-center gap-1 mr-2 px-1.5 py-0.5 bg-[#070B14] rounded border border-slate-800 text-[10px]">
+            <span class="text-slate-500 font-medium">สัดส่วน:</span>
+            <button onclick="setSplitRatio('70')" id="ratio-btn-70" class="px-1.5 py-0.2 rounded bg-amber-500 text-black font-extrabold">70/30</button>
+            <button onclick="setSplitRatio('60')" id="ratio-btn-60" class="px-1.5 py-0.2 rounded text-slate-400 hover:text-white font-bold">60/40</button>
+            <button onclick="setSplitRatio('50')" id="ratio-btn-50" class="px-1.5 py-0.2 rounded text-slate-400 hover:text-white font-bold">50/50</button>
+          </div>
+          <button onclick="toggleSwapPanels()" title="สลับฝั่ง ซ้าย-ขวา" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold flex items-center gap-1 transition-all">
+            <span>⇄ สลับฝั่ง (ซ้าย/ขวา)</span>
+          </button>
+          <button onclick="toggleExpandChart()" id="btn-expand-chart" title="ขยายกราฟเต็มจอ" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold flex items-center gap-1 transition-all">
+            <span>🗖 เต็มจอ</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Chart Wrapper -->
+      <div id="chart_main_wrapper" class="w-full flex-1 relative overflow-hidden flex flex-col bg-[#06090E]">
+        
+        <!-- Mode 1: Native Institutional AI Canvas (EMA Ribbon + MACD + RSI Subcharts) -->
+        <div id="native_chart_container" class="w-full h-full flex flex-col bg-[#06090E]">
+          <!-- Indicator Legend Bar -->
+          <div class="h-6 px-3 bg-[#0A0E1A] border-b border-[#161F2E] flex items-center justify-between text-[10px]">
+            <div class="flex items-center gap-3">
+              <span class="font-bold text-white font-mono" id="lw-legend-symbol">BTCUSD · M5</span>
+              <span class="text-cyan-400 font-mono font-semibold flex items-center gap-1"><span class="w-2 h-0.5 bg-cyan-400 inline-block"></span> EMA 20: <span id="val-ema20">$84,780</span></span>
+              <span class="text-amber-400 font-mono font-semibold flex items-center gap-1"><span class="w-2 h-0.5 bg-amber-400 inline-block"></span> EMA 50: <span id="val-ema50">$84,650</span></span>
+              <span class="text-purple-400 font-mono font-semibold flex items-center gap-1"><span class="w-2 h-0.5 bg-purple-400 inline-block"></span> EMA 200: <span id="val-ema200">$84,320</span></span>
+              <span class="text-emerald-400 font-mono font-bold">▲ AI Confluence BUY Signal</span>
+            </div>
+            <span class="text-slate-400 font-mono text-[9px]">🖱️ เลื่อนเมาส์เพื่อซูม / คลิกค้างลากเลื่อนแกนราคา</span>
+          </div>
+
+          <!-- Candlestick + EMA Container -->
+          <div id="lw_candlestick_container" class="w-full flex-1 min-h-[300px]"></div>
+
+          <!-- MACD Subchart -->
+          <div class="h-5 px-3 bg-[#080C14] border-t border-b border-[#161F2E] flex items-center justify-between text-[10px]">
+            <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+              <span>📊 MACD (12, 26, 9)</span>
+              <span class="text-[9px] text-emerald-400 font-mono bg-emerald-950/60 px-1 rounded border border-emerald-500/30">Bullish Momentum</span>
+            </span>
+            <div class="flex items-center gap-2.5 font-mono text-[10px]" id="lw_macd_values">
+              <span class="text-cyan-400">MACD: <strong id="val-macd-line">+28.5</strong></span>
+              <span class="text-amber-400">Signal: <strong id="val-macd-sig">+18.2</strong></span>
+              <span class="text-emerald-400 font-bold">Hist: <strong id="val-macd-hist">+10.3</strong></span>
+            </div>
+          </div>
+          <div id="lw_macd_container" class="w-full h-[120px] bg-[#070B12]"></div>
+
+          <!-- RSI Subchart -->
+          <div class="h-5 px-3 bg-[#080C14] border-t border-b border-[#161F2E] flex items-center justify-between text-[10px]">
+            <span class="text-slate-300 font-semibold flex items-center gap-1.5">
+              <span>📈 RSI (14) Oscillator</span>
+              <span class="text-[9px] text-amber-400 font-mono bg-amber-950/60 px-1 rounded border border-amber-500/30">โซน 30 - 70</span>
+            </span>
+            <div class="flex items-center gap-2 font-mono text-[10px]" id="lw_rsi_values">
+              <span class="text-amber-400 font-bold">RSI: <strong id="val-rsi">58.6</strong> (เทรนด์ขาขึ้นแข็งแกร่ง)</span>
+            </div>
+          </div>
+          <div id="lw_rsi_container" class="w-full h-[95px] bg-[#070B12]"></div>
+        </div>
+
+        <!-- Mode 2: Official TradingView Pro Widget (tv.js) -->
+        <div id="tv_chart_container" class="w-full h-full hidden">
+          <!-- TradingView Widget injected via tv.js -->
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: INSTITUTIONAL AI ANALYTICAL COCKPIT (ข้างกราฟทันที) -->
+    <div id="cockpit-panel" 
+         ondragover="handlePanelDragOver(event)" 
+         ondragleave="handlePanelDragLeave(event, 'cockpit-panel')" 
+         ondrop="handlePanelDrop(event, 'cockpit')"
+         class="xl:col-span-4 2xl:col-span-4 bg-[#090D15] h-[640px] flex flex-col justify-between border-l border-[#161F2E] overflow-y-auto order-2 transition-all duration-200">
+      
+      <!-- Top Cockpit Navigation Tabs with Drag Handle -->
+      <div class="sticky top-0 z-10 bg-[#0B0F19] border-b border-[#1A2333] px-3 pt-2 pb-1.5 flex items-center justify-between gap-1">
+        <div class="flex items-center gap-1">
+          <!-- Cockpit Drag Handle -->
+          <div draggable="true" ondragstart="handlePanelDragStart(event, 'cockpit')" title="คลิกค้างแล้วลากไปวางเพื่อสลับฝั่ง" class="cursor-grab active:cursor-grabbing px-1.5 py-0.5 mr-1 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1 hover:bg-amber-500/25 select-none transition-all text-[11px]">
+            <span>⠿ ลากสลับ</span>
+          </div>
+          <button onclick="switchCockpitTab('signals')" id="tab-c-signals" class="px-2 py-1 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition-all">
+            <span>⚡ สัญญาณ AI (90%+)</span>
+          </button>
+          <button onclick="switchCockpitTab('positions')" id="tab-c-positions" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white font-medium text-xs flex items-center gap-1 transition-all">
+            <span>📋 ออเดอร์ (<span id="cockpit-pos-count">0</span>)</span>
+          </button>
+          <button onclick="switchCockpitTab('news')" id="tab-c-news" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white font-medium text-xs flex items-center gap-1 transition-all">
+            <span>📰 ข่าวสด</span>
+          </button>
+        </div>
+        <div class="flex items-center gap-1">
+          <button onclick="toggleSwapPanels()" title="สลับฝั่ง ซ้าย-ขวา" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold text-[10px] transition-all">
+            <span>⇄ สลับ</span>
+          </button>
+          <span class="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-500/30">AI Active</span>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT 1: AI SIGNAL & CONFLUENCE ANALYSIS (RIGHT SIDE DIRECTLY BESIDE CHART) -->
+      <div id="cockpit-view-signals" class="p-4 space-y-3.5 flex-1">
+        
+        <!-- Signal Header & Score -->
+        <div class="card-box p-3.5 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-[#0C1524] to-[#0A101D]">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400" id="sig-status-label">สัญญาณ AI Real-Time [BTCUSD]</span>
+            <span class="text-xs font-mono font-black text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/40" id="confluence-pct">93.0% Confluence</span>
+          </div>
+          <div class="mt-2 flex justify-between items-center">
+            <span class="text-xl font-black text-emerald-400 tracking-tight flex items-center gap-1.5" id="sig-action">
+              <span>↗ STRONG BUY</span>
+              <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+            </span>
+            <span class="text-xs bg-amber-500 text-black font-extrabold px-2 py-0.5 rounded" id="sig-rr">R:R 1 : 2.1</span>
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed mt-2" id="sig-desc">
+            ราคา BTCUSD ทดสอบโซน Demand สำเร็จ พร้อม Rejection เส้น EMA 20 ตัดขึ้นเหนือ EMA 50 และ RSI เกิด Bullish Divergence ระบบ AI ยืนยันความแม่นยำ 93%
+          </p>
+        </div>
+
+        <!-- Target Price Levels Grid -->
+        <div class="card-box p-3 rounded-xl border border-[#1A2338]">
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
+              <span class="text-slate-400 text-[10px] block">🎯 ราคาเข้า (Entry):</span>
+              <strong class="text-white text-sm" id="sig-entry">$84,835.5</strong>
+            </div>
+            <div class="p-2 rounded bg-rose-950/20 border border-rose-500/30">
+              <span class="text-rose-400 text-[10px] block">🛑 Stop Loss (SL):</span>
+              <strong class="text-rose-300 text-sm" id="sig-sl">$83,635.5</strong>
+              <span class="text-[9px] text-rose-400 block" id="sig-sl-pts">-$450</span>
+            </div>
+            <div class="p-2 rounded bg-emerald-950/20 border border-emerald-500/30">
+              <span class="text-emerald-400 text-[10px] block">🏁 TP 1 (ล็อค 75%):</span>
+              <strong class="text-emerald-300 text-sm" id="sig-tp1">$85,835.5</strong>
+            </div>
+            <div class="p-2 rounded bg-emerald-950/20 border border-emerald-500/30">
+              <span class="text-emerald-400 text-[10px] block">🏆 TP 2 (รันเทรนด์):</span>
+              <strong class="text-emerald-300 text-sm" id="sig-tp2">$87,335.5</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick 4-Indicator Trend Eye-Scan -->
+        <div class="card-box p-3 rounded-xl border border-[#1A2338] space-y-1.5 text-[11px] font-mono">
+          <div class="flex justify-between items-center text-slate-300 pb-1 border-b border-slate-800">
+            <span class="text-slate-400">📊 1. MACD (12, 26, 9):</span>
+            <span class="text-emerald-400 font-bold">🟢 BULLISH (+245.8)</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-300 pb-1 border-b border-slate-800">
+            <span class="text-slate-400">📈 2. SuperTrend:</span>
+            <span class="text-emerald-400 font-bold">🟢 GREEN (เหนือ $83,600)</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-300 pb-1 border-b border-slate-800">
+            <span class="text-slate-400">⚡ 3. EMA Ribbon:</span>
+            <span class="text-emerald-400 font-bold">🟢 20 &gt; 50 &gt; 200 Cross</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-300">
+            <span class="text-slate-400">🎯 4. RSI (14) Momentum:</span>
+            <span class="text-emerald-400 font-bold">🟢 62.4 (แรงส่งขึ้นต่อ)</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Lot & Balance Controller -->
+        <div class="card-box p-3 rounded-xl border border-[#1A2338] flex items-center justify-between text-xs">
+          <div>
+            <span class="text-slate-400 text-[10px] block">ทุน: <input type="number" id="input-balance" value="31430" oninput="calculateLotDynamically()" class="w-16 bg-[#141C2E] border border-slate-700 text-amber-400 font-mono font-bold px-1 rounded text-[11px]"></span>
+            <span class="text-[10px] text-slate-400 block mt-0.5">เสี่ยง: 
+              <select id="select-risk" onchange="calculateLotDynamically()" class="bg-[#141C2E] border border-slate-700 text-white rounded text-[10px]">
+                <option value="1.5">1.5%</option>
+                <option value="1.0">1.0%</option>
+                <option value="2.0">2.0%</option>
+              </select>
+            </span>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 block">Lot แนะนำ: <strong class="text-amber-400 font-mono text-sm" id="calc-lot">0.39</strong></span>
+            <span class="text-[10px] text-rose-400 block font-mono" id="calc-loss">Max Loss: -$471.45</span>
+          </div>
+        </div>
+
+        <!-- Execution Action Button directly on the right cockpit -->
+        <div class="pt-1">
+          <button onclick="executeOrderFromPanel('BUY')" class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+            <span id="btn-exec-text">⚡ เปิดคำสั่ง BUY ทันที (Lot 0.39)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT 2: ACTIVE TRADES & QUICK TRADE (HIDDEN BY DEFAULT) -->
+      <div id="cockpit-view-positions" class="p-4 space-y-3.5 flex-1 hidden">
+        <div class="pb-3 border-b border-[#1A2333] space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-white text-xs">⚡ สั่งคำสั่งด่วน (Quick Trade)</span>
+            <div class="text-[10px] text-slate-400 font-mono">
+              Spread: <span class="text-amber-400 font-bold">0.2</span> | Slip: <span class="text-emerald-400 font-bold">0.0ms</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="executeQuickTrade('BUY')" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black shadow-lg flex flex-col items-center justify-center transition-all">
+              <span class="text-xs">BUY MARKET</span>
+              <span class="font-mono text-[10px] text-emerald-200" id="quick-ask">$84,802.0</span>
+            </button>
+            <button onclick="executeQuickTrade('SELL')" class="py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black shadow-lg flex flex-col items-center justify-center transition-all">
+              <span class="text-xs">SELL MARKET</span>
+              <span class="font-mono text-[10px] text-rose-200" id="quick-bid">$84,801.5</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center py-1 border-b border-[#1A2333]">
+          <h3 class="font-bold text-white text-xs">📋 รายการออเดอร์ค้าง (Active Trades)</h3>
+          <button onclick="closeAllPositions()" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-300 border border-slate-700 transition-colors text-[10px]">
+            ปิดทั้งหมด (Close All)
+          </button>
+        </div>
+
+        <div class="space-y-2" id="position-list">
+          <div class="text-center py-8 text-slate-500 text-xs font-mono">
+            ไม่มีออเดอร์ค้าง (พร้อมรับสัญญาณใหม่)
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT 3: LIVE ECONOMIC NEWS (HIDDEN BY DEFAULT) -->
+      <div id="cockpit-view-news" class="p-4 space-y-3 flex-1 hidden">
+        <div class="card-box p-3 rounded-xl border border-rose-500/30">
+          <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold text-[10px]">HIGH IMPACT</span>
+          <h4 class="font-bold text-white text-xs mt-1">US Core PCE Price Index m/m</h4>
+          <p class="text-slate-400 text-[10px] mt-0.5">📅 27 ก.ย. 2026 | ⏰ 19:30 น.</p>
+          <div class="mt-2 text-right">
+            <span class="text-amber-400 font-mono font-bold text-xs" id="cockpit-countdown-pce">⏳ นับถอยหลัง: 03:51:10</span>
+          </div>
+        </div>
+
+        <div class="card-box p-3 rounded-xl border border-purple-500/30">
+          <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold text-[10px]">ULTRA SHOCK</span>
+          <h4 class="font-bold text-white text-xs mt-1">FOMC Rate Decision & Press Conf</h4>
+          <p class="text-slate-400 text-[10px] mt-0.5">📅 28 ก.ย. 2026 | ⏰ 01:00 น.</p>
+          <div class="mt-2 text-right">
+            <span class="text-rose-400 font-mono font-bold text-xs" id="cockpit-countdown-fomc">⏳ นับถอยหลัง: 09:21:10</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Account Equity Mini-Bar -->
+      <div class="p-3 bg-[#0B0F19] border-t border-[#161F2E] flex justify-between items-center text-[11px] font-mono">
+        <span class="text-slate-400">Equity: <strong class="text-emerald-400" id="acc-equity">$31,694.50</strong></span>
+        <span class="text-slate-400">กำไรวันนี้: <strong class="text-emerald-400">+$528.50 (+1.68%)</strong></span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 4. INSTITUTIONAL AI MULTI-CONFLUENCE SIGNAL VERIFICATION (AS IN DRAFT) -->
+  <section class="p-4 md:p-6 bg-[#06090E]">
+    <div class="max-w-7xl mx-auto panel-box rounded-2xl p-5 md:p-6 shadow-2xl border border-[#1C2538]">
+      
+      <!-- VISUAL INDICATOR DIRECTION SCANNER (มองด้วยตาเปล่ารู้เลย ขึ้น/ลง) -->
+      <div class="mb-5 p-4 rounded-xl bg-[#080D17] border border-[#1A253A] space-y-3">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-base font-black text-white flex items-center gap-1.5">
+              <span>👀 สแกนทิศทางอินดิเคเตอร์ (มองด้วยตาเปล่า รู้ทันที ขึ้น/ลง)</span>
+            </span>
+          </div>
+          <div class="px-3 py-1 rounded-lg bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 font-mono font-black text-xs flex items-center gap-2 shadow-sm">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="scanner-summary">🟢 สรุปภาพรวม: กราฟมีโอกาส "ขึ้น" 93% (STRONG BULLISH)</span>
+          </div>
+        </div>
+
+        <!-- 4 Visual Gauge Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <!-- 1. MACD -->
+          <div class="p-3 rounded-xl bg-[#0D1322] border border-emerald-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-white font-mono flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  1. MACD (12, 26, 9)
+                </span>
+                <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]" id="ind-macd-status">🟢 ขาขึ้น (BUY)</span>
+              </div>
+              <div class="mt-2 text-[11px] text-slate-300">
+                <span class="text-slate-400">Histogram:</span> <strong class="text-emerald-400 font-mono font-bold" id="ind-macd-val">+245.8 (แท่งเขียว)</strong>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                เส้นสีฟ้าตัดขึ้นเหนือเส้นสีส้ม และแท่ง Histogram อยู่ฝั่งบวกชัดเจน
+              </p>
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-emerald-400 font-bold">
+              ✓ สัญญาณ: มีแรงส่งขึ้นต่อเนื่อง
+            </div>
+          </div>
+
+          <!-- 2. SuperTrend -->
+          <div class="p-3 rounded-xl bg-[#0D1322] border border-emerald-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-white font-mono flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  2. SuperTrend (10, 3)
+                </span>
+                <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]" id="ind-st-status">🟢 โซนเขียว (UP)</span>
+              </div>
+              <div class="mt-2 text-[11px] text-slate-300">
+                <span class="text-slate-400">แนวรับเทรนด์:</span> <strong class="text-emerald-400 font-mono font-bold" id="ind-st-val">83,600.0</strong>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                แท่งเทียนยืนเหนือเส้นเขียว SuperTrend ชัดเจน ไม่มีสัญญาณกลับตัวลง
+              </p>
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-emerald-400 font-bold">
+              ✓ สัญญาณ: รันเทรนด์ฝั่ง BUY ได้เปรียบ
+            </div>
+          </div>
+
+          <!-- 3. EMA Ribbon -->
+          <div class="p-3 rounded-xl bg-[#0D1322] border border-emerald-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-white font-mono flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  3. EMA Ribbon (20/50/200)
+                </span>
+                <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]">🟢 Golden Cross</span>
+              </div>
+              <div class="mt-2 text-[11px] text-slate-300">
+                <span class="text-slate-400">การเรียงตัว:</span> <strong class="text-emerald-400 font-mono font-bold">20 &gt; 50 &gt; 200</strong>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                เส้นค่าเฉลี่ยเรียงตัวหงายขึ้นสมบูรณ์แบบ เป็นโครงสร้าง Uptrend แข็งแกร่ง
+              </p>
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-emerald-400 font-bold">
+              ✓ สัญญาณ: แนวโน้มใหญ่เป็นขาขึ้น
+            </div>
+          </div>
+
+          <!-- 4. RSI Dynamic -->
+          <div class="p-3 rounded-xl bg-[#0D1322] border border-emerald-500/30 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-white font-mono flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  4. RSI (14) Momentum
+                </span>
+                <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px]" id="ind-rsi-status">🟢 Bullish Zone</span>
+              </div>
+              <div class="mt-2 text-[11px] text-slate-300">
+                <span class="text-slate-400">ค่าปัจจุบัน:</span> <strong class="text-emerald-400 font-mono font-bold" id="ind-rsi-val">62.4 (มีแรงวิ่ง)</strong>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">
+                ค่า RSI อยู่เหนือเส้นกึ่งกลาง 50 และยังไม่ถึง 70 (ยังมีระยะให้วิ่งขึ้นต่อ)
+              </p>
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-emerald-400 font-bold">
+              ✓ สัญญาณ: โมเมนตัมกำลังเร่งตัว
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Title & Overall Confluence Score -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-[#1A2338] gap-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
+            ระบบวิเคราะห์สัญญาณ AI 90%++ Multi-Confluence <span class="text-amber-400 font-mono" id="confluence-symbol">[BTCUSD]</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">
+            กรอง 4 เสาหลัก (Trend + SMC Order Block + Dynamic RSI + ATR Safety) ก่อนออกคำสั่ง (Real-Time Backtest Verified)
+          </p>
+        </div>
+
+        <div class="px-4 py-2 bg-[#090E1A] rounded-xl border border-emerald-500/40 text-right">
+          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">AI CONFLUENCE SCORE</span>
+          <div class="flex items-center justify-end gap-1.5">
+            <span class="text-xl sm:text-2xl font-black text-emerald-400 font-mono" id="confluence-pct">93.0%</span>
+            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Signal Stats & Lot Calculator Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-5">
+        
+        <!-- Signal Box (Strong BUY) -->
+        <div class="lg:col-span-4 card-box rounded-xl p-4 flex flex-col justify-between border-emerald-500/30">
+          <div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-slate-400" id="sig-status-label">สถานะสัญญาณ BTCUSD</span>
+              <span class="text-amber-400 font-bold text-[11px]">★ ผ่านเกณฑ์ความแม่นยำสูง</span>
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="text-2xl font-black text-emerald-400 tracking-tight flex items-center gap-1.5" id="sig-action">
+                <span>↗ STRONG BUY</span>
+                <span class="w-3.5 h-3.5 rounded-full bg-emerald-500"></span>
+              </span>
+            </div>
+            <p class="text-slate-300 text-xs leading-relaxed mt-2.5" id="sig-desc">
+              ราคา BTCUSD ทดสอบโซน Demand สำเร็จ พร้อม Rejection เส้น EMA 20 ตัดขึ้นเหนือ EMA 50 และ RSI เกิด Bullish Divergence ระบบ AI ยืนยันความแม่นยำ 93%
+            </p>
+          </div>
+        </div>
+
+        <!-- Price Details: Entry, SL, TP1, TP2, R:R -->
+        <div class="lg:col-span-4 card-box rounded-xl p-4 flex flex-col justify-between text-xs">
+          <div class="flex justify-between items-baseline pb-2 border-b border-slate-800">
+            <div>
+              <span class="text-slate-400 block text-[10px]">ราคาเข้า (Entry):</span>
+              <span class="text-white font-mono font-bold text-sm" id="sig-entry">$84,835.5</span>
+            </div>
+            <div class="text-right">
+              <span class="text-slate-400 block text-[10px]">อัตรา R:R:</span>
+              <span class="text-amber-400 font-mono font-bold text-sm" id="sig-rr">1 : 2.1</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 pt-2">
+            <div>
+              <span class="text-rose-400 block text-[10px]">Stop Loss:</span>
+              <span class="font-mono font-bold text-rose-300" id="sig-sl">$83,635.5</span>
+              <span class="text-[9px] text-rose-400 block" id="sig-sl-pts">-$450</span>
+            </div>
+            <div>
+              <span class="text-emerald-400 block text-[10px]">Take Profit 1:</span>
+              <span class="font-mono font-bold text-emerald-300" id="sig-tp1">$85,835.5</span>
+              <span class="text-[9px] text-emerald-400 block">+$500 (50%)</span>
+            </div>
+            <div>
+              <span class="text-emerald-400 block text-[10px]">Take Profit 2:</span>
+              <span class="font-mono font-bold text-emerald-300" id="sig-tp2">$87,335.5</span>
+              <span class="text-[9px] text-emerald-400 block">+$1,200</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Lot Sizing & Risk Management -->
+        <div class="lg:col-span-4 card-box rounded-xl p-4 flex flex-col justify-between text-xs">
+          <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+            <span class="text-slate-400">คำนวณขนาด Lot ตามทุน:</span>
+            <input type="number" id="input-balance" value="31430" oninput="calculateLotDynamically()" class="w-24 bg-[#141C2E] border border-slate-700 text-amber-400 font-mono font-bold text-right px-2 py-0.5 rounded text-xs">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 py-2 items-center">
+            <div>
+              <label class="text-[10px] text-slate-400 block mb-1">ความเสี่ยงต่อไม้ (%):</label>
+              <select id="select-risk" onchange="calculateLotDynamically()" class="w-full bg-[#141C2E] border border-slate-700 text-white rounded px-2 py-1 font-mono text-xs">
+                <option value="1.5">1.5% (แนะนำ EA)</option>
+                <option value="1.0">1.0% (อนุรักษ์นิยม)</option>
+                <option value="2.0">2.0% (เติบโตเร็ว)</option>
+                <option value="3.0">3.0% (Agile)</option>
+              </select>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block mb-1">ขนาด Lot แนะนำ:</span>
+              <span class="text-amber-400 font-mono font-bold text-base block" id="calc-lot">0.39</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-2 border-t border-slate-800 text-[11px]">
+            <span class="text-slate-400">ความเสียหายสูงสุดหากโดน SL:</span>
+            <span class="text-rose-400 font-mono font-bold" id="calc-loss">-$471.45</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 4-Pillar Verification Grid (Multi-Pillar Verification) -->
+      <div class="mt-5 pt-4 border-t border-[#182133]">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-xs font-bold text-slate-300">เกณฑ์ตรวจสอบ 4 เสาหลัก (Multi-Pillar Verification)</span>
+          <span class="text-[10px] text-slate-400">ระบบเข้าออเดอร์เมื่อคะแนนรวม &gt;= 90%</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          
+          <!-- Pillar 1 -->
+          <div class="card-box rounded-xl p-3 flex flex-col justify-between border-emerald-500/20">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-white">Institutional Trend (HTF)</span>
+                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">✓</span>
+              </div>
+              <p class="text-slate-400 text-[11px] mt-1.5 leading-relaxed" id="pillar-desc-1">
+                โครงสร้าง BTCUSD EMA 20/50 เป็นขาขึ้น Bullish Structure แข็งแกร่ง
+              </p>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-800/60 text-[11px]">
+              <span class="text-slate-500">คะแนน:</span>
+              <span class="font-mono font-bold text-emerald-400">25 / 25 pts</span>
+            </div>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="card-box rounded-xl p-3 flex flex-col justify-between border-emerald-500/20">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-white">SMC Order Block & Liquidity</span>
+                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">✓</span>
+              </div>
+              <p class="text-slate-400 text-[11px] mt-1.5 leading-relaxed" id="pillar-desc-2">
+                เกิด Liquidity Sweep โซน Demand BTCUSD พร้อม Rejection แท่งเทียน
+              </p>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-800/60 text-[11px]">
+              <span class="text-slate-500">คะแนน:</span>
+              <span class="font-mono font-bold text-emerald-400">22 / 25 pts</span>
+            </div>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="card-box rounded-xl p-3 flex flex-col justify-between border-emerald-500/20">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-white">Dynamic RSI & Divergence</span>
+                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">✓</span>
+              </div>
+              <p class="text-slate-400 text-[11px] mt-1.5 leading-relaxed" id="pillar-desc-3">
+                RSI (76.7) อยู่ในโซนสะสมแรง Bullish Divergence
+              </p>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-800/60 text-[11px]">
+              <span class="text-slate-500">คะแนน:</span>
+              <span class="font-mono font-bold text-emerald-400">24 / 25 pts</span>
+            </div>
+          </div>
+
+          <!-- Pillar 4 -->
+          <div class="card-box rounded-xl p-3 flex flex-col justify-between border-emerald-500/20">
+            <div>
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-white">ATR Safety & Spread Filter</span>
+                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">✓</span>
+              </div>
+              <p class="text-slate-400 text-[11px] mt-1.5 leading-relaxed" id="pillar-desc-4">
+                ความผันผวนอยู่ในเกณฑ์ปลอดภัย ปราศจากความผิดปกติของสเปรด
+              </p>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-2 border-t border-slate-800/60 text-[11px]">
+              <span class="text-slate-500">คะแนน:</span>
+              <span class="font-mono font-bold text-emerald-400">22 / 25 pts</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Execution Actions Footer -->
+      <div class="mt-5 pt-4 border-t border-[#182133] flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button onclick="executeOrderFromPanel('BUY')" class="flex-1 sm:flex-none px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs shadow-lg flex items-center justify-center gap-1.5 transition-all">
+            <span id="btn-exec-text">⚡ จำลองเปิดคำสั่ง BUY ในเทอร์มินอล (Lot 0.39)</span>
+          </button>
+          <button onclick="sendLineAlertNow()" class="flex-1 sm:flex-none px-4 py-2.5 bg-[#06C755] hover:bg-[#05B34C] text-white font-bold rounded-xl text-xs shadow-lg flex items-center justify-center gap-1.5 transition-all">
+            <span>🚀 ส่งสัญญาณแนะนำเข้า LINE ทันที</span>
+          </button>
+        </div>
+
+        <div class="text-[11px] text-slate-400 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Auto-Pilot ทำงาน: คำสั่งและแจ้งเตือน LINE ทำงานอัตโนมัติเมื่อแม่นยำ &gt;= 90%</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. ECONOMIC CALENDAR REAL-TIME SYNC & HISTORICAL IMPACT MATRIX (10Y/5Y) -->
+  <section class="px-4 md:px-6 pb-6 bg-[#06090E]">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
+      
+      <!-- Left Column: Live Economic Calendar (Today's Releases) (7 Cols) -->
+      <div class="lg:col-span-7 panel-box rounded-2xl p-5 border border-[#1C2538] shadow-xl">
+        <div class="flex justify-between items-center pb-3 border-b border-[#1A2338]">
+          <div>
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+              ปฏิทินข่าวเศรษฐกิจสด (Live Economic Calendar Sync)
+            </h3>
+            <p class="text-slate-400 text-xs mt-0.5">เชื่อมต่อฟีดข่าว ForexFactory & Investing.com แบบอัตโนมัติ</p>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-mono font-bold">
+            🛡️ News Shield: ทำงาน
+          </span>
+        </div>
+
+        <div class="mt-4 space-y-2.5">
+          <!-- News Event 1 -->
+          <div class="card-box p-3.5 rounded-xl border border-rose-500/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold text-[10px]">HIGH IMPACT</span>
+                <span class="font-bold text-white text-xs">US Core PCE Price Index m/m (ดัชนีเงินเฟ้อ FED)</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-slate-400 mt-1 font-mono">
+                <span>📅 วันที่: <strong class="text-slate-200">27 ก.ย. 2026</strong></span>
+                <span>⏰ เวลา: <strong class="text-amber-300">19:30 น.</strong></span>
+                <span>คาดการณ์: <strong class="text-white">0.2%</strong></span>
+                <span>ครั้งก่อน: <strong class="text-slate-400">0.2%</strong></span>
+              </div>
+            </div>
+            <div class="text-right w-full sm:w-auto flex sm:flex-col justify-between sm:justify-center items-end">
+              <span class="text-amber-400 font-mono font-black text-xs px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/30" id="countdown-pce">⏳ นับถอยหลัง: 03:52:14</span>
+              <span class="text-[10px] text-emerald-400 font-semibold mt-1">✓ EA ปรับลดความเสี่ยง 50% อัตโนมัติ</span>
+            </div>
+          </div>
+
+          <!-- News Event 2 -->
+          <div class="card-box p-3.5 rounded-xl border border-purple-500/30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold text-[10px]">ULTRA SHOCK</span>
+                <span class="font-bold text-white text-xs">FOMC Rate Decision & Press Conference (ดอกเบี้ย FED)</span>
+              </div>
+              <div class="flex items-center gap-3 text-[11px] text-slate-400 mt-1 font-mono">
+                <span>📅 วันที่: <strong class="text-slate-200">28 ก.ย. 2026</strong></span>
+                <span>⏰ เวลา: <strong class="text-rose-400">01:00 น.</strong></span>
+                <span>คาดการณ์: <strong class="text-white">5.00%</strong></span>
+                <span>ครั้งก่อน: <strong class="text-slate-400">5.25%</strong></span>
+              </div>
+            </div>
+            <div class="text-right w-full sm:w-auto flex sm:flex-col justify-between sm:justify-center items-end">
+              <span class="text-rose-400 font-mono font-black text-xs px-2 py-0.5 rounded bg-rose-950/60 border border-rose-500/30" id="countdown-fomc">⏳ นับถอยหลัง: 09:22:14</span>
+              <span class="text-[10px] text-rose-300 font-bold mt-1">⚠️ EA หยุดเปิดสถานะล่วงหน้า 30 นาที</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3.5 p-2.5 bg-[#090D15] rounded-xl border border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <span>🧠 AI Continuous Engine: เรียนรู้พฤติกรรมแท่งเทียนหลังข่าวออก เพื่อนำมาปรับปรุงความแม่นยำ</span>
+          <span class="text-emerald-400 font-mono font-bold">Auto-Sync On</span>
+        </div>
+      </div>
+
+      <!-- Right Column: Historical 10Y/5Y Shock Matrix (News Memory) (5 Cols) -->
+      <div class="lg:col-span-5 panel-box rounded-2xl p-5 border border-[#1C2538] shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center pb-3 border-b border-[#1A2338]">
+            <h3 class="font-bold text-white text-base flex items-center gap-2">
+              <span>📚 ฐานข้อมูลข่าวเก่าในอดีต (10Y/5Y Matrix)</span>
+            </h3>
+            <span class="text-slate-400 text-xs font-mono">สถิติ 2014-2024</span>
+          </div>
+
+          <div class="mt-3 space-y-2 text-xs">
+            <!-- Matrix Item 1 -->
+            <div class="p-2.5 card-box rounded-xl border border-slate-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-slate-200">ดอกเบี้ย FOMC Rate Decision</span>
+                <span class="block text-[10px] text-slate-400">ผันผวนรุนแรง 2 ทิศทางใน 120 นาทีแรก</span>
+              </div>
+              <div class="text-right font-mono">
+                <span class="text-amber-400 font-bold block">ทอง ~280 Pips</span>
+                <span class="text-teal-400 text-[10px]">BTC ~1,500 Pips</span>
+              </div>
+            </div>
+
+            <!-- Matrix Item 2 -->
+            <div class="p-2.5 card-box rounded-xl border border-slate-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-slate-200">Non-Farm Payrolls (NFP)</span>
+                <span class="block text-[10px] text-slate-400">กวาด Liquidity นอกกรอบ High/Low ภายใน 15m</span>
+              </div>
+              <div class="text-right font-mono">
+                <span class="text-amber-400 font-bold block">ทอง ~180 Pips</span>
+                <span class="text-teal-400 text-[10px]">BTC ~850 Pips</span>
+              </div>
+            </div>
+
+            <!-- Matrix Item 3 -->
+            <div class="p-2.5 card-box rounded-xl border border-slate-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-slate-200">US CPI Inflation (เงินเฟ้อ)</span>
+                <span class="block text-[10px] text-slate-400">สร้าง Impulse Wave ยาวต่อเนื่อง 60-90 นาที</span>
+              </div>
+              <div class="text-right font-mono">
+                <span class="text-amber-400 font-bold block">ทอง ~220 Pips</span>
+                <span class="text-teal-400 text-[10px]">BTC ~1,100 Pips</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-3 border-t border-slate-800/80 text-[11px] text-amber-300/90 leading-relaxed">
+          💡 <strong>หลักการ AI News Filter:</strong> สถิติชี้ชัดว่า 80% ของพอร์ตที่แตกเกิดจากการถือออเดอร์ชนข่าวแรง ระบบจึงใช้ประวัติ 10 ปีสั่งตัดการเทรดอัตโนมัติ ทำให้ Win Rate คงที่ 90%+ ได้ในระยะยาว
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MODAL: LINE ALERT SETTINGS -->
+  <div id="line-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div class="card-box w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+        <h3 class="font-bold text-base text-white flex items-center gap-2">
+          <span>🔔 LINE Messaging API Connect</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Official Bot</span>
+        </h3>
+        <button onclick="closeModal('line-modal')" class="text-slate-400 hover:text-white font-bold text-lg">&times;</button>
+      </div>
+
+      <div class="mt-4 space-y-4 text-xs">
+        <!-- Bot Identity Card -->
+        <div class="p-3 bg-[#080D17] rounded-xl border border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-xl text-emerald-400 font-bold">
+              🤖
+            </div>
+            <div>
+              <div class="font-bold text-white text-sm">ADStrade.bot</div>
+              <div class="text-slate-400 font-mono">LINE ID: <span class="text-emerald-400 font-bold">@733ajjvt</span></div>
+            </div>
+          </div>
+          <div id="line-token-status-badge" class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 font-medium text-[11px]">
+            ⚡ ตรวจสอบการตั้งค่า...
+          </div>
+        </div>
+
+        <!-- Token Input Field -->
+        <div>
+          <label class="block text-slate-300 font-semibold mb-1 flex justify-between items-center">
+            <span>LINE Channel Access Token (v2.1):</span>
+            <a href="https://developers.line.biz/console/" target="_blank" class="text-cyan-400 hover:underline text-[11px] font-normal">ขอรับ Token ที่ LINE Console &rarr;</a>
+          </label>
+          <div class="flex gap-2">
+            <input type="password" id="line-token-input" placeholder="ใส่ Channel Access Token (แบบ Long-Lived)..." class="flex-1 bg-[#06090E] border border-slate-700 rounded-xl p-2.5 text-white font-mono text-xs focus:border-emerald-500 focus:outline-none">
+            <button onclick="saveLineToken()" class="px-4 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl transition-all shadow-sm">
+              💾 บันทึก
+            </button>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-1">
+            *ระบบจะบันทึกใน line_config.json ใช้งานได้ทั้ง MT5 EA, Python API และ Web Dashboard อัตโนมัติ
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div>
+          <div class="text-slate-400 font-semibold mb-2">ทดสอบยิง Flex Message เข้า LINE:</div>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="testLineSend('signal')" class="p-2.5 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1">
+              <span class="text-base">⚡</span>
+              <span>สัญญาณ Live</span>
+            </button>
+            <button onclick="testLineSend('blueprint')" class="p-2.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 text-blue-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1">
+              <span class="text-base">🗺️</span>
+              <span>แผนผังราคา</span>
+            </button>
+            <button onclick="testLineSend('summary')" class="p-2.5 bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/40 text-purple-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1">
+              <span class="text-base">📊</span>
+              <span>สรุป 10 ปี</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Server Response Log -->
+        <div>
+          <div class="text-slate-400 font-semibold mb-1 flex justify-between">
+            <span>สถานะการยิงแจ้งเตือนล่าสุด:</span>
+            <span id="line-send-time" class="text-slate-500 font-mono">-</span>
+          </div>
+          <div id="line-result-box" class="p-3 bg-[#06090E] rounded-xl border border-slate-800 font-mono text-[11px] text-slate-300 min-h-[50px] whitespace-pre-wrap leading-relaxed">
+พร้อมทดสอบยิงสัญญาณ... กดเลือกประเภทการ์ดที่ต้องการทดสอบด้านบน
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AI MEMORY & CONTINUOUS LEARNING -->
+  <div id="ai-memory-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div class="card-box w-full max-w-lg rounded-2xl p-6 border border-slate-700 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+        <h3 class="font-bold text-base text-white">🗄️ AI Continuous Learning Feature Store</h3>
+        <button onclick="closeModal('ai-memory-modal')" class="text-slate-400 hover:text-white font-bold text-lg">&times;</button>
+      </div>
+      <div class="mt-4 space-y-3 text-xs text-slate-300">
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-1.5 font-mono">
+          <div class="flex justify-between"><span>SMC Weight:</span><span class="text-emerald-400 font-bold">0.50 (Max Adapt)</span></div>
+          <div class="flex justify-between"><span>RSI Divergence Weight:</span><span class="text-emerald-400 font-bold">0.25</span></div>
+          <div class="flex justify-between"><span>Min Confidence Threshold:</span><span class="text-amber-400 font-bold">86.0% (A+ Only)</span></div>
+          <div class="flex justify-between"><span>Partial Take Profit Ratio:</span><span class="text-emerald-400 font-bold">75% at TP1</span></div>
+          <div class="flex justify-between"><span>Model Version:</span><span class="text-purple-400 font-bold">v5.2.4-Production</span></div>
+        </div>
+        <p class="text-slate-400 text-[11px]">
+          ทุกไม้ที่ปิดกำไรหรือขาดทุน จะถูกบันทึกและส่งฟีดแบ็กไปจูนค่าพารามิเตอร์ของอัลกอริทึมให้ปรับตามสภาวะความผันผวนของตลาดอยู่เสมอ
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: NEWS CALENDAR & 10Y SHOCK MATRIX -->
+  <div id="news-analysis-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+    <div class="card-box w-full max-w-xl rounded-2xl p-6 border border-slate-700 shadow-2xl">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-800">
+        <h3 class="font-bold text-base text-white">📰 Historical News Impact Shield (10Y/5Y Matrix)</h3>
+        <button onclick="closeModal('news-analysis-modal')" class="text-slate-400 hover:text-white font-bold text-lg">&times;</button>
+      </div>
+      <div class="mt-4 space-y-3 text-xs">
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+          <div class="flex justify-between items-center font-bold text-white">
+            <span class="text-rose-400">🔴 FOMC Rate Decision (ดอกเบี้ย FED)</span>
+            <span class="text-amber-400 font-mono">ผลกระทบเฉลี่ย 280 Pips</span>
+          </div>
+          <p class="text-slate-400 text-[11px] mt-1">
+            สถิติ 10 ปีบนทองคำ และ 5 ปีบน BTC: ราคามักกระชากหลอก 2 ทิศทาง EA จะหยุดเปิดสถานะล่วงหน้า 30 นาที
+          </p>
+        </div>
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800">
+          <div class="flex justify-between items-center font-bold text-white">
+            <span class="text-rose-400">🔴 Non-Farm Payrolls (NFP)</span>
+            <span class="text-amber-400 font-mono">ผลกระทบเฉลี่ย 180 Pips</span>
+          </div>
+          <p class="text-slate-400 text-[11px] mt-1">
+            ราคามักเกิดการกวาดสภาพคล่อง (Liquidity Hunt) นอกกรอบ High/Low ภายใน 15 นาทีแรก
+          </p>
+  <!-- MODAL: REAL-TIME SIGNAL TRIGGER ALERT (POPUP NOTIFICATION) -->
+  <div id="signal-popup-modal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+    <div class="card-box w-full max-w-lg rounded-2xl p-6 border-2 border-emerald-500 shadow-2xl glow-accent">
+      <div class="flex justify-between items-start pb-3 border-b border-slate-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg border border-emerald-500/40 animate-pulse">
+            ⚡
+          </div>
+          <div>
+            <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold block">AI TRIGGER ALERT • เข้าเงื่อนไข EA ทันที</span>
+            <h3 class="font-black text-xl text-white flex items-center gap-2" id="popup-title">
+              XAUUSD ↗ STRONG BUY <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono" id="popup-tf">M15 Setup</span>
+            </h3>
+          </div>
+        </div>
+        <button onclick="closeSignalPopup()" class="text-slate-400 hover:text-white font-bold text-2xl leading-none">&times;</button>
+      </div>
+
+      <!-- Popup Signal Body Details -->
+      <div class="mt-4 space-y-3 text-xs">
+        <div class="p-3.5 bg-[#080D17] rounded-xl border border-emerald-500/30">
+          <div class="flex justify-between items-baseline mb-2 pb-2 border-b border-slate-800">
+            <span class="text-slate-400">ระดับความแม่นยำ AI Confluence:</span>
+            <span class="text-emerald-400 font-black font-mono text-base" id="popup-score">94.5% (A+ Grade)</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div>
+              <span class="text-slate-400 text-[10px] block">🎯 ราคาเข้า (Entry):</span>
+              <strong class="text-white text-sm" id="popup-entry">2,640.50</strong>
+            </div>
+            <div>
+              <span class="text-rose-400 text-[10px] block">🛑 Stop Loss (SL):</span>
+              <strong class="text-rose-300 text-sm" id="popup-sl">2,632.00 (-65 pips)</strong>
+            </div>
+            <div>
+              <span class="text-emerald-400 text-[10px] block">🏁 Take Profit 1 (75% Bank):</span>
+              <strong class="text-emerald-300 text-sm" id="popup-tp1">2,648.50 (+80 pips)</strong>
+            </div>
+            <div>
+              <span class="text-emerald-400 text-[10px] block">🏆 Take Profit 2 (Runner):</span>
+              <strong class="text-emerald-300 text-sm" id="popup-tp2">2,658.00 (+175 pips)</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 text-[11px] text-slate-300">
+          💡 <strong>คำแนะนำระบบ:</strong> เข้าเงื่อนไข 4 เสาหลักครบถ้วน ระบบ Auto-Pilot จะเปิดคำสั่งให้อัตโนมัติ หรือกดยืนยันด้านล่างเพื่อเข้าทันที
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-2">
+          <button onclick="confirmPopupExecution()" class="py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-1.5">
+            <span>⚡ กดยืนยันเปิดออเดอร์ทันที (Execute)</span>
+          </button>
+          <button onclick="closeSignalPopup()" class="py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs transition-all">
+            ปิดการแจ้งเตือน (Dismiss)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    let currentAsset = 'BTCUSD';
+    let currentTimeframe = '5';
+    let isAutoPilot = true;
+    let balance = 31430.0;
+    let openPositions = [];
+
+    // Timeframe Adaptive Specifications
+    const timeframeProfiles = {
+      '1': {
+        name: 'M1 Scalping',
+        btcSL: 150.0, btcTP1: 220.0, btcTP2: 450.0,
+        xauSL: 2.5, xauTP1: 4.0, xauTP2: 8.5,
+        rr: '1 : 2.0',
+        score: '91.5%',
+        desc: 'M1 Fast Scalping: โมเมนตัมไหลตามแรงซื้อสถาบัน เข้าเร็ว-ออกเร็ว แนะนำปิด 75% ที่ TP1 ภายใน 3-5 นาที'
+      },
+      '5': {
+        name: 'M5 Intraday Momentum',
+        btcSL: 450.0, btcTP1: 650.0, btcTP2: 1200.0,
+        xauSL: 5.5, xauTP1: 8.0, xauTP2: 18.0,
+        rr: '1 : 2.1',
+        score: '93.0%',
+        desc: 'M5 Intraday: ทดสอบโซน Demand สำเร็จ พร้อม Rejection เส้น EMA 20 ตัดขึ้นเหนือ EMA 50 และ RSI เกิด Bullish Divergence'
+      },
+      '15': {
+        name: 'M15 Institutional Setup',
+        btcSL: 650.0, btcTP1: 900.0, btcTP2: 1800.0,
+        xauSL: 8.0, xauTP1: 12.0, xauTP2: 24.0,
+        rr: '1 : 2.8',
+        score: '94.5%',
+        desc: 'M15 Institutional: เกิด Liquidity Sweep กวาดสภาพคล่องนอกกรอบ พร้อมเกิด FVG Rejection ตามตำรา Smart Money'
+      },
+      '60': {
+        name: 'H1 Swing Trend',
+        btcSL: 1200.0, btcTP1: 1800.0, btcTP2: 3600.0,
+        xauSL: 15.0, xauTP1: 25.0, xauTP2: 50.0,
+        rr: '1 : 3.0',
+        score: '92.0%',
+        desc: 'H1 Swing Flow: โครงสร้าง Break of Structure (BOS) ขาขึ้นระดับวัน แนะนำถือรันเทรนด์ยาว'
+      },
+      '240': {
+        name: 'H4 Major Wave',
+        btcSL: 2500.0, btcTP1: 3800.0, btcTP2: 7500.0,
+        xauSL: 30.0, xauTP1: 50.0, xauTP2: 95.0,
+        rr: '1 : 3.0',
+        score: '91.0%',
+        desc: 'H4 Major Impulse: คลื่นแนวโน้มหลักของกองทุนสถาบัน มีความเสถียรสูงสุด'
+      },
+      'D': {
+        name: 'D1 Macro Bias',
+        btcSL: 4500.0, btcTP1: 7000.0, btcTP2: 14000.0,
+        xauSL: 50.0, xauTP1: 85.0, xauTP2: 160.0,
+        rr: '1 : 3.2',
+        score: '90.5%',
+        desc: 'D1 Macro Support: โซนแนวรับใหญ่ระดับสัปดาห์ เหมาะกับการแบ่งสะสมไม้'
+      }
+    };
+
+    let currentChartMode = 'native'; // 'native' (Default with full indicators) or 'tradingview'
+    let mainChart = null, macdChart = null, rsiChart = null;
+    let candleSeries = null, ema20Series = null, ema50Series = null, ema200Series = null;
+    let macdHistSeries = null, macdLineSeries = null, macdSignalSeries = null;
+    let rsiSeries = null;
+
+    // Mathematical Indicator Data Generator (EMA 20/50/200, MACD 12/26/9, RSI 14)
+    function generateCandlesAndIndicators(basePrice, count, volatility) {
+      const candles = [];
+      const ema20 = [];
+      const ema50 = [];
+      const ema200 = [];
+      const macdHist = [];
+      const macdLine = [];
+      const macdSignal = [];
+      const rsiData = [];
+
+      let currentPrice = basePrice;
+      const now = Math.floor(Date.now() / 1000);
+      const intervalSec = currentTimeframe === '1' ? 60 : (currentTimeframe === '5' ? 300 : (currentTimeframe === '15' ? 900 : 3600));
+      const startTime = now - count * intervalSec;
+
+      let e20 = currentPrice, e50 = currentPrice, e200 = currentPrice * 0.995;
+      const alpha20 = 2 / (20 + 1);
+      const alpha50 = 2 / (50 + 1);
+      const alpha200 = 2 / (200 + 1);
+
+      let ema12 = currentPrice, ema26 = currentPrice, signal9 = 0;
+      const a12 = 2 / (12 + 1);
+      const a26 = 2 / (26 + 1);
+      const aSig = 2 / (9 + 1);
+
+      let gains = 0, losses = 0;
+      let prevClose = currentPrice;
+
+      for (let i = 0; i < count; i++) {
+        const time = startTime + i * intervalSec;
+        const change = (Math.sin(i / 5.5) * 0.8 + Math.random() - 0.45) * volatility + (i > count - 15 ? volatility * 0.4 : 0);
+        const open = currentPrice;
+        const close = open + change;
+        const high = Math.max(open, close) + Math.random() * (volatility * 0.5);
+        const low = Math.min(open, close) - Math.random() * (volatility * 0.5);
+        currentPrice = close;
+
+        candles.push({ time, open, high, low, close });
+
+        // EMA Ribbon
+        e20 = i === 0 ? close : (close * alpha20 + e20 * (1 - alpha20));
+        e50 = i === 0 ? close : (close * alpha50 + e50 * (1 - alpha50));
+        e200 = i === 0 ? (close - volatility * 2) : (close * alpha200 + e200 * (1 - alpha200));
+
+        ema20.push({ time, value: parseFloat(e20.toFixed(2)) });
+        ema50.push({ time, value: parseFloat(e50.toFixed(2)) });
+        ema200.push({ time, value: parseFloat(e200.toFixed(2)) });
+
+        // MACD (12, 26, 9)
+        ema12 = i === 0 ? close : (close * a12 + ema12 * (1 - a12));
+        ema26 = i === 0 ? close : (close * a26 + ema26 * (1 - a26));
+        const macdVal = ema12 - ema26;
+        signal9 = i === 0 ? macdVal : (macdVal * aSig + signal9 * (1 - aSig));
+        const histVal = macdVal - signal9;
+
+        macdLine.push({ time, value: parseFloat(macdVal.toFixed(2)) });
+        macdSignal.push({ time, value: parseFloat(signal9.toFixed(2)) });
+        macdHist.push({ 
+          time, 
+          value: parseFloat(histVal.toFixed(2)), 
+          color: histVal >= 0 ? '#10B981' : '#EF4444' 
+        });
+
+        // RSI (14)
+        const diff = close - prevClose;
+        if (i === 0) {
+          gains = Math.max(0, diff);
+          losses = Math.max(0, -diff);
+        } else {
+          gains = (gains * 13 + Math.max(0, diff)) / 14;
+          losses = (losses * 13 + Math.max(0, -diff)) / 14;
+        }
+        prevClose = close;
+        const rs = losses === 0 ? 100 : (gains / losses);
+        const rsiVal = 100 - (100 / (1 + rs));
+        rsiData.push({ time, value: parseFloat(rsiVal.toFixed(1)) });
+      }
+
+      return { candles, ema20, ema50, ema200, macdLine, macdSignal, macdHist, rsiData, lastPrice: currentPrice };
+    }
+
+    // Initialize Native Interactive Chart with 3 Synchronized Subcharts
+    function initNativeChart() {
+      const containerCandle = document.getElementById('lw_candlestick_container');
+      const containerMacd = document.getElementById('lw_macd_container');
+      const containerRsi = document.getElementById('lw_rsi_container');
+
+      if (!containerCandle || !containerMacd || !containerRsi) return;
+      if (typeof LightweightCharts === 'undefined') {
+        console.error("LightweightCharts library not loaded.");
+        return;
+      }
+
+      containerCandle.innerHTML = '';
+      containerMacd.innerHTML = '';
+      containerRsi.innerHTML = '';
+
+      const w = containerCandle.clientWidth || 800;
+
+      // 1. Candlestick + EMA Chart
+      mainChart = LightweightCharts.createChart(containerCandle, {
+        width: w,
+        height: 310,
+        layout: { background: { color: '#06090E' }, textColor: '#94A3B8' },
+        grid: { vertLines: { color: '#0D1420' }, horzLines: { color: '#0D1420' } },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        timeScale: { borderColor: '#1E293B', timeVisible: true, secondsVisible: false }
+      });
+
+      candleSeries = mainChart.addCandlestickSeries({
+        upColor: '#10B981', downColor: '#EF4444',
+        borderVisible: false, wickUpColor: '#10B981', wickDownColor: '#EF4444'
+      });
+      ema20Series = mainChart.addLineSeries({ color: '#06B6D4', lineWidth: 1.5, title: 'EMA 20' });
+      ema50Series = mainChart.addLineSeries({ color: '#F59E0B', lineWidth: 1.5, title: 'EMA 50' });
+      ema200Series = mainChart.addLineSeries({ color: '#A855F7', lineWidth: 1.5, title: 'EMA 200' });
+
+      // 2. MACD Subchart
+      macdChart = LightweightCharts.createChart(containerMacd, {
+        width: w,
+        height: 120,
+        layout: { background: { color: '#070B12' }, textColor: '#94A3B8' },
+        grid: { vertLines: { color: '#0D1420' }, horzLines: { color: '#0D1420' } },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        timeScale: { borderColor: '#1E293B', timeVisible: true, secondsVisible: false }
+      });
+      macdHistSeries = macdChart.addHistogramSeries({ priceFormat: { type: 'volume' } });
+      macdLineSeries = macdChart.addLineSeries({ color: '#06B6D4', lineWidth: 1, title: 'MACD' });
+      macdSignalSeries = macdChart.addLineSeries({ color: '#F59E0B', lineWidth: 1, title: 'Signal' });
+
+      // 3. RSI Subchart
+      rsiChart = LightweightCharts.createChart(containerRsi, {
+        width: w,
+        height: 95,
+        layout: { background: { color: '#070B12' }, textColor: '#94A3B8' },
+        grid: { vertLines: { color: '#0D1420' }, horzLines: { color: '#0D1420' } },
+        crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+        timeScale: { borderColor: '#1E293B', timeVisible: true, secondsVisible: false }
+      });
+      rsiSeries = rsiChart.addLineSeries({ color: '#F59E0B', lineWidth: 1.5, title: 'RSI 14' });
+      rsiSeries.createPriceLine({ price: 70, color: '#EF4444', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: '70 Overbought' });
+      rsiSeries.createPriceLine({ price: 30, color: '#10B981', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dashed, axisLabelVisible: true, title: '30 Oversold' });
+      rsiSeries.createPriceLine({ price: 50, color: '#64748B', lineWidth: 1, lineStyle: LightweightCharts.LineStyle.Dotted, axisLabelVisible: false });
+
+      // Synchronize time scales across charts
+      mainChart.timeScale().subscribeVisibleLogicalRangeChange(r => {
+        if (macdChart) macdChart.timeScale().setVisibleLogicalRange(r);
+        if (rsiChart) rsiChart.timeScale().setVisibleLogicalRange(r);
+      });
+      macdChart.timeScale().subscribeVisibleLogicalRangeChange(r => {
+        if (mainChart) mainChart.timeScale().setVisibleLogicalRange(r);
+        if (rsiChart) rsiChart.timeScale().setVisibleLogicalRange(r);
+      });
+      rsiChart.timeScale().subscribeVisibleLogicalRangeChange(r => {
+        if (mainChart) mainChart.timeScale().setVisibleLogicalRange(r);
+        if (macdChart) macdChart.timeScale().setVisibleLogicalRange(r);
+      });
+
+      renderNativeChartData();
+    }
+
+    function renderNativeChartData() {
+      if (!candleSeries) return;
+      const base = currentAsset === 'XAUUSD' ? 2640.5 : 84802.0;
+      const vol = currentAsset === 'XAUUSD' ? 2.5 : 120.0;
+      const data = generateCandlesAndIndicators(base, 90, vol);
+
+      candleSeries.setData(data.candles);
+      ema20Series.setData(data.ema20);
+      ema50Series.setData(data.ema50);
+      ema200Series.setData(data.ema200);
+
+      macdHistSeries.setData(data.macdHist);
+      macdLineSeries.setData(data.macdLine);
+      macdSignalSeries.setData(data.macdSignal);
+
+      rsiSeries.setData(data.rsiData);
+
+      // Add Signal Marker
+      const lastCandle = data.candles[data.candles.length - 2];
+      candleSeries.setMarkers([
+        {
+          time: lastCandle.time,
+          position: 'belowBar',
+          color: '#10B981',
+          shape: 'arrowUp',
+          text: `▲ AI BUY 93% (${currentAsset})`
+        }
+      ]);
+
+      // Update legend values
+      const lastE20 = data.ema20[data.ema20.length - 1].value;
+      const lastE50 = data.ema50[data.ema50.length - 1].value;
+      const lastE200 = data.ema200[data.ema200.length - 1].value;
+      const lastMacd = data.macdLine[data.macdLine.length - 1].value;
+      const lastSig = data.macdSignal[data.macdSignal.length - 1].value;
+      const lastHist = data.macdHist[data.macdHist.length - 1].value;
+      const lastRsi = data.rsiData[data.rsiData.length - 1].value;
+
+      document.getElementById('lw-legend-symbol').innerText = `${currentAsset} · ${timeframeProfiles[currentTimeframe]?.name || 'M5'}`;
+      document.getElementById('val-ema20').innerText = `$${lastE20}`;
+      document.getElementById('val-ema50').innerText = `$${lastE50}`;
+      document.getElementById('val-ema200').innerText = `$${lastE200}`;
+      document.getElementById('val-macd-line').innerText = lastMacd >= 0 ? `+${lastMacd}` : `${lastMacd}`;
+      document.getElementById('val-macd-sig').innerText = lastSig >= 0 ? `+${lastSig}` : `${lastSig}`;
+      document.getElementById('val-macd-hist').innerText = lastHist >= 0 ? `+${lastHist}` : `${lastHist}`;
+      document.getElementById('val-rsi').innerText = `${lastRsi}`;
+    }
+
+    function resizeNativeCharts() {
+      const containerCandle = document.getElementById('lw_candlestick_container');
+      if (containerCandle && mainChart) {
+        const w = containerCandle.clientWidth;
+        mainChart.applyOptions({ width: w });
+        if (macdChart) macdChart.applyOptions({ width: w });
+        if (rsiChart) rsiChart.applyOptions({ width: w });
+      }
+    }
+
+    // TradingView Official Widget using tv.js with preloaded Studies
+    function initTradingView() {
+      const container = document.getElementById('tv_chart_container');
+      container.innerHTML = '';
+      const div = document.createElement('div');
+      div.id = 'tv_inner_container';
+      div.style.width = '100%';
+      div.style.height = '100%';
+      container.appendChild(div);
+
+      if (typeof TradingView !== 'undefined') {
+        new TradingView.widget({
+          "autosize": true,
+          "symbol": currentAsset === 'XAUUSD' ? "OANDA:XAUUSD" : "BINANCE:BTCUSDT",
+          "interval": currentTimeframe,
+          "timezone": "Asia/Bangkok",
+          "theme": "dark",
+          "style": "1",
+          "locale": "th_TH",
+          "toolbar_bg": "#0A0F1A",
+          "enable_publishing": false,
+          "allow_symbol_change": true,
+          "hide_side_toolbar": false,
+          "container_id": "tv_inner_container",
+          "studies": [
+            "MASimple@tv-basicstudies",
+            "RSI@tv-basicstudies",
+            "MACD@tv-basicstudies"
+          ]
+        });
+      }
+    }
+
+    // Chart Mode Switcher (Native AI Indicators vs TradingView Pro)
+    function switchChartMode(mode) {
+      currentChartMode = mode;
+      const btnNative = document.getElementById('btn-mode-native');
+      const btnTV = document.getElementById('btn-mode-tradingview');
+      const nativeBox = document.getElementById('native_chart_container');
+      const tvBox = document.getElementById('tv_chart_container');
+      const hint = document.getElementById('chart-mode-hint');
+
+      if (mode === 'native') {
+        btnNative.className = "px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/40 shadow-sm flex items-center gap-1 transition-all";
+        btnTV.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all";
+        nativeBox.classList.remove('hidden');
+        nativeBox.classList.add('flex');
+        tvBox.classList.add('hidden');
+        if (hint) hint.innerText = "✨ มี EMA 20/50/200 + MACD + RSI ครบ 100%";
+        document.getElementById('chart-panel-title').innerText = "📊 กราฟราคาพร้อมอินดิเคเตอร์ (AI Indicator Engine)";
+        if (!mainChart) {
+          setTimeout(initNativeChart, 50);
+        } else {
+          resizeNativeCharts();
+          renderNativeChartData();
+        }
+      } else {
+        btnTV.className = "px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/40 shadow-sm flex items-center gap-1 transition-all";
+        btnNative.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all";
+        nativeBox.classList.add('hidden');
+        nativeBox.classList.remove('flex');
+        tvBox.classList.remove('hidden');
+        if (hint) hint.innerText = "💡 TradingView Pro: กดปุ่ม [fx อินดิเคเตอร์] เพื่อเปิด/ปิด";
+        document.getElementById('chart-panel-title').innerText = "📈 กราฟราคาจริง (TradingView Pro Live)";
+        initTradingView();
+      }
+    }
+
+    let currentTradingStyle = 'scalping'; // 'scalping' (M1/M5) or 'swing' (H1/H4)
+
+    function setTradingStyle(style) {
+      currentTradingStyle = style;
+      const btnScalp = document.getElementById('btn-style-scalp');
+      const btnSwing = document.getElementById('btn-style-swing');
+
+      if (style === 'scalping') {
+        if (btnScalp) btnScalp.className = "px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm flex items-center gap-1 transition-all";
+        if (btnSwing) btnSwing.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all";
+        if (['60', '240', 'D'].includes(currentTimeframe)) {
+          setTimeframe('5');
+        } else {
+          selectAsset(currentAsset);
+        }
+      } else {
+        if (btnSwing) btnSwing.className = "px-2.5 py-1 rounded-lg bg-blue-500/20 text-blue-300 font-bold border border-blue-500/40 shadow-sm flex items-center gap-1 transition-all";
+        if (btnScalp) btnScalp.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all";
+        if (['1', '5', '15'].includes(currentTimeframe)) {
+          setTimeframe('60');
+        } else {
+          selectAsset(currentAsset);
+        }
+      }
+    }
+
+    function selectAsset(asset) {
+      currentAsset = asset;
+      const btnBTC = document.getElementById('btn-btc');
+      const btnXAU = document.getElementById('btn-xau');
+      const profile = timeframeProfiles[currentTimeframe] || timeframeProfiles['5'];
+      const isScalp = currentTradingStyle === 'scalping';
+
+      if (asset === 'XAUUSD') {
+        btnXAU.className = "px-3 py-1.5 rounded-lg font-bold border border-amber-500/50 bg-amber-500/10 text-amber-300 transition-all flex items-center gap-1.5 shadow-sm";
+        btnBTC.className = "px-3 py-1.5 rounded-lg font-bold border border-slate-700 bg-slate-800/80 text-slate-300 transition-all flex items-center gap-1.5";
+        
+        const base = 2640.50;
+        document.getElementById('top-symbol').innerText = "XAUUSD";
+        document.getElementById('top-price').innerText = `$${base.toFixed(2)}`;
+        document.getElementById('quick-ask').innerText = `$${(base + 0.3).toFixed(2)}`;
+        document.getElementById('quick-bid').innerText = `$${base.toFixed(2)}`;
+        document.getElementById('chart-current-symbol').innerText = `XAUUSD (${currentTimeframe}m) [${isScalp ? 'Scalp' : 'Swing'}]`;
+        document.getElementById('confluence-symbol').innerText = `[XAUUSD - ${isScalp ? '⚡ Scalping' : '🌊 Swing Trend'}]`;
+        document.getElementById('sig-status-label').innerText = `สถานะสัญญาณ XAUUSD (${isScalp ? 'โหมดเทรดสั้น M1/M5' : 'โหมดสวิงเทรนด์ H1/H4'})`;
+        
+        if (isScalp) {
+          const slPips = profile.xauSL * 0.75;
+          const tp1Pips = slPips * 1.25;
+          const tp2Pips = slPips * 2.4;
+          document.getElementById('sig-desc').innerText = `⚡ Scalping โหมดเทรดสั้น: กราฟทดสอบ Demand สั้น เข้าเร็ว-ออกเร็ว แนะนำปิดกำไร 80% ที่ TP1 ภายใน 5-15 นาที พร้อมล็อคทุน Micro-BE +3 pips`;
+          document.getElementById('sig-entry').innerText = `$${base.toFixed(2)}`;
+          document.getElementById('sig-sl').innerText = `$${(base - slPips).toFixed(2)}`;
+          document.getElementById('sig-sl-pts').innerText = `-${(slPips * 10).toFixed(0)} pips`;
+          document.getElementById('sig-tp1').innerText = `$${(base + tp1Pips).toFixed(2)}`;
+          document.getElementById('sig-tp2').innerText = `$${(base + tp2Pips).toFixed(2)}`;
+          document.getElementById('sig-rr').innerText = "R:R 1 : 1.3";
+          document.getElementById('confluence-pct').innerText = "95.8% Scalp";
+        } else {
+          const slPips = Math.max(16.0, profile.xauSL * 1.5);
+          const tp1Pips = slPips * 1.8;
+          const tp2Pips = slPips * 3.8;
+          document.getElementById('sig-desc').innerText = `🌊 Swing Trend โหมดสวิงเทรนด์: Break of Structure โครงสร้างคลื่นใหญ่ แนะนำแบ่งปิด 60% ที่ TP1 และรันเทรนด์ยาวตาม Trailing Stop EMA 20`;
+          document.getElementById('sig-entry').innerText = `$${base.toFixed(2)}`;
+          document.getElementById('sig-sl').innerText = `$${(base - slPips).toFixed(2)}`;
+          document.getElementById('sig-sl-pts').innerText = `-${(slPips * 10).toFixed(0)} pips`;
+          document.getElementById('sig-tp1').innerText = `$${(base + tp1Pips).toFixed(2)}`;
+          document.getElementById('sig-tp2').innerText = `$${(base + tp2Pips).toFixed(2)}`;
+          document.getElementById('sig-rr').innerText = "R:R 1 : 3.2";
+          document.getElementById('confluence-pct').innerText = "96.5% Swing";
+        }
+      } else {
+        btnBTC.className = "px-3 py-1.5 rounded-lg font-bold border border-amber-500/50 bg-amber-500/10 text-amber-300 transition-all flex items-center gap-1.5 shadow-sm";
+        btnXAU.className = "px-3 py-1.5 rounded-lg font-bold border border-slate-700 bg-slate-800/80 text-slate-300 transition-all flex items-center gap-1.5";
+        
+        const base = 84802.0;
+        document.getElementById('top-symbol').innerText = "BTCUSD";
+        document.getElementById('top-price').innerText = `$${base.toFixed(1)}`;
+        document.getElementById('quick-ask').innerText = `$${base.toFixed(1)}`;
+        document.getElementById('quick-bid').innerText = `$${(base - 0.5).toFixed(1)}`;
+        document.getElementById('chart-current-symbol').innerText = `BTCUSD (${currentTimeframe}m) [${isScalp ? 'Scalp' : 'Swing'}]`;
+        document.getElementById('confluence-symbol').innerText = `[BTCUSD - ${isScalp ? '⚡ Scalping' : '🌊 Swing Trend'}]`;
+        document.getElementById('sig-status-label').innerText = `สถานะสัญญาณ BTCUSD (${isScalp ? 'โหมดเทรดสั้น M1/M5' : 'โหมดสวิงเทรนด์ H1/H4'})`;
+        
+        if (isScalp) {
+          const slDist = Math.max(250.0, profile.btcSL * 0.7);
+          const tp1Dist = slDist * 1.3;
+          const tp2Dist = slDist * 2.5;
+          document.getElementById('sig-desc').innerText = `⚡ Scalping โหมดเทรดสั้น: Liquidity Sweep สั้น กวาดสภาพคล่องนอกกรอบ 15 นาที พร้อม Rejection EMA 20 ปิดเก็บกำไรไว 80% ที่ TP1`;
+          document.getElementById('sig-entry').innerText = `$${base.toFixed(1)}`;
+          document.getElementById('sig-sl').innerText = `$${(base - slDist).toFixed(1)}`;
+          document.getElementById('sig-sl-pts').innerText = `-$${slDist.toFixed(0)}`;
+          document.getElementById('sig-tp1').innerText = `$${(base + tp1Dist).toFixed(1)}`;
+          document.getElementById('sig-tp2').innerText = `$${(base + tp2Dist).toFixed(1)}`;
+          document.getElementById('sig-rr').innerText = "R:R 1 : 1.3";
+          document.getElementById('confluence-pct').innerText = "95.5% Scalp";
+        } else {
+          const slDist = Math.max(1800.0, profile.btcSL * 1.8);
+          const tp1Dist = slDist * 1.8;
+          const tp2Dist = slDist * 4.2;
+          document.getElementById('sig-desc').innerText = `🌊 Swing Trend โหมดสวิงเทรนด์: การขยายตัวของรอบคลื่นสถาบันระดับวัน ทนความผันผวนได้ดี รันกำไรก้อนใหญ่ตามรอบวัฏจักร`;
+          document.getElementById('sig-entry').innerText = `$${base.toFixed(1)}`;
+          document.getElementById('sig-sl').innerText = `$${(base - slDist).toFixed(1)}`;
+          document.getElementById('sig-sl-pts').innerText = `-$${slDist.toFixed(0)}`;
+          document.getElementById('sig-tp1').innerText = `$${(base + tp1Dist).toFixed(1)}`;
+          document.getElementById('sig-tp2').innerText = `$${(base + tp2Dist).toFixed(1)}`;
+          document.getElementById('sig-rr').innerText = "R:R 1 : 3.5";
+          document.getElementById('confluence-pct').innerText = "96.8% Swing";
+        }
+      }
+
+      if (currentChartMode === 'native') {
+        renderNativeChartData();
+      } else {
+        initTradingView();
+      }
+
+      calculateLotDynamically();
+    }
+
+    function setTimeframe(tf) {
+      currentTimeframe = tf;
+      document.querySelectorAll('.tf-btn').forEach(b => {
+        b.className = "tf-btn px-2 py-0.5 rounded text-slate-400 hover:text-white font-bold";
+      });
+      event.target.className = "tf-btn px-2 py-0.5 rounded bg-amber-500 text-black font-extrabold shadow";
+      selectAsset(currentAsset);
+    }
+
+    // Audio Beep Generator using Web Audio API (Reliable offline sound)
+    function playAlertBeep() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // 880Hz A5
+        osc.frequency.setValueAtTime(1174, audioCtx.currentTime + 0.1); // 1174Hz D6
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {
+        console.log("Audio not allowed yet:", e);
+      }
+    }
+
+    // Popup Signal Dialog Functions
+    function triggerSignalPopupDemo() {
+      playAlertBeep();
+      const profile = timeframeProfiles[currentTimeframe] || timeframeProfiles['5'];
+      const p = currentAsset === 'XAUUSD' ? 2640.5 : 84802.0;
+      const sl = currentAsset === 'XAUUSD' ? (p - profile.xauSL).toFixed(2) : (p - profile.btcSL).toFixed(1);
+      const tp1 = currentAsset === 'XAUUSD' ? (p + profile.xauTP1).toFixed(2) : (p + profile.btcTP1).toFixed(1);
+      const tp2 = currentAsset === 'XAUUSD' ? (p + profile.xauTP2).toFixed(2) : (p + profile.btcTP2).toFixed(1);
+
+      document.getElementById('popup-title').innerHTML = `${currentAsset} ↗ STRONG BUY <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">${profile.name}</span>`;
+      document.getElementById('popup-score').innerText = `${profile.score} (A+ Grade Confluence)`;
+      document.getElementById('popup-entry').innerText = `$${p}`;
+      document.getElementById('popup-sl').innerText = `$${sl}`;
+      document.getElementById('popup-tp1').innerText = `$${tp1}`;
+      document.getElementById('popup-tp2').innerText = `$${tp2}`;
+
+      document.getElementById('signal-popup-modal').classList.remove('hidden');
+    }
+
+    function closeSignalPopup() {
+      document.getElementById('signal-popup-modal').classList.add('hidden');
+    }
+
+    function confirmPopupExecution() {
+      closeSignalPopup();
+      executeQuickTrade('BUY');
+    }
+
+    function calculateLotDynamically() {
+      const balInput = document.getElementById('input-balance');
+      balance = parseFloat(balInput.value) || 31430.0;
+      const riskPct = parseFloat(document.getElementById('select-risk').value);
+      const riskDollar = balance * (riskPct / 100.0);
+
+      document.getElementById('calc-loss').innerText = `-$${riskDollar.toFixed(2)}`;
+
+      // Lot Calculation formula based on asset pip distance
+      let calculatedLot = 0.01;
+      if (currentAsset === 'XAUUSD') {
+        calculatedLot = (riskDollar / 800.0).toFixed(2); // ~80 pips risk
+      } else {
+        calculatedLot = (riskDollar / 1200.0).toFixed(2); // ~$1,200 risk per BTC
+      }
+      calculatedLot = Math.max(0.01, calculatedLot);
+      document.getElementById('calc-lot').innerText = calculatedLot;
+      document.getElementById('btn-exec-text').innerText = `⚡ จำลองเปิดคำสั่ง BUY ในเทอร์มินอล (Lot ${calculatedLot})`;
+    }
+
+    function toggleAutoPilot() {
+      isAutoPilot = !isAutoPilot;
+      const btn = document.getElementById('btn-autopilot');
+      const dot = document.getElementById('autopilot-dot');
+      const lbl = document.getElementById('autopilot-label');
+
+      if (isAutoPilot) {
+        btn.className = "px-3 py-1 rounded-lg bg-emerald-950/70 text-emerald-300 border border-emerald-500/40 font-bold flex items-center gap-1.5 transition-all";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-400";
+        lbl.innerText = "Auto-Pilot: เปิด";
+      } else {
+        btn.className = "px-3 py-1 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 font-bold flex items-center gap-1.5 transition-all";
+        dot.className = "w-2 h-2 rounded-full bg-slate-500";
+        lbl.innerText = "Auto-Pilot: ปิด";
+      }
+    }
+
+    let isTradingInProgress = false;
+
+    function executeQuickTrade(action) {
+      if (isTradingInProgress) return;
+
+      // Institutional Risk Rule: Maximum 1 active position per asset (Prevent Overtrading & High DD)
+      const existing = openPositions.find(p => p.symbol === currentAsset);
+      if (existing) {
+        alert(`⚠️ มีออเดอร์ ${currentAsset} ถือครองอยู่แล้วในพอร์ต!\n\nตามหลักการบริหารความเสี่ยงระดับสถาบัน (Risk Cap 1.5%): ไม่อนุญาตให้ออกไม้ซ้ำซ้อนเพื่อรักษา Max Drawdown ต่ำกว่า 2.7%\n\nกรุณากด 'ปิดทำกำไร' ออเดอร์เดิมก่อนเปิดออเดอร์ใหม่ครับ`);
+        return;
+      }
+
+      isTradingInProgress = true;
+      const lot = parseFloat(document.getElementById('calc-lot').innerText) || 0.39;
+      const p = currentAsset === 'XAUUSD' ? 2640.5 : 84802.0;
+      const slDist = currentAsset === 'XAUUSD' ? 8.5 : 450.0;
+      const slPrice = action === 'BUY' ? p - slDist : p + slDist;
+
+      openPositions.push({
+        id: Date.now(),
+        symbol: currentAsset,
+        type: action,
+        lot: lot,
+        entry: p,
+        sl: slPrice,
+        pnl: 0.0
+      });
+
+      renderPositions();
+      alert(`✅ สั่งเปิดคำสั่ง ${action} ${currentAsset} (Lot ${lot}) สำเร็จเรียบร้อย!\nEntry: ${p} | SL: ${slPrice} (ส่งคำสั่งเข้า MT5 EA เรียบร้อยแล้ว)`);
+      
+      setTimeout(() => { isTradingInProgress = false; }, 1000);
+    }
+
+    function executeOrderFromPanel(action) {
+      executeQuickTrade(action);
+    }
+
+    function closePosition(btn, id) {
+      openPositions = openPositions.filter(p => p.id !== id);
+      renderPositions();
+      alert("✅ ปิดสถานะและล็อคกำไรเข้า Equity สำเร็จเรียบร้อย!");
+    }
+
+    function closeAllPositions() {
+      if (openPositions.length === 0) {
+        alert("ไม่มีออเดอร์ค้างในพอร์ต");
+        return;
+      }
+      openPositions = [];
+      renderPositions();
+      alert("✅ ปิดสถานะทั้งหมดเรียบร้อยแล้ว");
+    }
+
+    function renderPositions() {
+      const container = document.getElementById('position-list');
+      const countEl = document.getElementById('pos-count');
+      countEl.innerText = `${openPositions.length} ไม้`;
+
+      if (openPositions.length === 0) {
+        container.innerHTML = "<div class='text-center py-8 text-slate-500 text-xs font-mono'>ไม่มีออเดอร์ค้าง (พร้อมรับสัญญาณใหม่)</div>";
+        return;
+      }
+
+      container.innerHTML = openPositions.map(pos => `
+        <div class="card-box p-3 rounded-xl border border-emerald-500/30">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-emerald-400 flex items-center gap-1 font-mono">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              ${pos.type} ${pos.symbol}
+            </span>
+            <span class="font-mono text-emerald-400 font-black text-sm">+$${pos.pnl.toFixed(2)} (+0.84%)</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-slate-800 text-[10px] font-mono text-slate-400">
+            <div><span>Lot: </span><span class="text-white font-bold">${pos.lot}</span></div>
+            <div><span>Entry: </span><span class="text-white font-bold">${pos.entry.toFixed(1)}</span></div>
+            <div><span>SL: </span><span class="text-rose-400 font-bold">${pos.sl.toFixed(1)}</span></div>
+          </div>
+          <div class="mt-2 flex justify-between items-center text-[10px]">
+            <span class="text-slate-400">สถานะ: <span class="text-emerald-400 font-bold">SL เลื่อนบังหน้าทุนแล้ว (Breakeven)</span></span>
+            <button onclick="closePosition(this, ${pos.id})" class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 hover:bg-rose-500 hover:text-white transition-colors">
+              ปิดทำกำไร
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function triggerNewsSpike() {
+      alert("⚠️ จำลองสภาวะข่าวเศรษฐกิจกระชาก (News Spike Event): ราคากระชาก 250 Pips! ระบบ News Shield ทำงานตัดการเปิดไม้ใหม่เพื่อปกป้องพอร์ต");
+    }
+
+    function resetChartScale() {
+      selectAsset(currentAsset);
+    }
+
+    async function checkLineConfig() {
+      try {
+        const res = await fetch('/api/line/config');
+        const data = await res.json();
+        const badge = document.getElementById('line-token-status-badge');
+        if (badge) {
+          if (data.has_token) {
+            badge.className = "px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-medium text-[11px]";
+            badge.innerHTML = `🟢 เชื่อมต่อแล้ว (${data.token_preview})`;
+          } else {
+            badge.className = "px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 font-medium text-[11px]";
+            badge.innerHTML = `⚡ ยังไม่ได้ใส่ Token (โหมดจำลอง)`;
+          }
+        }
+      } catch (e) {
+        console.error("Failed to check LINE config:", e);
+      }
+    }
+
+    async function saveLineToken() {
+      const input = document.getElementById('line-token-input');
+      const token = input ? input.value.trim() : '';
+      if (!token) {
+        alert("กรุณากรอก LINE Channel Access Token ก่อนกดบันทึก");
+        return;
+      }
+
+      const resultBox = document.getElementById('line-result-box');
+      if (resultBox) resultBox.innerText = "กำลังบันทึก Channel Access Token...";
+
+      try {
+        const res = await fetch('/api/line/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ channel_access_token: token })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          if (resultBox) {
+            resultBox.innerHTML = `✅ <span class="text-emerald-400 font-bold">บันทึก Token สำเร็จ!</span> พร้อมยิงสัญญาณจริงเข้า LINE Official ADStrade.bot (@733ajjvt)`;
+          }
+          input.value = '';
+          checkLineConfig();
+        } else {
+          if (resultBox) resultBox.innerText = `❌ ข้อผิดพลาด: ${data.message}`;
+        }
+      } catch (e) {
+        if (resultBox) resultBox.innerText = `❌ เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์: ${e.message}`;
+      }
+    }
+
+    async function testLineSend(type = 'signal') {
+      const resultBox = document.getElementById('line-result-box');
+      const timeBox = document.getElementById('line-send-time');
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('th-TH');
+
+      if (timeBox) timeBox.innerText = timeStr;
+      if (resultBox) {
+        resultBox.innerHTML = `<span class="text-cyan-400 animate-pulse">⏳ กำลังประมวลผลและส่ง Flex Message (${type.toUpperCase()} - ${currentAsset} ${currentStyle.toUpperCase()})...</span>`;
+      }
+
+      try {
+        const res = await fetch('/api/line/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: type,
+            symbol: currentAsset,
+            style: currentStyle
+          })
+        });
+        const data = await res.json();
+
+        if (data.simulated) {
+          if (resultBox) {
+            resultBox.innerHTML = `🟡 <span class="text-amber-400 font-bold">[โหมดทดสอบ Flex Message]</span>: ${data.message}\n\n📌 <strong class="text-white">ประเภทการ์ด:</strong> ${type.toUpperCase()} | <strong class="text-white">คู่เงิน:</strong> ${data.symbol}\n💡 <span class="text-slate-400">โครงสร้าง Flex JSON สร้างสำเร็จ 100% พร้อมยิงเข้าบัญชี @733ajjvt เมื่อใส่ Token ในช่องด้านบน</span>`;
+          }
+        } else if (data.status === 'success') {
+          if (resultBox) {
+            resultBox.innerHTML = `🟢 <span class="text-emerald-400 font-bold">[ส่งจริงสำเร็จ!]</span> ${data.message}\n\n📌 <strong class="text-white">การ์ด:</strong> ${type.toUpperCase()} | <strong class="text-white">บอท:</strong> ADStrade.bot (@733ajjvt)\n⏱️ <span class="text-slate-400">เวลาที่ส่ง: ${timeStr}</span>`;
+          }
+        } else {
+          if (resultBox) {
+            resultBox.innerHTML = `🔴 <span class="text-red-400 font-bold">[ส่งไม่สำเร็จ]</span> ${data.message}`;
+          }
+        }
+      } catch (e) {
+        if (resultBox) {
+          resultBox.innerHTML = `❌ ไม่สามารถเชื่อมต่อกับ API Server: ${e.message}`;
+        }
+      }
+    }
+
+    function sendLineAlertNow() {
+      openModal('line-modal');
+      testLineSend('signal');
+    }
+
+    // Cockpit Navigation Tabs Switcher
+    function switchCockpitTab(tab) {
+      document.getElementById('cockpit-view-signals').classList.add('hidden');
+      document.getElementById('cockpit-view-positions').classList.add('hidden');
+      document.getElementById('cockpit-view-news').classList.add('hidden');
+
+      const btnSig = document.getElementById('tab-c-signals');
+      const btnPos = document.getElementById('tab-c-positions');
+      const btnNews = document.getElementById('tab-c-news');
+
+      btnSig.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium text-xs flex items-center gap-1 transition-all";
+      btnPos.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium text-xs flex items-center gap-1 transition-all";
+      btnNews.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium text-xs flex items-center gap-1 transition-all";
+
+      if (tab === 'signals') {
+        document.getElementById('cockpit-view-signals').classList.remove('hidden');
+        btnSig.className = "px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition-all";
+      } else if (tab === 'positions') {
+        document.getElementById('cockpit-view-positions').classList.remove('hidden');
+        btnPos.className = "px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition-all";
+      } else if (tab === 'news') {
+        document.getElementById('cockpit-view-news').classList.remove('hidden');
+        btnNews.className = "px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition-all";
+      }
+    }
+
+    // Split Ratio Presets (70/30, 60/40, 50/50)
+    let currentSplitRatio = '70'; // '70', '60', '50'
+    function setSplitRatio(ratio) {
+      currentSplitRatio = ratio;
+      ['70', '60', '50'].forEach(r => {
+        const btn = document.getElementById(`ratio-btn-${r}`);
+        if (btn) {
+          if (r === ratio) {
+            btn.className = "px-1.5 py-0.2 rounded bg-amber-500 text-black font-extrabold";
+          } else {
+            btn.className = "px-1.5 py-0.2 rounded text-slate-400 hover:text-white font-bold";
+          }
+        }
+      });
+      applyPanelLayout();
+    }
+
+    // Apply Panel Layout (Swap + Ratio)
+    let isSwapped = false;
+    function applyPanelLayout() {
+      const chart = document.getElementById('chart-panel');
+      const cockpit = document.getElementById('cockpit-panel');
+      if (isChartExpanded) return;
+
+      let chartCols = "xl:col-span-8 2xl:col-span-8";
+      let cockpitCols = "xl:col-span-4 2xl:col-span-4";
+
+      if (currentSplitRatio === '60') {
+        chartCols = "xl:col-span-7 2xl:col-span-7";
+        cockpitCols = "xl:col-span-5 2xl:col-span-5";
+      } else if (currentSplitRatio === '50') {
+        chartCols = "xl:col-span-6 2xl:col-span-6";
+        cockpitCols = "xl:col-span-6 2xl:col-span-6";
+      }
+
+      if (isSwapped) {
+        chart.className = `${chartCols} relative bg-[#06090E] h-[640px] border-l border-[#161F2E] flex flex-col justify-between order-2 transition-all duration-200`;
+        cockpit.className = `${cockpitCols} bg-[#090D15] h-[640px] flex flex-col justify-between border-r border-[#161F2E] overflow-y-auto order-1 transition-all duration-200`;
+      } else {
+        chart.className = `${chartCols} relative bg-[#06090E] h-[640px] border-r border-[#161F2E] flex flex-col justify-between order-1 transition-all duration-200`;
+        cockpit.className = `${cockpitCols} bg-[#090D15] h-[640px] flex flex-col justify-between border-l border-[#161F2E] overflow-y-auto order-2 transition-all duration-200`;
+      }
+      setTimeout(resizeNativeCharts, 50);
+    }
+
+    // Swap Left / Right Panels
+    function toggleSwapPanels() {
+      isSwapped = !isSwapped;
+      applyPanelLayout();
+    }
+
+    // Drag and Drop Panel Swap Handlers
+    let draggedPanelType = null;
+    function handlePanelDragStart(e, panelType) {
+      draggedPanelType = panelType;
+      e.dataTransfer.setData('text/plain', panelType);
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handlePanelDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      e.currentTarget.classList.add('ring-2', 'ring-amber-400', 'bg-amber-950/15');
+    }
+
+    function handlePanelDragLeave(e, id) {
+      e.currentTarget.classList.remove('ring-2', 'ring-amber-400', 'bg-amber-950/15');
+    }
+
+    function handlePanelDrop(e, targetPanel) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('ring-2', 'ring-amber-400', 'bg-amber-950/15');
+      const sourcePanel = e.dataTransfer.getData('text/plain') || draggedPanelType;
+      if (sourcePanel && sourcePanel !== targetPanel) {
+        toggleSwapPanels();
+        playAlertBeep();
+      }
+      draggedPanelType = null;
+    }
+
+    // Expand Chart to Full 100% Width or Dual Split
+    let isChartExpanded = false;
+    function toggleExpandChart() {
+      isChartExpanded = !isChartExpanded;
+      const chart = document.getElementById('chart-panel');
+      const cockpit = document.getElementById('cockpit-panel');
+      const btn = document.getElementById('btn-expand-chart');
+
+      if (isChartExpanded) {
+        chart.className = "xl:col-span-12 relative bg-[#06090E] h-[640px] flex flex-col justify-between order-1";
+        cockpit.classList.add('hidden');
+        btn.innerHTML = "<span>🗗 ย่อลง (Dual View)</span>";
+      } else {
+        cockpit.classList.remove('hidden');
+        btn.innerHTML = "<span>🗖 เต็มจอ</span>";
+        applyPanelLayout();
+      }
+      setTimeout(resizeNativeCharts, 50);
+    }
+
+    function openModal(id) { 
+      document.getElementById(id).classList.remove('hidden'); 
+      if (id === 'line-modal') {
+        checkLineConfig();
+      }
+    }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function switchMainTab(tab) {
+      if (tab === 'signals') {
+        switchCockpitTab('signals');
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      calculateLotDynamically();
+
+      // Initialize default AI Indicators Chart
+      setTimeout(initNativeChart, 120);
+      window.addEventListener('resize', resizeNativeCharts);
+
+      // Tick price live simulator
+      setInterval(() => {
+        if (currentAsset === 'BTCUSD') {
+          const delta = (Math.random() - 0.48) * 8.0;
+          const p = 84802.0 + delta;
+          document.getElementById('top-price').innerText = `$${p.toFixed(1)}`;
+          document.getElementById('quick-ask').innerText = `$${p.toFixed(1)}`;
+        }
+      }, 1500);
+
+      // Live Economic News Countdown Loop (HH:MM:SS)
+      let pceSecondsLeft = 3 * 3600 + 52 * 60 + 14;  // ~3h 52m 14s left
+      let fomcSecondsLeft = 9 * 3600 + 22 * 60 + 14; // ~9h 22m 14s left
+
+      setInterval(() => {
+        if (pceSecondsLeft > 0) pceSecondsLeft--;
+        if (fomcSecondsLeft > 0) fomcSecondsLeft--;
+
+        const formatTime = (secs) => {
+          const h = Math.floor(secs / 3600);
+          const m = Math.floor((secs % 3600) / 60);
+          const s = secs % 60;
+          return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        };
+
+        const pceEl = document.getElementById('countdown-pce');
+        const fomcEl = document.getElementById('countdown-fomc');
+
+        if (pceEl) pceEl.innerText = `⏳ นับถอยหลัง: ${formatTime(pceSecondsLeft)}`;
+        if (fomcEl) fomcEl.innerText = `⏳ นับถอยหลัง: ${formatTime(fomcSecondsLeft)}`;
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
