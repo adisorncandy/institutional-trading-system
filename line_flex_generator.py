@@ -1235,12 +1235,23 @@ class LineFlexService:
                     {
                         "type": "button",
                         "style": "primary",
-                        "color": "#10B981",
+                        "color": "#059669",
                         "height": "sm",
                         "action": {
                             "type": "uri",
-                            "label": "🌐 เข้าสู่ระบบพอร์ตเทรด (Web Dashboard)",
-                            "uri": web_url
+                            "label": "🟢 ดูพอร์ตจริง IUX ($1,036.79)",
+                            "uri": "https://institutional-trading-system.vercel.app/?account=real&tab=livetrade"
+                        }
+                    },
+                    {
+                        "type": "button",
+                        "style": "primary",
+                        "color": "#D97706",
+                        "height": "sm",
+                        "action": {
+                            "type": "uri",
+                            "label": "🧪 ดูพอร์ตจำลอง AI Demo ($4,000)",
+                            "uri": "https://institutional-trading-system.vercel.app/?account=demo&tab=livetrade"
                         }
                     },
                     {
@@ -1249,14 +1260,14 @@ class LineFlexService:
                         "height": "sm",
                         "action": {
                             "type": "uri",
-                            "label": "📊 ดูสเตตเมนต์ 111+ ไม้ & ประวัติ AI",
-                            "uri": web_url
+                            "label": "📊 สเตตเมนต์ & เรดาร์สภา AI",
+                            "uri": "https://institutional-trading-system.vercel.app/"
                         }
                     }
                 ]
             }
         }
-        return {"type": "flex", "altText": f"🏛️ เข้าสู่ระบบพอร์ตเทรดสถาบัน 24/7 (${total_bal:,.2f} USD) | ADStrade.bot", "contents": flex_bubble}
+        return {"type": "flex", "altText": f"🏛️ เลือกระบบพอร์ตเทรด: 🟢 พอร์ตจริง IUX | 🧪 พอร์ตจำลอง Demo | ADStrade.bot", "contents": flex_bubble}
 
 
 if __name__ == "__main__":

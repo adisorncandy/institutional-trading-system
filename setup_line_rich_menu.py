@@ -47,8 +47,8 @@ def setup_rich_menu():
             "height": 843
         },
         "selected": True,
-        "name": "Institutional Trading Web Portal",
-        "chatBarText": "เมนูพอร์ตสด",
+        "name": "Institutional Trading Dual Portfolio Menu",
+        "chatBarText": "พอร์ตจริง/Demo",
         "areas": [
             {
                 "bounds": {
@@ -59,8 +59,8 @@ def setup_rich_menu():
                 },
                 "action": {
                     "type": "uri",
-                    "label": "Live Portfolio",
-                    "uri": WEB_URL
+                    "label": "พอร์ตจริง IUX",
+                    "uri": "https://institutional-trading-system.vercel.app/?account=real&tab=livetrade"
                 }
             },
             {
@@ -72,8 +72,8 @@ def setup_rich_menu():
                 },
                 "action": {
                     "type": "uri",
-                    "label": "Trade Statement",
-                    "uri": WEB_URL
+                    "label": "พอร์ตจำลอง Demo",
+                    "uri": "https://institutional-trading-system.vercel.app/?account=demo&tab=livetrade"
                 }
             },
             {
@@ -85,8 +85,8 @@ def setup_rich_menu():
                 },
                 "action": {
                     "type": "uri",
-                    "label": "AI Traders Council",
-                    "uri": WEB_URL
+                    "label": "สเตตเมนต์ & เรดาร์",
+                    "uri": "https://institutional-trading-system.vercel.app/"
                 }
             }
         ]
