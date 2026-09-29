@@ -1,34 +1,34 @@
 {
   "positions": [
     {
-      "id": 1790612712860,
-      "ticket": 612712,
-      "symbol": "XAUUSD",
+      "id": 1790624123450,
+      "ticket": 624123,
+      "symbol": "BTCUSD",
       "type": "SELL",
       "style": "swing",
-      "portfolioId": "xau_swing",
-      "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)",
-      "styleName": "🟡 ทองคำ เทรดยาว (H1 Swing)",
-      "lot": 0.06,
+      "portfolioId": "btc_swing",
+      "portfolioName": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
+      "styleName": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
+      "lot": 0.02,
       "riskPct": 1.8,
-      "riskDollar": 67.74948,
-      "riskRationale": "คุมความเสี่ยง 1.8% ($67.75) / SL 80 Pips ➔ คำนวณ Lot 0.06",
-      "entry": 4155.84,
-      "sl": 4163.84,
-      "tp1": 4137.84,
-      "tp2": 4120.84,
-      "pnl": -3.36,
-      "pips": -5.6,
-      "timeOpen": "23:25:12",
+      "riskDollar": 17.7219,
+      "riskRationale": "คุมความเสี่ยง 1.8% ($17.72) / SL 75 Pips ➔ คำนวณ Lot 0.02",
+      "entry": 83365.1,
+      "sl": 84115.1,
+      "tp1": 81865.1,
+      "tp2": 80165.1,
+      "pnl": -2.6,
+      "pips": -13.0,
+      "timeOpen": "02:35:23",
       "tp1Hit": false,
       "breakevenLocked": false,
-      "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [คุมความเสี่ยง 1.8% ($67.75) / SL 80 Pips ➔ คำนวณ Lot 0.06] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
+      "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [คุมความเสี่ยง 1.8% ($17.72) / SL 75 Pips ➔ คำนวณ Lot 0.02] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
       "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: SELL XAUUSD (คุมความเสี่ยง 1.8% ($67.75) / SL 80 Pips ➔ คำนวณ Lot 0.06)"
+      "evalStatus": "⏳ อยู่ในโซนทดสอบแนวรับ/ต้าน (Pullback โซนปลอดภัย) มี SL คอยควบคุมความเสี่ยงอย่างเข้มงวด"
     },
     {
-      "id": 1790612723506,
-      "ticket": 612723,
+      "id": 1790636468405,
+      "ticket": 636468,
       "symbol": "BTCUSD",
       "type": "BUY",
       "style": "scalping",
@@ -37,46 +37,20 @@
       "styleName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)",
       "lot": 0.04,
       "riskPct": 1.4,
-      "riskDollar": 11.347559999999998,
-      "riskRationale": "คุมความเสี่ยง 1.4% ($11.35) / SL 30 Pips ➔ คำนวณ Lot 0.04",
-      "entry": 84139.8,
-      "sl": 83839.8,
-      "tp1": 84639.8,
-      "tp2": 84939.8,
-      "pnl": -2.55,
-      "pips": -6.4,
-      "timeOpen": "23:25:23",
+      "riskDollar": 10.60808,
+      "riskRationale": "คุมความเสี่ยง 1.4% ($10.61) / SL 30 Pips ➔ คำนวณ Lot 0.04",
+      "entry": 83636.2,
+      "sl": 83336.2,
+      "tp1": 84136.2,
+      "tp2": 84436.2,
+      "pnl": -5.64,
+      "pips": -14.1,
+      "timeOpen": "06:01:08",
       "tp1Hit": false,
       "breakevenLocked": false,
-      "reason": "SMC M5 FVG Demand + Fast Momentum [คุมความเสี่ยง 1.4% ($11.35) / SL 30 Pips ➔ คำนวณ Lot 0.04] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
+      "reason": "SMC M5 FVG Demand + Fast Momentum [คุมความเสี่ยง 1.4% ($10.61) / SL 30 Pips ➔ คำนวณ Lot 0.04] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
       "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: BUY BTCUSD (คุมความเสี่ยง 1.4% ($11.35) / SL 30 Pips ➔ คำนวณ Lot 0.04)"
-    },
-    {
-      "id": 1790612734348,
-      "ticket": 612734,
-      "symbol": "BTCUSD",
-      "type": "BUY",
-      "style": "swing",
-      "portfolioId": "btc_swing",
-      "portfolioName": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
-      "styleName": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
-      "lot": 0.02,
-      "riskPct": 1.8,
-      "riskDollar": 18.000000000000004,
-      "riskRationale": "คุมความเสี่ยง 1.8% ($18.00) / SL 75 Pips ➔ คำนวณ Lot 0.02",
-      "entry": 84137.5,
-      "sl": 83387.5,
-      "tp1": 85637.5,
-      "tp2": 87337.5,
-      "pnl": -1.23,
-      "pips": -6.2,
-      "timeOpen": "23:25:34",
-      "tp1Hit": false,
-      "breakevenLocked": false,
-      "reason": "Institutional H4 Order Block + Daily Trend [คุมความเสี่ยง 1.8% ($18.00) / SL 75 Pips ➔ คำนวณ Lot 0.02] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
-      "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: BUY BTCUSD (คุมความเสี่ยง 1.8% ($18.00) / SL 75 Pips ➔ คำนวณ Lot 0.02)"
+      "evalStatus": "⏳ อยู่ในโซนทดสอบแนวรับ/ต้าน (Pullback โซนปลอดภัย) มี SL คอยควบคุมความเสี่ยงอย่างเข้มงวด"
     }
   ],
   "portfolios": {
@@ -86,7 +60,7 @@
       "symbol": "XAUUSD",
       "style": "scalping",
       "initialBalance": 1000.0,
-      "balance": 2776.56
+      "balance": 1700.1
     },
     "xau_swing": {
       "id": "xau_swing",
@@ -94,7 +68,7 @@
       "symbol": "XAUUSD",
       "style": "swing",
       "initialBalance": 1000.0,
-      "balance": 3763.86
+      "balance": 2312.82
     },
     "btc_scalp": {
       "id": "btc_scalp",
@@ -102,7 +76,7 @@
       "symbol": "BTCUSD",
       "style": "scalping",
       "initialBalance": 1000.0,
-      "balance": 810.54
+      "balance": 757.72
     },
     "btc_swing": {
       "id": "btc_swing",
@@ -110,10 +84,10 @@
       "symbol": "BTCUSD",
       "style": "swing",
       "initialBalance": 1000.0,
-      "balance": 1000.0
+      "balance": 984.55
     }
   },
-  "total_balance": 8350.96,
-  "balance": 8350.96,
-  "updated_at": "2026-09-28T23:26:18.895357"
+  "total_balance": 5755.19,
+  "balance": 5755.19,
+  "updated_at": "2026-09-29T07:01:15.506806"
 }

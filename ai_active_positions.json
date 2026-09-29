@@ -17,14 +17,14 @@
       "sl": 84115.1,
       "tp1": 81865.1,
       "tp2": 80165.1,
-      "pnl": -3.97,
-      "pips": -19.9,
+      "pnl": -2.82,
+      "pips": -14.1,
       "timeOpen": "02:35:23",
       "tp1Hit": false,
       "breakevenLocked": false,
       "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [คุมความเสี่ยง 1.8% ($17.72) / SL 75 Pips ➔ คำนวณ Lot 0.02] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
       "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: SELL BTCUSD (คุมความเสี่ยง 1.8% ($17.72) / SL 75 Pips ➔ คำนวณ Lot 0.02)"
+      "evalStatus": "⏳ อยู่ในโซนทดสอบแนวรับ/ต้าน (Pullback โซนปลอดภัย) มี SL คอยควบคุมความเสี่ยงอย่างเข้มงวด"
     },
     {
       "id": 1790636468405,
@@ -43,66 +43,14 @@
       "sl": 83336.2,
       "tp1": 84136.2,
       "tp2": 84436.2,
-      "pnl": -2.9,
-      "pips": -7.3,
+      "pnl": -5.21,
+      "pips": -13.0,
       "timeOpen": "06:01:08",
       "tp1Hit": false,
       "breakevenLocked": false,
       "reason": "SMC M5 FVG Demand + Fast Momentum [คุมความเสี่ยง 1.4% ($10.61) / SL 30 Pips ➔ คำนวณ Lot 0.04] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
       "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: BUY BTCUSD (คุมความเสี่ยง 1.4% ($10.61) / SL 30 Pips ➔ คำนวณ Lot 0.04)"
-    },
-    {
-      "id": 1790637784820,
-      "ticket": 637784,
-      "symbol": "XAUUSD",
-      "type": "SELL",
-      "style": "swing",
-      "portfolioId": "xau_swing",
-      "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)",
-      "styleName": "🟡 ทองคำ เทรดยาว (H1 Swing)",
-      "lot": 0.06,
-      "riskPct": 1.8,
-      "riskDollar": 56.152440000000006,
-      "riskRationale": "คุมความเสี่ยง 1.8% ($56.15) / SL 80 Pips ➔ คำนวณ Lot 0.06",
-      "entry": 4138.68,
-      "sl": 4146.68,
-      "tp1": 4120.68,
-      "tp2": 4103.68,
-      "pnl": 16.38,
-      "pips": 27.3,
-      "timeOpen": "06:23:04",
-      "tp1Hit": false,
-      "breakevenLocked": false,
-      "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [คุมความเสี่ยง 1.8% ($56.15) / SL 80 Pips ➔ คำนวณ Lot 0.06] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
-      "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: SELL XAUUSD (คุมความเสี่ยง 1.8% ($56.15) / SL 80 Pips ➔ คำนวณ Lot 0.06)"
-    },
-    {
-      "id": 1790639040028,
-      "ticket": 639040,
-      "symbol": "XAUUSD",
-      "type": "SELL",
-      "style": "scalping",
-      "portfolioId": "xau_scalp",
-      "portfolioName": "🟡 ทองคำ เทรดสั้น (M5 Scalp)",
-      "styleName": "🟡 ทองคำ เทรดสั้น (M5 Scalp)",
-      "lot": 0.06,
-      "riskPct": 1.4,
-      "riskDollar": 35.24556,
-      "riskRationale": "คุมความเสี่ยง 1.4% ($35.25) / SL 35 Pips ➔ คำนวณ Lot 0.06",
-      "entry": 4136.91,
-      "sl": 4140.41,
-      "tp1": 4130.91,
-      "tp2": 4126.91,
-      "pnl": 5.76,
-      "pips": 9.6,
-      "timeOpen": "06:44:00",
-      "tp1Hit": false,
-      "breakevenLocked": false,
-      "reason": "SMC M5 Bearish Supply FVG Rejection [คุมความเสี่ยง 1.4% ($35.25) / SL 35 Pips ➔ คำนวณ Lot 0.06] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
-      "evalScore": "95.6% Confluence",
-      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: SELL XAUUSD (คุมความเสี่ยง 1.4% ($35.25) / SL 35 Pips ➔ คำนวณ Lot 0.06)"
+      "evalStatus": "⏳ อยู่ในโซนทดสอบแนวรับ/ต้าน (Pullback โซนปลอดภัย) มี SL คอยควบคุมความเสี่ยงอย่างเข้มงวด"
     }
   ],
   "portfolios": {
@@ -112,7 +60,7 @@
       "symbol": "XAUUSD",
       "style": "scalping",
       "initialBalance": 1000.0,
-      "balance": 2517.54
+      "balance": 1700.1
     },
     "xau_swing": {
       "id": "xau_swing",
@@ -120,7 +68,7 @@
       "symbol": "XAUUSD",
       "style": "swing",
       "initialBalance": 1000.0,
-      "balance": 3119.58
+      "balance": 2312.82
     },
     "btc_scalp": {
       "id": "btc_scalp",
@@ -139,7 +87,7 @@
       "balance": 984.55
     }
   },
-  "total_balance": 7379.39,
-  "balance": 8350.96,
-  "updated_at": "2026-09-29T06:45:05.087286"
+  "total_balance": 5755.19,
+  "balance": 5755.19,
+  "updated_at": "2026-09-29T07:01:26.240736"
 }

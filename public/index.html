@@ -2155,6 +2155,7 @@
   <script>
     let currentAsset = 'BTCUSD';
     let currentTimeframe = '5';
+    let currentStyle = 'scalping';
 
     // 4 Distinct Institutional Portfolios Configuration ($1,000 USD Capital Each)
     const PORTFOLIO_CONFIGS = {
@@ -2740,17 +2741,25 @@
       const lastHist = data.macdHist[data.macdHist.length - 1].value;
       const lastRsi = data.rsiData[data.rsiData.length - 1].value;
 
-      document.getElementById('lw-legend-symbol').innerText = `${currentAsset} · ${timeframeProfiles[currentTimeframe]?.name || 'M5'} (LIVE TICK)`;
-      document.getElementById('val-ema20').innerText = `$${lastE20}`;
-      document.getElementById('val-ema50').innerText = `$${lastE50}`;
-      document.getElementById('val-ema200').innerText = `$${lastE200}`;
-      document.getElementById('val-macd-line').innerText = lastMacd >= 0 ? `+${lastMacd}` : `${lastMacd}`;
-      document.getElementById('val-macd-sig').innerText = lastSig >= 0 ? `+${lastSig}` : `${lastSig}`;
-      document.getElementById('val-macd-hist').innerText = lastHist >= 0 ? `+${lastHist}` : `${lastHist}`;
-      document.getElementById('val-rsi').innerText = `${lastRsi}`;
+      const elSymbol = document.getElementById('lw-legend-symbol');
+      if (elSymbol) elSymbol.innerText = `${currentAsset} · ${timeframeProfiles[currentTimeframe]?.name || 'M5'} (LIVE TICK)`;
+      const elE20 = document.getElementById('val-ema20');
+      if (elE20) elE20.innerText = `$${lastE20}`;
+      const elE50 = document.getElementById('val-ema50');
+      if (elE50) elE50.innerText = `$${lastE50}`;
+      const elE200 = document.getElementById('val-ema200');
+      if (elE200) elE200.innerText = `$${lastE200}`;
+      const elMacdLine = document.getElementById('val-macd-line');
+      if (elMacdLine) elMacdLine.innerText = lastMacd >= 0 ? `+${lastMacd}` : `${lastMacd}`;
+      const elMacdSig = document.getElementById('val-macd-sig');
+      if (elMacdSig) elMacdSig.innerText = lastSig >= 0 ? `+${lastSig}` : `${lastSig}`;
+      const elMacdHist = document.getElementById('val-macd-hist');
+      if (elMacdHist) elMacdHist.innerText = lastHist >= 0 ? `+${lastHist}` : `${lastHist}`;
+      const elRsi = document.getElementById('val-rsi');
+      if (elRsi) elRsi.innerText = `${lastRsi}`;
 
       // Render Auto-Trendlines Channel
-      renderTrendlines();
+      try { renderTrendlines(); } catch (e) {}
     }
 
     function updateNativeChartLiveTick(price) {
@@ -3136,19 +3145,26 @@
     }
 
     function calculateLotDynamically() {
-      const balInput = document.getElementById('input-balance');
-      balance = parseFloat(balInput.value) || 1000.0;
-      
-      const isGold = currentAsset === 'XAUUSD';
-      const isScalp = currentStyle === 'scalp' || currentStyle === 'scalping';
-      const slDist = isGold ? (isScalp ? 3.5 : 8.0) : (isScalp ? 300.0 : 750.0);
-      const sizing = calculateInstitutionalPositionSize(currentAsset, isScalp ? 'scalping' : 'swing', slDist, balance);
-      
-      const calcLotEl = document.getElementById('calc-lot');
-      if (calcLotEl) calcLotEl.innerText = sizing.lot.toFixed(2);
-      const execText = document.getElementById('btn-exec-text');
-      if (execText) execText.innerText = `⚡ เปิดคำสั่ง BUY ทันที (${sizing.lot.toFixed(2)} Lot)`;
-      updateAccountEquityUI();
+      try {
+        const balInput = document.getElementById('input-balance');
+        if (balInput && balInput.value) {
+          balance = parseFloat(balInput.value) || 1000.0;
+        }
+        
+        const isGold = (currentAsset || 'BTCUSD') === 'XAUUSD';
+        const st = typeof currentStyle !== 'undefined' ? currentStyle : 'scalping';
+        const isScalp = st === 'scalp' || st === 'scalping';
+        const slDist = isGold ? (isScalp ? 3.5 : 8.0) : (isScalp ? 300.0 : 750.0);
+        const sizing = calculateInstitutionalPositionSize(currentAsset || 'BTCUSD', isScalp ? 'scalping' : 'swing', slDist, balance || 1000.0);
+        
+        const calcLotEl = document.getElementById('calc-lot');
+        if (calcLotEl) calcLotEl.innerText = sizing.lot.toFixed(2);
+        const execText = document.getElementById('btn-exec-text');
+        if (execText) execText.innerText = `⚡ เปิดคำสั่ง BUY ทันที (${sizing.lot.toFixed(2)} Lot)`;
+        updateAccountEquityUI();
+      } catch (err) {
+        console.warn("calculateLotDynamically notice:", err);
+      }
     }
 
     function toggleAutoPilot() {
@@ -4997,25 +5013,29 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      calculateLotDynamically();
+      try { calculateLotDynamically(); } catch (e) { console.warn("Init lot notice:", e); }
 
       // Initialize default AI Indicators Chart
-      setTimeout(initNativeChart, 120);
-      window.addEventListener('resize', resizeNativeCharts);
+      try {
+        setTimeout(initNativeChart, 120);
+        window.addEventListener('resize', resizeNativeCharts);
+      } catch (e) { console.warn("Chart init notice:", e); }
 
       // Connect World-Class Ultra Real-Time Binance WebSocket Feed (0ms delay)
-      initBinanceWebSocket();
+      try { initBinanceWebSocket(); } catch (e) { console.warn("WebSocket init notice:", e); }
 
       // Load Persisted Trade Journal & Balance ($1,000)
-      loadJournalAndState();
+      loadJournalAndState().catch(e => console.warn("loadJournalAndState notice:", e));
 
       // 24/7 Autonomous Trader Real-time Sync Loop (syncs every 4 seconds)
-      setInterval(syncServerState, 4000);
+      setInterval(() => {
+        syncServerState().catch(e => console.warn("syncServerState notice:", e));
+      }, 4000);
 
       // Immediate initial load via REST fallback
       fetchLiveMarketPrices().then(() => {
         selectAsset(currentAsset);
-      });
+      }).catch(e => console.warn("Price fetch notice:", e));
       setInterval(fetchLiveMarketPrices, 30000); // 30s heartbeat fallback only
 
       // Live Economic News Countdown Loop (HH:MM:SS)
