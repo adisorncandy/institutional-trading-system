@@ -83,6 +83,10 @@
           <span>⚡ พอร์ต & ประวัติ</span>
           <span id="nav-live-count-badge" class="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[9px] font-bold">2 ไม้</span>
         </button>
+        <button onclick="switchAccountMode('real', true)" id="nav-real-acc" class="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-400 hover:brightness-110 text-slate-950 font-black flex items-center gap-1.5 text-xs shadow-lg shadow-emerald-500/30 transition-all border border-emerald-300 animate-pulse">
+          <span class="w-2 h-2 rounded-full bg-slate-950"></span>
+          <span>🟢 พอร์ตจริง IUX ($1,036)</span>
+        </button>
         <button onclick="switchMainTab('council')" id="nav-council" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all font-medium flex items-center gap-1.5 text-xs border border-transparent">
           <span>🧠 สภานักเทรดโลก</span>
           <span class="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 font-mono text-[9px] font-bold">5</span>
@@ -174,6 +178,39 @@
       </div>
     </div>
   </header>
+
+  <!-- ==================== UNIVERSAL HIGH-PROMINENCE ACCOUNT MODE BANNER (ALWAYS VISIBLE AT TOP) ==================== -->
+  <div id="universal-account-mode-banner" class="bg-gradient-to-r from-[#061224] via-[#0A1E38] to-[#061224] border-b-2 border-emerald-500/50 px-2.5 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 shadow-2xl sticky top-14 z-40 backdrop-blur-md">
+    <div class="flex items-center flex-wrap gap-2">
+      <span class="text-xs font-black uppercase text-slate-300 flex items-center gap-1.5 shrink-0">
+        <span class="text-amber-400">💼</span>
+        <span class="hidden sm:inline">โหมดพอร์ต:</span>
+      </span>
+      <div class="inline-flex p-1 bg-[#03060E] border-2 border-slate-700/80 rounded-2xl shadow-inner gap-1">
+        <!-- Button 1: Demo 4 Portfolios -->
+        <button onclick="switchAccountMode('demo', true)" id="top-btn-mode-demo" class="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-amber-300 bg-amber-500/20 border border-amber-500/40 transition-all flex items-center gap-1.5 font-bold text-xs shadow-sm">
+          <span>🧪 พอร์ตจำลอง AI Demo ($4,000)</span>
+        </button>
+        <!-- Button 2: REAL IUX MARKETS (HYPER PROMINENT & EYE-CATCHING) -->
+        <button onclick="switchAccountMode('real', true)" id="top-btn-mode-real" class="px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-xl text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 hover:brightness-110 border-2 border-emerald-300 transition-all flex items-center gap-1.5 sm:gap-2 font-black text-xs shadow-lg shadow-emerald-500/40 transform hover:scale-105 animate-pulse">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-900 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-950"></span>
+          </span>
+          <span class="text-slate-950 font-black tracking-wide">🟢 พอร์ตจริง IUX Markets (#1287041 $1,036.79)</span>
+          <span class="px-1.5 py-0.5 rounded bg-slate-950 text-emerald-300 font-mono text-[9px] uppercase font-black">LIVE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Mode Status & Quick Info Badge -->
+    <div class="flex items-center gap-2 text-xs font-mono">
+      <span id="top-account-mode-desc" class="text-emerald-400 font-bold hidden md:flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>🟢 พอร์ตจริง IUX Markets: #1287041 (Raw Swap-Free $1,036.79)</span>
+      </span>
+    </div>
+  </div>
 
   <!-- ==================== VIEW PAGE 1: TERMINAL & CHART WORKSPACE ==================== -->
   <div id="view-page-terminal">
@@ -1071,22 +1108,32 @@
         </div>
       </div>
 
-      <!-- Account Mode Selector (Demo AI vs Real IUX Markets) -->
-      <div class="flex items-center justify-between flex-wrap gap-2.5 p-2.5 bg-[#090E1A] border border-[#1A263D] rounded-2xl shadow-lg">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-slate-400 pl-1">เลือกประเภทพอร์ต:</span>
-          <div class="flex items-center p-1 bg-[#060A14] border border-[#162238] rounded-xl text-xs font-bold">
-            <button onclick="switchAccountMode('demo')" id="btn-mode-demo" class="px-3 py-1.5 rounded-lg text-amber-300 bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1.5 shadow-sm font-bold">
+      <!-- Account Mode Selector (Demo AI vs Real IUX Markets) - HIGH VISIBILITY HERO BAR -->
+      <div class="p-3 sm:p-4 bg-gradient-to-r from-[#081220] via-[#0D1C34] to-[#081220] border-2 border-emerald-500/50 rounded-2xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <div class="flex items-center flex-wrap gap-2.5">
+          <span class="text-xs font-black uppercase text-slate-300 flex items-center gap-1.5">
+            <span class="text-amber-400 text-sm">💼</span>
+            <span>เลือกประเภทพอร์ต:</span>
+          </span>
+          <div class="inline-flex p-1 bg-[#040812] border-2 border-slate-700/80 rounded-2xl shadow-inner gap-1.5">
+            <button onclick="switchAccountMode('demo', true)" id="btn-mode-demo" class="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-amber-300 bg-amber-500/20 border border-amber-500/40 transition-all flex items-center gap-2 font-bold text-xs shadow-sm">
               <span>🧪 พอร์ตจำลอง AI Demo (4 พอร์ต $4,000)</span>
             </button>
-            <button onclick="switchAccountMode('real')" id="btn-mode-real" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>🟢 พอร์ตจริง IUX Markets (#1287041 $1,036.79)</span>
+            <button onclick="switchAccountMode('real', true)" id="btn-mode-real" class="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 hover:brightness-110 border-2 border-emerald-300 transition-all flex items-center gap-2 font-black text-xs shadow-xl shadow-emerald-500/30 transform hover:scale-105 animate-pulse">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-slate-900 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-950"></span>
+              </span>
+              <span class="text-slate-950 font-black tracking-wide">🟢 พอร์ตจริง IUX Markets (#1287041 $1,036.79)</span>
+              <span class="px-1.5 py-0.5 rounded bg-slate-950 text-emerald-300 font-mono text-[9px] uppercase font-black">LIVE</span>
             </button>
           </div>
         </div>
         <div class="flex items-center gap-2 pr-1 text-xs">
-          <span id="account-mode-desc" class="text-amber-400 font-mono text-[11px]">สถานะ: จำลองระบบสถาบัน 4 พอร์ต AI ($4,000)</span>
+          <span id="account-mode-desc" class="text-emerald-400 font-mono text-xs font-bold flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>🟢 พอร์ตจริง IUX Markets: #1287041 ($1,036.79)</span>
+          </span>
         </div>
       </div>
 
@@ -2285,12 +2332,16 @@
       <span class="text-base leading-none">📊</span>
       <span>เทอร์มินอล</span>
     </button>
-    <button onclick="switchMainTab('livetrade')" id="mob-nav-livetrade" class="relative flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent">
+    <button onclick="switchMainTab('livetrade')" id="mob-nav-livetrade" class="relative flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent">
       <span class="text-base leading-none">⚡</span>
-      <span>พอร์ต & สเตตเมนต์</span>
+      <span>พอร์ต</span>
       <span id="mob-live-count-badge" class="absolute -top-1 right-1 px-1.5 py-0.2 rounded-full bg-amber-500 text-black font-mono text-[9px] font-black shadow">2</span>
     </button>
-    <button onclick="switchMainTab('council')" id="mob-nav-council" class="flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent">
+    <button onclick="switchAccountMode('real', true)" id="mob-nav-real" class="flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl text-slate-950 font-black bg-gradient-to-r from-emerald-400 to-teal-300 border border-emerald-200 transition-all shadow-md shadow-emerald-500/25">
+      <span class="text-base leading-none">🟢</span>
+      <span class="text-[9px] font-black">พอร์ตจริง</span>
+    </button>
+    <button onclick="switchMainTab('council')" id="mob-nav-council" class="flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent">
       <span class="text-base leading-none">🧠</span>
       <span>สภา AI</span>
     </button>
@@ -3404,38 +3455,75 @@
 
     let currentAccountMode = 'demo'; // 'demo' or 'real'
 
-    function switchAccountMode(mode) {
+    function switchAccountMode(mode, autoNavigate = false) {
       currentAccountMode = mode;
       try {
         localStorage.setItem('ad_account_mode', mode);
       } catch(e) {}
 
+      // Global Top Banner elements
+      const topBtnDemo = document.getElementById('top-btn-mode-demo');
+      const topBtnReal = document.getElementById('top-btn-mode-real');
+      const topDescEl = document.getElementById('top-account-mode-desc');
+
+      // In-Tab Portfolio elements
       const btnDemo = document.getElementById('btn-mode-demo');
       const btnReal = document.getElementById('btn-mode-real');
       const descEl = document.getElementById('account-mode-desc');
       const realCardArea = document.getElementById('real-account-card-area');
       const demoCardArea = document.getElementById('demo-portfolios-card-area');
+      const mobNavReal = document.getElementById('mob-nav-real');
 
       if (mode === 'real') {
-        if (btnDemo) {
-          btnDemo.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
-        }
-        if (btnReal) {
-          btnReal.className = "px-3 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 transition-all flex items-center gap-1.5 shadow-sm font-bold";
-        }
-        if (descEl) descEl.innerHTML = `<span class="text-emerald-400 font-bold">🟢 พอร์ตจริง IUX Markets: #1287041 (Raw Swap-Free $1,036.79)</span>`;
+        // Top Banner styling
+        if (topBtnDemo) topBtnDemo.className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-slate-400 hover:text-white transition-all flex items-center gap-1.5 font-bold text-xs";
+        if (topBtnReal) topBtnReal.className = "px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-xl text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 border-2 border-emerald-300 transition-all flex items-center gap-1.5 sm:gap-2 font-black text-xs shadow-lg shadow-emerald-500/40 ring-2 ring-emerald-400";
+        if (topDescEl) topDescEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>🟢 พอร์ตจริง IUX Markets: #1287041 (Raw Swap-Free $1,036.79)</span>`;
+
+        // In-Tab styling
+        if (btnDemo) btnDemo.className = "px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-slate-400 hover:text-white transition-all flex items-center gap-2 font-bold text-xs";
+        if (btnReal) btnReal.className = "px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-slate-950 bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 border-2 border-emerald-300 transition-all flex items-center gap-2 font-black text-xs shadow-xl shadow-emerald-500/30 ring-2 ring-emerald-400";
+
+        // Mobile Dock styling
+        if (mobNavReal) mobNavReal.className = "flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl text-slate-950 font-black bg-gradient-to-r from-emerald-400 to-teal-300 border border-emerald-200 transition-all shadow-md shadow-emerald-500/30 ring-2 ring-emerald-400";
+
+        if (descEl) descEl.innerHTML = `<span class="text-emerald-400 font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>🟢 พอร์ตจริง IUX Markets: #1287041 (Raw Swap-Free $1,036.79)</span>`;
+
         if (realCardArea) realCardArea.classList.remove('hidden');
         if (demoCardArea) demoCardArea.classList.add('hidden');
+
+        if (autoNavigate) {
+          switchMainTab('livetrade');
+          setTimeout(() => {
+            if (realCardArea) {
+              realCardArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              realCardArea.classList.add('ring-4', 'ring-emerald-400', 'transition-all', 'duration-500');
+              setTimeout(() => realCardArea.classList.remove('ring-4', 'ring-emerald-400'), 2500);
+            }
+          }, 150);
+          showToastAlert('🟢 สลับสู่โหมดพอร์ตจริง IUX Markets (#1287041) เรียบร้อย!');
+        }
       } else {
-        if (btnDemo) {
-          btnDemo.className = "px-3 py-1.5 rounded-lg text-amber-300 bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1.5 shadow-sm font-bold";
-        }
-        if (btnReal) {
-          btnReal.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
-        }
-        if (descEl) descEl.innerHTML = `<span class="text-amber-400 font-mono text-[11px]">สถานะ: จำลองระบบสถาบัน 4 พอร์ต AI ($4,000)</span>`;
+        // Top Banner styling
+        if (topBtnDemo) topBtnDemo.className = "px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-amber-300 bg-amber-500/20 border border-amber-500/40 transition-all flex items-center gap-1.5 font-bold text-xs shadow-sm";
+        if (topBtnReal) topBtnReal.className = "px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-xl text-emerald-400 hover:text-white hover:bg-emerald-500/20 border border-emerald-500/40 transition-all flex items-center gap-1.5 sm:gap-2 font-bold text-xs";
+        if (topDescEl) topDescEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span class="text-amber-400">🧪 โหมดปัจจุบัน: พอร์ตจำลอง AI Demo (4 พอร์ต $4,000)</span>`;
+
+        // In-Tab styling
+        if (btnDemo) btnDemo.className = "px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-amber-300 bg-amber-500/20 border border-amber-500/40 transition-all flex items-center gap-2 font-bold text-xs shadow-sm";
+        if (btnReal) btnReal.className = "px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-emerald-400 hover:text-white hover:bg-emerald-500/10 border border-emerald-500/30 transition-all flex items-center gap-2 font-bold text-xs";
+
+        // Mobile Dock styling
+        if (mobNavReal) mobNavReal.className = "flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent";
+
+        if (descEl) descEl.innerHTML = `<span class="text-amber-400 font-mono text-xs flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>สถานะ: จำลองระบบสถาบัน 4 พอร์ต AI ($4,000)</span>`;
+
         if (realCardArea) realCardArea.classList.add('hidden');
         if (demoCardArea) demoCardArea.classList.remove('hidden');
+
+        if (autoNavigate) {
+          showToastAlert('🧪 สลับสู่โหมดพอร์ตจำลอง AI Demo ($4,000) เรียบร้อย!');
+        }
       }
 
       evaluateLivePositions();
@@ -5380,6 +5468,16 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       try { calculateLotDynamically(); } catch (e) { console.warn("Init lot notice:", e); }
+
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const savedMode = urlParams.get('account') || localStorage.getItem('ad_account_mode');
+        if (savedMode === 'real') {
+          switchAccountMode('real', false);
+        } else {
+          switchAccountMode('demo', false);
+        }
+      } catch(e) {}
 
       // Check URL query param or hash for direct tab navigation (e.g. ?tab=livetrade or #portfolio)
       try {
