@@ -272,53 +272,21 @@ class handler(BaseHTTPRequestHandler):
                         pass
             
             real_acc = positions_data.get("account")
+            authoritative_ports = compute_authoritative_portfolio_balances()
+            demo_tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
+            
+            tot_bal = demo_tot_bal
+            tot_eq = demo_tot_bal
+            tot_profit = 0.0
+
             if real_acc:
-                tot_bal = round(float(real_acc.get("balance", positions_data.get("total_balance", 1037.58))), 2)
-                tot_eq = round(float(real_acc.get("equity", positions_data.get("equity", 1209.15))), 2)
-                tot_profit = round(float(real_acc.get("profit", positions_data.get("floating_profit", 171.57))), 2)
-                authoritative_ports = {
-                    "xau_scalp": {
-                        "id": "xau_scalp",
-                        "name": "🟡 พอร์ตจริง IUX Markets (XAUUSD)",
-                        "symbol": "XAUUSD",
-                        "style": "scalping",
-                        "broker": "IUX Markets",
-                        "accountLogin": real_acc.get("login", 11364645),
-                        "initialBalance": 1036.79,
-                        "balance": tot_bal,
-                        "equity": tot_eq,
-                        "floatingProfit": tot_profit
-                    },
-                    "xau_swing": {
-                        "id": "xau_swing",
-                        "name": "🟡 ทองคำ เทรดยาว (H1 Swing)",
-                        "symbol": "XAUUSD",
-                        "style": "swing",
-                        "initialBalance": 1000.0,
-                        "balance": 1000.0
-                    },
-                    "btc_scalp": {
-                        "id": "btc_scalp",
-                        "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)",
-                        "symbol": "BTCUSD",
-                        "style": "scalping",
-                        "initialBalance": 1000.0,
-                        "balance": 1000.0
-                    },
-                    "btc_swing": {
-                        "id": "btc_swing",
-                        "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
-                        "symbol": "BTCUSD",
-                        "style": "swing",
-                        "initialBalance": 1000.0,
-                        "balance": 1000.0
-                    }
-                }
+                real_bal = round(float(real_acc.get("balance", 1036.79)), 2)
+                real_eq = round(float(real_acc.get("equity", 1036.79)), 2)
+                real_profit = round(float(real_acc.get("profit", 0.0)), 2)
             else:
-                authoritative_ports = compute_authoritative_portfolio_balances()
-                tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
-                tot_eq = tot_bal
-                tot_profit = 0.0
+                real_bal = 1036.79
+                real_eq = 1036.79
+                real_profit = 0.0
 
             self._set_headers(200)
             self.wfile.write(json.dumps({
@@ -326,10 +294,13 @@ class handler(BaseHTTPRequestHandler):
                 "account": real_acc,
                 "positions": positions_data.get("positions", []),
                 "portfolios": authoritative_ports,
-                "total_balance": tot_bal,
-                "balance": tot_bal,
-                "equity": tot_eq,
+                "total_balance": demo_tot_bal,
+                "balance": demo_tot_bal,
+                "equity": demo_tot_bal,
                 "floating_profit": tot_profit,
+                "real_balance": real_bal,
+                "real_equity": real_eq,
+                "real_profit": real_profit,
                 "total_active": len(positions_data.get("positions", [])),
                 "persistence_safe": True
             }, ensure_ascii=False).encode("utf-8"))

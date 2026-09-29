@@ -53,13 +53,12 @@ class MT5LiveSynchronizer:
 
     def connect(self) -> bool:
         """Initializes connection to MT5 terminal."""
-        if not mt5.initialize(path=self.terminal_path):
-            # Try initializing without explicit path if terminal is already open
-            if not mt5.initialize():
+        if not mt5.initialize(timeout=5000):
+            if not mt5.initialize(path=self.terminal_path, timeout=5000):
                 print(f"❌ [MT5 Sync] Failed to initialize MT5: {mt5.last_error()}")
                 self.is_connected = False
                 return False
-        
+
         acc = mt5.account_info()
         if acc is None:
             print("❌ [MT5 Sync] Failed to get account info.")

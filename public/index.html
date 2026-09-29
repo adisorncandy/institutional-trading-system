@@ -1071,8 +1071,107 @@
         </div>
       </div>
 
-      <!-- Grand Fund Summary Banner (รวมทุน 4 พอร์ต $4,000) -->
-      <div class="p-3.5 rounded-2xl bg-gradient-to-r from-[#0E1528] via-[#101932] to-[#0D1424] border border-[#1E2B48] flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs font-mono shadow-xl">
+      <!-- Account Mode Selector (Demo AI vs Real IUX Markets) -->
+      <div class="flex items-center justify-between flex-wrap gap-2.5 p-2.5 bg-[#090E1A] border border-[#1A263D] rounded-2xl shadow-lg">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-400 pl-1">เลือกประเภทพอร์ต:</span>
+          <div class="flex items-center p-1 bg-[#060A14] border border-[#162238] rounded-xl text-xs font-bold">
+            <button onclick="switchAccountMode('demo')" id="btn-mode-demo" class="px-3 py-1.5 rounded-lg text-amber-300 bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1.5 shadow-sm font-bold">
+              <span>🧪 พอร์ตจำลอง AI Demo (4 พอร์ต $4,000)</span>
+            </button>
+            <button onclick="switchAccountMode('real')" id="btn-mode-real" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>🟢 พอร์ตจริง IUX Markets (#1287041 $1,036.79)</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 pr-1 text-xs">
+          <span id="account-mode-desc" class="text-amber-400 font-mono text-[11px]">สถานะ: จำลองระบบสถาบัน 4 พอร์ต AI ($4,000)</span>
+        </div>
+      </div>
+
+      <!-- 2. REAL VIEW: IUX Markets Real Account Dashboard Card (ถอดแบบจากภาพหน้าจอของคุณ) -->
+      <div id="real-account-card-area" class="hidden my-2">
+        <div class="max-w-xl mx-auto p-5 rounded-2xl bg-[#090D16] border border-[#1A263D] shadow-2xl font-sans">
+          <!-- Card Top Header -->
+          <div class="flex justify-between items-center mb-4">
+            <span class="px-2.5 py-1 rounded text-xs font-bold text-rose-300 bg-rose-900/40 border border-rose-500/30">Raw</span>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                🟢 MT5 เชื่อมต่อสด
+              </span>
+              <span class="text-slate-500 text-lg cursor-pointer">⋮</span>
+            </div>
+          </div>
+
+          <!-- Total Balance -->
+          <div class="mb-4">
+            <span class="text-slate-400 text-xs block">Total Balance</span>
+            <div class="flex items-baseline gap-1.5 mt-0.5">
+              <span id="real-card-bal" class="text-3xl sm:text-4xl font-black text-white font-mono">1,036.79</span>
+              <span class="text-sm font-bold text-slate-400 font-mono">USD</span>
+            </div>
+          </div>
+
+          <!-- Metrics Row -->
+          <div class="space-y-1.5 text-xs font-mono py-3 border-y border-slate-800/80">
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Floating P/L:</span>
+              <strong id="real-card-float" class="text-emerald-400 font-bold">0.00 USD</strong>
+            </div>
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Equity:</span>
+              <strong id="real-card-eq" class="text-white font-bold">1,036.79 USD</strong>
+            </div>
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Free Margin:</span>
+              <strong id="real-card-freemargin" class="text-white font-bold">1,036.79 USD</strong>
+            </div>
+          </div>
+
+          <!-- Meta Specs Row -->
+          <div class="space-y-1.5 text-xs font-mono py-3 border-b border-slate-800/80">
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Leverage:</span>
+              <strong class="text-white font-mono">1:3000</strong>
+            </div>
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Swap:</span>
+              <strong class="text-white font-mono">Swap-Free</strong>
+            </div>
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Account ID:</span>
+              <div class="flex items-center gap-1.5 font-mono">
+                <strong id="real-card-login" class="text-white">1287041</strong>
+                <span class="text-slate-500 text-[10px] cursor-pointer hover:text-white" onclick="navigator.clipboard.writeText('1287041')" title="คัดลอก">📋</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center text-slate-400">
+              <span>Server:</span>
+              <div class="flex items-center gap-1.5 font-mono">
+                <strong id="real-card-server" class="text-white">IUXMarkets-Live2</strong>
+                <span class="text-slate-500 text-[10px] cursor-pointer hover:text-white" onclick="navigator.clipboard.writeText('IUXMarkets-Live2')" title="คัดลอก">📋</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <div class="mt-4 flex gap-2">
+            <button class="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 transition-all shadow-lg">
+              <span>⚡ เชื่อมต่อระบบเทรดสด MT5 เรียบร้อย</span>
+            </button>
+            <button onclick="switchAccountMode('demo')" class="py-3 px-3 rounded-xl bg-[#141E30] hover:bg-[#1A263D] text-slate-300 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700">
+              <span>🧪 สลับดู Demo</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. DEMO VIEW: Grand Fund & 4 Portfolios -->
+      <div id="demo-portfolios-card-area" class="space-y-3">
+        <!-- Grand Fund Summary Banner (รวมทุน 4 พอร์ต $4,000) -->
+        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-[#0E1528] via-[#101932] to-[#0D1424] border border-[#1E2B48] flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs font-mono shadow-xl">
         <div class="flex items-center gap-2">
           <span class="text-base">💼</span>
           <div>
@@ -1222,8 +1321,7 @@
             </button>
           </div>
         </div>
-
-      </div>
+      </div> <!-- End demo-portfolios-card-area -->
 
       <!-- Dedicated Portfolio Switcher & Order Filter Bar -->
       <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3 p-2.5 sm:p-3 bg-[#080C16] rounded-2xl border border-[#162136]">
@@ -3304,6 +3402,46 @@
       }, 350);
     }
 
+    let currentAccountMode = 'demo'; // 'demo' or 'real'
+
+    function switchAccountMode(mode) {
+      currentAccountMode = mode;
+      try {
+        localStorage.setItem('ad_account_mode', mode);
+      } catch(e) {}
+
+      const btnDemo = document.getElementById('btn-mode-demo');
+      const btnReal = document.getElementById('btn-mode-real');
+      const descEl = document.getElementById('account-mode-desc');
+      const realCardArea = document.getElementById('real-account-card-area');
+      const demoCardArea = document.getElementById('demo-portfolios-card-area');
+
+      if (mode === 'real') {
+        if (btnDemo) {
+          btnDemo.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+        }
+        if (btnReal) {
+          btnReal.className = "px-3 py-1.5 rounded-lg text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 transition-all flex items-center gap-1.5 shadow-sm font-bold";
+        }
+        if (descEl) descEl.innerHTML = `<span class="text-emerald-400 font-bold">🟢 พอร์ตจริง IUX Markets: #1287041 (Raw Swap-Free $1,036.79)</span>`;
+        if (realCardArea) realCardArea.classList.remove('hidden');
+        if (demoCardArea) demoCardArea.classList.add('hidden');
+      } else {
+        if (btnDemo) {
+          btnDemo.className = "px-3 py-1.5 rounded-lg text-amber-300 bg-amber-500/20 border border-amber-500/30 transition-all flex items-center gap-1.5 shadow-sm font-bold";
+        }
+        if (btnReal) {
+          btnReal.className = "px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-all flex items-center gap-1.5";
+        }
+        if (descEl) descEl.innerHTML = `<span class="text-amber-400 font-mono text-[11px]">สถานะ: จำลองระบบสถาบัน 4 พอร์ต AI ($4,000)</span>`;
+        if (realCardArea) realCardArea.classList.add('hidden');
+        if (demoCardArea) demoCardArea.classList.remove('hidden');
+      }
+
+      evaluateLivePositions();
+      renderPortfolioPage();
+    }
+
     // Switch Active Portfolio Filter View (all | xau_scalp | xau_swing | btc_scalp | btc_swing)
     function switchPortfolioFilter(portId) {
       currentPortfolioFilter = portId;
@@ -3981,9 +4119,22 @@
       const evalEqEl = document.getElementById('eval-equity-val');
       const evalFloatEl = document.getElementById('eval-floating-val');
 
-      const equity = balance + floatingPnl;
-      const profitDollar = equity - 1000.0;
-      const profitPct = ((profitDollar / 1000.0) * 100).toFixed(2);
+      let effectiveBal = balance;
+      let initCap = 4000.0;
+      if (currentAccountMode === 'real') {
+        effectiveBal = window.realMT5Account ? (window.realMT5Account.balance || 1036.79) : 1036.79;
+        initCap = 1036.79;
+      } else if (currentPortfolioFilter !== 'all') {
+        effectiveBal = portfolioBalances[currentPortfolioFilter] || 1000.0;
+        initCap = 1000.0;
+      } else {
+        effectiveBal = getTotalPortfolioBalance();
+        initCap = 4000.0;
+      }
+
+      const equity = effectiveBal + floatingPnl;
+      const profitDollar = equity - initCap;
+      const profitPct = ((profitDollar / initCap) * 100).toFixed(2);
 
       const eqStr = `$${equity.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
       const profStr = `${profitDollar >= 0 ? '+' : ''}$${profitDollar.toFixed(2)} (${profitDollar >= 0 ? '+' : ''}${profitPct}%)`;
@@ -3996,7 +4147,7 @@
         profEl.className = profitDollar >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
       }
       if (evalFloatEl) {
-        evalFloatEl.innerText = `${floatingPnl >= 0 ? '+' : ''}$${floatingPnl.toFixed(2)} (${floatingPnl >= 0 ? '+' : ''}${((floatingPnl / balance) * 100).toFixed(2)}%)`;
+        evalFloatEl.innerText = `${floatingPnl >= 0 ? '+' : ''}$${floatingPnl.toFixed(2)} (${floatingPnl >= 0 ? '+' : ''}${((floatingPnl / effectiveBal) * 100).toFixed(2)}%)`;
         evalFloatEl.className = `text-xs font-mono font-bold ${floatingPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
       }
     }
@@ -4116,9 +4267,14 @@
       });
 
       // Update Grand Fund Combined Summary
-      const totBal = getTotalPortfolioBalance();
+      let totBal = getTotalPortfolioBalance();
+      let initGrand = 4000.0;
+      if (window.realMT5Account) {
+        totBal = window.realMT5Account.balance;
+        initGrand = 1036.79;
+      }
       const totEq = totBal + totalFloating;
-      const totRet = (((totEq - 4000.0) / 4000.0) * 100).toFixed(2);
+      const totRet = (((totEq - initGrand) / initGrand) * 100).toFixed(2);
 
       const elGrandBal = document.getElementById('grand-bal-val');
       const elGrandEq = document.getElementById('grand-equity-val');
@@ -5055,6 +5211,30 @@
         if (resPos.ok) {
           const pData = await resPos.json();
           if (pData && pData.status === 'success') {
+            if (pData.account) {
+              window.realMT5Account = pData.account;
+              const elBal = document.getElementById('real-card-bal');
+              const elEq = document.getElementById('real-card-eq');
+              const elFloat = document.getElementById('real-card-float');
+              const elFree = document.getElementById('real-card-freemargin');
+              const elLogin = document.getElementById('real-card-login');
+              const elServer = document.getElementById('real-card-server');
+
+              const balNum = parseFloat(pData.account.balance) || 1036.79;
+              const eqNum = parseFloat(pData.account.equity) || balNum;
+              const flNum = parseFloat(pData.account.profit) || 0.0;
+              const freeNum = parseFloat(pData.account.margin_free) || balNum;
+
+              if (elBal) elBal.innerText = balNum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+              if (elEq) elEq.innerText = `${eqNum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD`;
+              if (elFloat) {
+                elFloat.innerText = `${flNum >= 0 ? '+' : ''}${flNum.toFixed(2)} USD`;
+                elFloat.className = `${flNum >= 0 ? 'text-emerald-400' : 'text-rose-400'} font-bold`;
+              }
+              if (elFree) elFree.innerText = `${freeNum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD`;
+              if (elLogin) elLogin.innerText = pData.account.login || '1287041';
+              if (elServer) elServer.innerText = pData.account.server || 'IUXMarkets-Live2';
+            }
             if (Array.isArray(pData.positions)) {
               openPositions = pData.positions;
               openPositions.forEach(p => {
@@ -5122,7 +5302,11 @@
         if (syncEl) {
           const now = new Date();
           const timeStr = now.toTimeString().split(' ')[0];
-          syncEl.innerText = `⚡ ซิงค์เซิร์ฟเวอร์สด (${timeStr})`;
+          if (window.realMT5Account) {
+            syncEl.innerHTML = `🟢 IUX พอร์ตจริง: #${window.realMT5Account.login} (${timeStr})`;
+          } else {
+            syncEl.innerText = `⚡ ซิงค์เซิร์ฟเวอร์สด (${timeStr})`;
+          }
         }
       } catch (err) {
         syncErrorCount++;
