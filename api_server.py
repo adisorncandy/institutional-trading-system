@@ -143,10 +143,28 @@ def autonomous_247_trader_worker():
     pos_path = os.path.join(os.path.dirname(__file__), "ai_active_positions.json")
     journal_path = os.path.join(os.path.dirname(__file__), "ai_trade_journal.json")
 
-    print(">> [24/7 AUTONOMOUS TRADER] Background Engine Started. 24/7 Trading without browser active.")
+    mt5_syncer = None
+    try:
+        from mt5_live_sync import MT5LiveSynchronizer
+        mt5_syncer = MT5LiveSynchronizer()
+        if mt5_syncer.connect():
+            print(">> [24/7 TRADER] MT5 Terminal (IUX Markets) Live Connected successfully!")
+        else:
+            mt5_syncer = None
+    except Exception as me:
+        print(">> [24/7 TRADER] MT5 Direct Connect notice:", me)
+        mt5_syncer = None
 
     while True:
         try:
+            if mt5_syncer and mt5_syncer.is_connected:
+                time.sleep(3)
+                try:
+                    mt5_syncer.run_cycle()
+                    continue
+                except Exception as sync_e:
+                    print("[24/7 TRADER] MT5 Sync cycle notice:", sync_e)
+
             time.sleep(10)
             now_ts = time.time()
             time_str = datetime.now().strftime("%H:%M:%S")
@@ -615,16 +633,65 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 except Exception:
                     pass
 
-            authoritative_ports = compute_authoritative_portfolio_balances()
-            tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
+            real_acc = positions_data.get("account")
+            if real_acc:
+                tot_bal = round(float(real_acc.get("balance", positions_data.get("total_balance", 1037.58))), 2)
+                tot_eq = round(float(real_acc.get("equity", positions_data.get("equity", 1209.15))), 2)
+                tot_profit = round(float(real_acc.get("profit", positions_data.get("floating_profit", 171.57))), 2)
+                authoritative_ports = {
+                    "xau_scalp": {
+                        "id": "xau_scalp",
+                        "name": "🟡 พอร์ตจริง IUX Markets (XAUUSD)",
+                        "symbol": "XAUUSD",
+                        "style": "scalping",
+                        "broker": "IUX Markets",
+                        "accountLogin": real_acc.get("login", 11364645),
+                        "initialBalance": 1036.79,
+                        "balance": tot_bal,
+                        "equity": tot_eq,
+                        "floatingProfit": tot_profit
+                    },
+                    "xau_swing": {
+                        "id": "xau_swing",
+                        "name": "🟡 ทองคำ เทรดยาว (H1 Swing)",
+                        "symbol": "XAUUSD",
+                        "style": "swing",
+                        "initialBalance": 1000.0,
+                        "balance": 1000.0
+                    },
+                    "btc_scalp": {
+                        "id": "btc_scalp",
+                        "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)",
+                        "symbol": "BTCUSD",
+                        "style": "scalping",
+                        "initialBalance": 1000.0,
+                        "balance": 1000.0
+                    },
+                    "btc_swing": {
+                        "id": "btc_swing",
+                        "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
+                        "symbol": "BTCUSD",
+                        "style": "swing",
+                        "initialBalance": 1000.0,
+                        "balance": 1000.0
+                    }
+                }
+            else:
+                authoritative_ports = compute_authoritative_portfolio_balances()
+                tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
+                tot_eq = tot_bal
+                tot_profit = 0.0
 
             self._set_headers(200)
             self.wfile.write(json.dumps({
                 "status": "success",
+                "account": real_acc,
                 "positions": positions_data.get("positions", []),
                 "portfolios": authoritative_ports,
                 "total_balance": tot_bal,
                 "balance": tot_bal,
+                "equity": tot_eq,
+                "floating_profit": tot_profit,
                 "total_active": len(positions_data.get("positions", [])),
                 "persistence_safe": True
             }, ensure_ascii=False).encode("utf-8"))
@@ -766,15 +833,31 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 except Exception:
                     pass
 
-            authoritative_ports = compute_authoritative_portfolio_balances()
-            tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
-            payload = {
-                "positions": data.get("positions", []),
-                "portfolios": authoritative_ports,
-                "total_balance": tot_bal,
-                "balance": tot_bal,
-                "updated_at": datetime.now().isoformat()
-            }
+            real_acc = data.get("account")
+            if real_acc:
+                tot_bal = round(float(real_acc.get("balance", data.get("total_balance", 1037.58))), 2)
+                tot_eq = round(float(real_acc.get("equity", data.get("equity", 1209.15))), 2)
+                tot_profit = round(float(real_acc.get("profit", data.get("floating_profit", 171.57))), 2)
+                payload = {
+                    "account": real_acc,
+                    "positions": data.get("positions", []),
+                    "portfolios": data.get("portfolios", {}),
+                    "total_balance": tot_bal,
+                    "balance": tot_bal,
+                    "equity": tot_eq,
+                    "floating_profit": tot_profit,
+                    "updated_at": datetime.now().isoformat()
+                }
+            else:
+                authoritative_ports = compute_authoritative_portfolio_balances()
+                tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
+                payload = {
+                    "positions": data.get("positions", []),
+                    "portfolios": authoritative_ports,
+                    "total_balance": tot_bal,
+                    "balance": tot_bal,
+                    "updated_at": datetime.now().isoformat()
+                }
             try:
                 with open(pos_path, "w", encoding="utf-8") as f:
                     json.dump(payload, f, indent=2, ensure_ascii=False)

@@ -3981,9 +3981,16 @@
       const evalEqEl = document.getElementById('eval-equity-val');
       const evalFloatEl = document.getElementById('eval-floating-val');
 
-      const equity = balance + floatingPnl;
-      const profitDollar = equity - 1000.0;
-      const profitPct = ((profitDollar / 1000.0) * 100).toFixed(2);
+      let effectiveBal = balance;
+      let initCap = 1000.0;
+      if (window.realMT5Account) {
+        effectiveBal = window.realMT5Account.balance;
+        initCap = 1036.79;
+      }
+
+      const equity = effectiveBal + floatingPnl;
+      const profitDollar = equity - initCap;
+      const profitPct = ((profitDollar / initCap) * 100).toFixed(2);
 
       const eqStr = `$${equity.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
       const profStr = `${profitDollar >= 0 ? '+' : ''}$${profitDollar.toFixed(2)} (${profitDollar >= 0 ? '+' : ''}${profitPct}%)`;
@@ -3996,7 +4003,7 @@
         profEl.className = profitDollar >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
       }
       if (evalFloatEl) {
-        evalFloatEl.innerText = `${floatingPnl >= 0 ? '+' : ''}$${floatingPnl.toFixed(2)} (${floatingPnl >= 0 ? '+' : ''}${((floatingPnl / balance) * 100).toFixed(2)}%)`;
+        evalFloatEl.innerText = `${floatingPnl >= 0 ? '+' : ''}$${floatingPnl.toFixed(2)} (${floatingPnl >= 0 ? '+' : ''}${((floatingPnl / effectiveBal) * 100).toFixed(2)}%)`;
         evalFloatEl.className = `text-xs font-mono font-bold ${floatingPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
       }
     }
@@ -4116,9 +4123,14 @@
       });
 
       // Update Grand Fund Combined Summary
-      const totBal = getTotalPortfolioBalance();
+      let totBal = getTotalPortfolioBalance();
+      let initGrand = 4000.0;
+      if (window.realMT5Account) {
+        totBal = window.realMT5Account.balance;
+        initGrand = 1036.79;
+      }
       const totEq = totBal + totalFloating;
-      const totRet = (((totEq - 4000.0) / 4000.0) * 100).toFixed(2);
+      const totRet = (((totEq - initGrand) / initGrand) * 100).toFixed(2);
 
       const elGrandBal = document.getElementById('grand-bal-val');
       const elGrandEq = document.getElementById('grand-equity-val');
@@ -5055,6 +5067,9 @@
         if (resPos.ok) {
           const pData = await resPos.json();
           if (pData && pData.status === 'success') {
+            if (pData.account) {
+              window.realMT5Account = pData.account;
+            }
             if (Array.isArray(pData.positions)) {
               openPositions = pData.positions;
               openPositions.forEach(p => {
@@ -5122,7 +5137,11 @@
         if (syncEl) {
           const now = new Date();
           const timeStr = now.toTimeString().split(' ')[0];
-          syncEl.innerText = `⚡ ซิงค์เซิร์ฟเวอร์สด (${timeStr})`;
+          if (window.realMT5Account) {
+            syncEl.innerHTML = `🟢 IUX พอร์ตจริง: #${window.realMT5Account.login} (${timeStr})`;
+          } else {
+            syncEl.innerText = `⚡ ซิงค์เซิร์ฟเวอร์สด (${timeStr})`;
+          }
         }
       } catch (err) {
         syncErrorCount++;

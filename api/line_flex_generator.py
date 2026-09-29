@@ -589,10 +589,10 @@ class LineFlexService:
         is_buy = "BUY" in str(action).upper()
         header_color = "#059669" if is_buy else "#DC2626"
 
-        portfolio_name = trade.get("portfolioName")
+        portfolio_name = pos.get("portfolioName")
         if not portfolio_name:
             is_gold = "XAU" in symbol
-            is_scalp = "scalp" in str(trade.get("style", "scalping")).lower()
+            is_scalp = "scalp" in str(pos.get("style", "scalping")).lower()
             if is_gold:
                 portfolio_name = "🟡 พอร์ตทองคำ สั้น M5 ($1,000)" if is_scalp else "🟡 พอร์ตทองคำ ยาว H1 ($1,000)"
             else:

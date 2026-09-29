@@ -260,8 +260,8 @@ class handler(BaseHTTPRequestHandler):
 
         # 4.6 API: Active Live Positions State (Zero-Loss Persistence across Updates)
         elif path == "/api/positions" or path.endswith("/positions"):
-            positions_data = {"positions": [], "balance": 1000.0}
-            for check_dir in [os.path.dirname(__file__), "/tmp", root_dir]:
+            positions_data = {"positions": [], "balance": 1037.58}
+            for check_dir in ["/tmp", os.path.dirname(__file__), root_dir]:
                 p = os.path.join(check_dir, "ai_active_positions.json")
                 if os.path.exists(p):
                     try:
@@ -271,15 +271,65 @@ class handler(BaseHTTPRequestHandler):
                     except Exception:
                         pass
             
-            authoritative_ports = compute_authoritative_portfolio_balances()
-            tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
+            real_acc = positions_data.get("account")
+            if real_acc:
+                tot_bal = round(float(real_acc.get("balance", positions_data.get("total_balance", 1037.58))), 2)
+                tot_eq = round(float(real_acc.get("equity", positions_data.get("equity", 1209.15))), 2)
+                tot_profit = round(float(real_acc.get("profit", positions_data.get("floating_profit", 171.57))), 2)
+                authoritative_ports = {
+                    "xau_scalp": {
+                        "id": "xau_scalp",
+                        "name": "🟡 พอร์ตจริง IUX Markets (XAUUSD)",
+                        "symbol": "XAUUSD",
+                        "style": "scalping",
+                        "broker": "IUX Markets",
+                        "accountLogin": real_acc.get("login", 11364645),
+                        "initialBalance": 1036.79,
+                        "balance": tot_bal,
+                        "equity": tot_eq,
+                        "floatingProfit": tot_profit
+                    },
+                    "xau_swing": {
+                        "id": "xau_swing",
+                        "name": "🟡 ทองคำ เทรดยาว (H1 Swing)",
+                        "symbol": "XAUUSD",
+                        "style": "swing",
+                        "initialBalance": 1000.0,
+                        "balance": 1000.0
+                    },
+                    "btc_scalp": {
+                        "id": "btc_scalp",
+                        "name": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)",
+                        "symbol": "BTCUSD",
+                        "style": "scalping",
+                        "initialBalance": 1000.0,
+                        "balance": 1000.0
+                    },
+                    "btc_swing": {
+                        "id": "btc_swing",
+                        "name": "🟠 บิตคอยน์ เทรดยาว (H1 Swing)",
+                        "symbol": "BTCUSD",
+                        "style": "swing",
+                        "initialBalance": 1000.0,
+                        "balance": 1000.0
+                    }
+                }
+            else:
+                authoritative_ports = compute_authoritative_portfolio_balances()
+                tot_bal = round(sum(p["balance"] for p in authoritative_ports.values()), 2)
+                tot_eq = tot_bal
+                tot_profit = 0.0
+
             self._set_headers(200)
             self.wfile.write(json.dumps({
                 "status": "success",
+                "account": real_acc,
                 "positions": positions_data.get("positions", []),
                 "portfolios": authoritative_ports,
                 "total_balance": tot_bal,
                 "balance": tot_bal,
+                "equity": tot_eq,
+                "floating_profit": tot_profit,
                 "total_active": len(positions_data.get("positions", [])),
                 "persistence_safe": True
             }, ensure_ascii=False).encode("utf-8"))
@@ -325,6 +375,28 @@ class handler(BaseHTTPRequestHandler):
                 "message": "บันทึกข้อมูลการเทรดเข้าสมุดบันทึก และ AI ปรับแต่งน้ำหนักโมเดลเรียบร้อย!",
                 "ai_weights": ai_engine.adaptive_weights,
                 "total_trades": len(trades)
+            }).encode("utf-8"))
+
+        # 0.5 Active Positions Sync Endpoint
+        elif path == "/api/positions" or path.endswith("/positions"):
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                data = json.loads(post_data.decode('utf-8')) if content_length > 0 else {}
+            except Exception:
+                data = {}
+            for save_dir in ["/tmp", os.path.dirname(__file__), root_dir]:
+                pos_path = os.path.join(save_dir, "ai_active_positions.json")
+                try:
+                    with open(pos_path, "w", encoding="utf-8") as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
+                except Exception:
+                    pass
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "message": "บันทึกสถานะพอร์ตและออเดอร์สด MT5 เรียบร้อย",
+                "total_active": len(data.get("positions", []))
             }).encode("utf-8"))
 
         # 1. Feedback endpoint
