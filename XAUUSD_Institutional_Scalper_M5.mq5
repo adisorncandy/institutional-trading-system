@@ -32,14 +32,21 @@ input group "=== ⚡ System Architecture & Execution Mode ==="
 input ENUM_EA_MODE InpEAMode             = MODE_STANDALONE;  // Execution Mode (Standalone vs Hybrid)
 input int          InpMagicNumber        = 777101;           // Magic Number (Unique ID)
 input bool         InpAutoTradeEnabled   = true;             // Auto-Trading Active On Launch
-input int          InpMaxOpenTrades      = 1;                // Max Concurrent Trades (No Martingale/Grid)
+
+input group "=== ⚖️ Smart Scale-In & Layering (Max 3 Trades) ==="
+input bool         InpEnableScaleIn      = true;             // Enable 3-Layer Scale-In Mode
+input int          InpMaxOpenTrades      = 3;                // Max Concurrent Trades (3 Layers)
+input int          InpScaleInStep1Pips   = 40;               // Step 1: Distance to Layer 2 (40 Pips = $4.00)
+input int          InpScaleInStep2Pips   = 50;               // Step 2: Distance to Layer 3 (50 Pips = $5.00)
+input double       InpBasketTPDollar     = 14.0;             // Basket Take Profit Target ($14.00 USD on $1,000)
+input int          InpBasketSLPips       = 40;               // Basket Hard Stop Loss (40 Pips after Layer 3)
 
 input group "=== 💰 Capital $1,000 Risk & Money Management ==="
-input ENUM_LOT_MODE InpLotMode           = LOT_DYNAMIC_RISK; // Lot Sizing Mode
+input ENUM_LOT_MODE InpLotMode           = LOT_FIXED;        // Lot Sizing Mode (Fixed 0.02 Lot Recommended)
 input double       InpRiskPercent        = 1.4;              // Risk Per Trade (% of Balance, ~$14 on $1,000)
-input double       InpFixedLot           = 0.02;             // Fixed Lot (If Fixed Mode Selected)
-input double       InpMaxLotLimit        = 0.06;             // Absolute Max Lot Guardrail
-input double       InpMaxDailyDrawdown   = 4.0;              // Max Daily Drawdown Stop (%)
+input double       InpFixedLot           = 0.02;             // Fixed Lot Per Layer (0.02 Lot)
+input double       InpMaxLotLimit        = 0.06;             // Absolute Max Lot Guardrail (3 x 0.02 = 0.06)
+input double       InpMaxDailyDrawdown   = 6.0;              // Max Daily Drawdown Stop (%)
 
 input group "=== 🎯 Institutional Strategy Signals (Triple EMA + SMC + RSI) ==="
 input int          InpFastEMAPeriod      = 20;               // Fast EMA Period (Momentum)
@@ -48,7 +55,7 @@ input int          InpSlowEMAPeriod      = 200;              // Slow Baseline EM
 input int          InpRSIPeriod          = 14;               // RSI Period
 input int          InpSMCLookback        = 30;               // SMC Liquidity Range Lookback (Bars)
 input double       InpSMCExtremeRatio    = 0.35;             // Discount/Premium Zone Ratio (x ATR)
-input int          InpMinConfidenceScore = 80;               // Minimum Confluence Score (80-95%)
+input int          InpMinConfidenceScore = 70;               // Minimum Confluence Score (Adjusted to 70%)
 
 input group "=== 🛡️ Scalping Targets & Profit Locking (Points/Pips) ==="
 input int          InpStopLossPips       = 35;               // Stop Loss (Pips, 35 pips = $3.50 gold price)
@@ -345,6 +352,7 @@ void CheckAutonomousSignals()
    UpdateTradingPanel(trendStr, bestScore);
 
    // Check execution permissions
+   // Check execution permissions
    if(!g_gui_auto_state) return;
    if(currentOpen >= InpMaxOpenTrades) return;
    if(!sessionOK) return;
@@ -352,30 +360,136 @@ void CheckAutonomousSignals()
 
    double pipSize = (_Point * 10.0);
 
-   // BUY EXECUTION
-   if(buyScore >= InpMinConfidenceScore && buyScore > sellScore)
+   // CASE A: INITIAL ENTRY (LAYER 1)
+   if(currentOpen == 0)
    {
-      double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
-      double sl = NormalizeDouble(ask - (InpStopLossPips * pipSize), _Digits);
-      double tp1 = NormalizeDouble(ask + (InpTakeProfit1Pips * pipSize), _Digits);
       double lot = CalculateLotSize(InpStopLossPips);
+      double totalRiskPips = InpEnableScaleIn ? (InpScaleInStep1Pips + InpScaleInStep2Pips + InpBasketSLPips) : InpStopLossPips;
 
-      if(m_trade.Buy(lot, _Symbol, ask, sl, tp1, "AD Scalper BUY"))
+      // BUY EXECUTION (Layer 1)
+      if(buyScore >= InpMinConfidenceScore && buyScore > sellScore)
       {
-         Print("✅ [Institutional Scalper] BUY Executed @ ", ask, " | Lot: ", lot, " | Confluence: ", buyScore, "%");
+         double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+         double sl = NormalizeDouble(ask - (totalRiskPips * pipSize), _Digits);
+         double tp1 = NormalizeDouble(ask + (InpTakeProfit1Pips * pipSize), _Digits);
+
+         if(m_trade.Buy(lot, _Symbol, ask, sl, tp1, "AD Scalper L1 BUY"))
+         {
+            Print("✅ [Scale-In L1 BUY] Executed @ ", ask, " | Lot: ", lot, " | Confluence: ", buyScore, "%");
+         }
+      }
+      // SELL EXECUTION (Layer 1)
+      else if(sellScore >= InpMinConfidenceScore && sellScore > buyScore)
+      {
+         double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+         double sl = NormalizeDouble(bid + (totalRiskPips * pipSize), _Digits);
+         double tp1 = NormalizeDouble(bid - (InpTakeProfit1Pips * pipSize), _Digits);
+
+         if(m_trade.Sell(lot, _Symbol, bid, sl, tp1, "AD Scalper L1 SELL"))
+         {
+            Print("✅ [Scale-In L1 SELL] Executed @ ", bid, " | Lot: ", lot, " | Confluence: ", sellScore, "%");
+         }
       }
    }
-   // SELL EXECUTION
-   else if(sellScore >= InpMinConfidenceScore && sellScore > buyScore)
+   // CASE B: SCALE-IN LAYERING (LAYER 2 & 3 WHEN PULLBACK / REBOUND OCCURS)
+   else if(InpEnableScaleIn && currentOpen > 0 && currentOpen < InpMaxOpenTrades)
    {
-      double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
-      double sl = NormalizeDouble(bid + (InpStopLossPips * pipSize), _Digits);
-      double tp1 = NormalizeDouble(bid - (InpTakeProfit1Pips * pipSize), _Digits);
-      double lot = CalculateLotSize(InpStopLossPips);
+      ENUM_POSITION_TYPE posType = POSITION_TYPE_BUY;
+      double firstPrice = 0.0;
+      double lastPrice  = 0.0;
+      double baseLot    = InpFixedLot;
+      datetime oldestTime = 0;
+      datetime newestTime = 0;
+      int matchCount = 0;
 
-      if(m_trade.Sell(lot, _Symbol, bid, sl, tp1, "AD Scalper SELL"))
+      for(int i = PositionsTotal() - 1; i >= 0; i--)
       {
-         Print("✅ [Institutional Scalper] SELL Executed @ ", bid, " | Lot: ", lot, " | Confluence: ", sellScore, "%");
+         if(m_position.SelectByIndex(i) && m_position.Magic() == InpMagicNumber && m_position.Symbol() == _Symbol)
+         {
+            posType = m_position.PositionType();
+            baseLot = m_position.Volume();
+            double pPrice = m_position.PriceOpen();
+            datetime pTime = (datetime)PositionGetInteger(POSITION_TIME);
+
+            if(matchCount == 0 || pTime < oldestTime)
+            {
+               oldestTime = pTime;
+               firstPrice = pPrice;
+            }
+            if(matchCount == 0 || pTime > newestTime)
+            {
+               newestTime = pTime;
+               lastPrice = pPrice;
+            }
+            matchCount++;
+         }
+      }
+
+      double totalRiskPips = (InpScaleInStep1Pips + InpScaleInStep2Pips + InpBasketSLPips);
+
+      // SCALE-IN FOR BUY
+      if(posType == POSITION_TYPE_BUY)
+      {
+         double ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+         double reqDrop = (currentOpen == 1 ? InpScaleInStep1Pips : InpScaleInStep2Pips) * pipSize;
+
+         if(ask <= (lastPrice - reqDrop))
+         {
+            double basketSL = NormalizeDouble(firstPrice - (totalRiskPips * pipSize), _Digits);
+            string comment = StringFormat("AD Scalper L%d BUY", currentOpen + 1);
+
+            if(m_trade.Buy(baseLot, _Symbol, ask, basketSL, 0, comment))
+            {
+               Print("⚖️ [Scale-In L", currentOpen + 1, " BUY] Executed @ ", ask, " | Lot: ", baseLot, " | Pullback: ", DoubleToString((lastPrice - ask)/pipSize, 1), " pips from last");
+               SyncAllPositionsSL(basketSL);
+            }
+         }
+      }
+      // SCALE-IN FOR SELL
+      else if(posType == POSITION_TYPE_SELL)
+      {
+         double bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
+         double reqRise = (currentOpen == 1 ? InpScaleInStep1Pips : InpScaleInStep2Pips) * pipSize;
+
+         if(bid >= (lastPrice + reqRise))
+         {
+            double basketSL = NormalizeDouble(firstPrice + (totalRiskPips * pipSize), _Digits);
+            string comment = StringFormat("AD Scalper L%d SELL", currentOpen + 1);
+
+            if(m_trade.Sell(baseLot, _Symbol, bid, basketSL, 0, comment))
+            {
+               Print("⚖️ [Scale-In L", currentOpen + 1, " SELL] Executed @ ", bid, " | Lot: ", baseLot, " | Pullback: ", DoubleToString((bid - lastPrice)/pipSize, 1), " pips from last");
+               SyncAllPositionsSL(basketSL);
+            }
+         }
+      }
+   }
+}
+
+//+------------------------------------------------------------------+
+//| Close All Scale-In Positions for Basket TP/SL                    |
+//+------------------------------------------------------------------+
+void CloseAllScaleInPositions()
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      if(m_position.SelectByIndex(i) && m_position.Magic() == InpMagicNumber && m_position.Symbol() == _Symbol)
+      {
+         m_trade.PositionClose(m_position.Ticket());
+      }
+   }
+}
+
+//+------------------------------------------------------------------+
+//| Synchronize Stop Loss across all open positions                  |
+//+------------------------------------------------------------------+
+void SyncAllPositionsSL(double commonSL)
+{
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      if(m_position.SelectByIndex(i) && m_position.Magic() == InpMagicNumber && m_position.Symbol() == _Symbol)
+      {
+         m_trade.PositionModify(m_position.Ticket(), commonSL, m_position.TakeProfit());
       }
    }
 }
@@ -412,12 +526,44 @@ double CalculateLotSize(double stopLossPips)
 }
 
 //+------------------------------------------------------------------+
-//| Position Management: Micro-BE, TP1 Partial Close & Trailing      |
+//| Position Management: Basket TP/SL & Micro-BE Trailing            |
 //+------------------------------------------------------------------+
 void ManageOpenPositions()
 {
    double pointScale = _Point * 10.0;
+   int currentCount = 0;
+   double totalBasketProfit = 0.0;
 
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      if(m_position.SelectByIndex(i) && m_position.Magic() == InpMagicNumber && m_position.Symbol() == _Symbol)
+      {
+         currentCount++;
+         totalBasketProfit += (m_position.Profit() + m_position.Swap());
+      }
+   }
+
+   // 1. BASKET TAKE PROFIT & BASKET SL FOR SCALE-IN (When 2 or 3 layers are active)
+   if(InpEnableScaleIn && currentCount >= 2)
+   {
+      // Basket TP Target Reached (e.g. +$14 USD)
+      if(totalBasketProfit >= InpBasketTPDollar)
+      {
+         Print("🎯 [Basket TP Hit] Closing all ", currentCount, " layers! Net Profit: +$", DoubleToString(totalBasketProfit, 2), " USD");
+         CloseAllScaleInPositions();
+         return;
+      }
+
+      // Basket Emergency Hard Cut (safety net)
+      if(totalBasketProfit <= -60.0)
+      {
+         Print("🛑 [Basket Emergency Cut] Loss limit reached: -$", DoubleToString(MathAbs(totalBasketProfit), 2), " USD. Closing all layers.");
+         CloseAllScaleInPositions();
+         return;
+      }
+   }
+
+   // 2. INDIVIDUAL LAYER POSITION MANAGEMENT (If 1 layer active)
    for(int i = PositionsTotal() - 1; i >= 0; i--)
    {
       if(m_position.SelectByIndex(i) && m_position.Magic() == InpMagicNumber && m_position.Symbol() == _Symbol)
@@ -719,9 +865,20 @@ void UpdateTradingPanel(string trendStatus, int confluence)
    else
       ObjectSetInteger(0, "AD_METRICS", OBJPROP_COLOR, C'245,158,11'); // Amber
 
-   string pnlText = "Eq: $" + DoubleToString(equity, 2) + " | Float: " + (profit >= 0 ? "+$" : "-$") + DoubleToString(MathAbs(profit), 2);
+   int activeLayers = 0;
+   for(int i = PositionsTotal() - 1; i >= 0; i--)
+   {
+      if(m_position.SelectByIndex(i) && m_position.Magic() == InpMagicNumber && m_position.Symbol() == _Symbol)
+         activeLayers++;
+   }
+
+   string layerInfo = InpEnableScaleIn ? (" | L: " + IntegerToString(activeLayers) + "/" + IntegerToString(InpMaxOpenTrades)) : "";
+   string pnlText = "Eq: $" + DoubleToString(equity, 2) + " | Float: " + (profit >= 0 ? "+$" : "-$") + DoubleToString(MathAbs(profit), 2) + layerInfo;
    ObjectSetString(0, "AD_PNL", OBJPROP_TEXT, pnlText);
    ObjectSetInteger(0, "AD_PNL", OBJPROP_COLOR, profit >= 0 ? C'52,211,153' : C'239,68,68');
+
+   string footerStr = InpEnableScaleIn ? ("Scale-In: 3L (" + IntegerToString(InpScaleInStep1Pips) + "p/" + IntegerToString(InpScaleInStep2Pips) + "p) | Basket TP: $" + DoubleToString(InpBasketTPDollar, 0)) : "Micro-BE: Active (+8p->+2p) | TP1: 75%";
+   ObjectSetString(0, "AD_FOOTER", OBJPROP_TEXT, footerStr);
 
    double spreadPips = SymbolInfoInteger(_Symbol, SYMBOL_SPREAD) / 10.0;
    bool sessionOK = IsTradingSessionAllowed();
