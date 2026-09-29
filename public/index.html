@@ -2,7 +2,10 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#080C14">
   <title>MT5 XAUUSD & BTCUSD AI Pro Terminal v5.2</title>
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <!-- Lightweight Charts & TradingView Official Scripts -->
@@ -42,31 +45,36 @@
     ::-webkit-scrollbar-track { background: #06090E; }
     ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    
+    /* Native App Mobile Helpers */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .safe-area-bottom { padding-bottom: max(8px, env(safe-area-inset-bottom, 8px)); }
   </style>
 </head>
-<body class="min-h-screen text-xs select-none">
+<body class="min-h-screen text-xs select-none pb-20 xl:pb-0">
 
   <!-- 1. TOP PROFESSIONAL INSTITUTIONAL NAVBAR -->
   <!-- 1. TOP PROFESSIONAL INSTITUTIONAL NAVBAR (Clean, Modern & Uncluttered) -->
-  <header class="h-14 bg-[#080C14]/95 border-b border-[#141C2E] px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-lg backdrop-blur-md">
+  <header class="h-14 bg-[#080C14]/95 border-b border-[#141C2E] px-2.5 sm:px-4 md:px-6 flex items-center justify-between sticky top-0 z-50 shadow-lg backdrop-blur-md">
     <!-- Left: Brand Logo -->
-    <div class="flex items-center gap-6">
-      <div class="flex items-center gap-2.5 cursor-pointer select-none group" onclick="switchMainTab('terminal')" title="กลับสู่หน้าหลัก เทอร์มินอล">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs shadow-md shadow-amber-500/15 group-hover:scale-105 transition-transform">
+    <div class="flex items-center gap-2 sm:gap-6">
+      <div class="flex items-center gap-2 cursor-pointer select-none group" onclick="switchMainTab('terminal')" title="กลับสู่หน้าหลัก เทอร์มินอล">
+        <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs shadow-md shadow-amber-500/15 group-hover:scale-105 transition-transform">
           AD
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5">
           <span class="font-black text-xs sm:text-sm tracking-wider text-white font-mono uppercase">
             INSTITUTIONAL <span class="text-amber-400">AI</span>
           </span>
-          <span class="px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-400 font-mono text-[9px] font-bold border border-emerald-500/30 flex items-center gap-1">
+          <span class="px-1.5 py-0.2 rounded-full bg-emerald-500/15 text-emerald-400 font-mono text-[9px] font-bold border border-emerald-500/30 hidden xs:flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             PRO
           </span>
         </div>
       </div>
 
-      <!-- Center: Clean Segmented Navigation Tabs -->
+      <!-- Center: Clean Segmented Navigation Tabs (Desktop only, mobile has bottom dock) -->
       <nav class="hidden xl:flex items-center p-0.5 bg-[#05080F] border border-[#162033] rounded-xl text-slate-400">
         <button onclick="switchMainTab('terminal')" id="nav-terminal" class="px-3 py-1.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1.5 text-xs shadow-sm transition-all">
           <span>📊 เทอร์มินอล</span>
@@ -86,32 +94,33 @@
     </div>
 
     <!-- Right Controls: Ultra-Fast Live Ticker, Auto-Trade Pill & Settings Dropdown -->
-    <div class="flex items-center gap-2.5">
-      <!-- Live Price Ticker -->
-      <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#060A12] border border-[#162033] rounded-xl font-mono text-xs">
+    <div class="flex items-center gap-1.5 sm:gap-2.5">
+      <!-- Live Price Ticker (Visible on both mobile & desktop) -->
+      <div class="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-[#060A12] border border-[#162033] rounded-xl font-mono text-[10px] sm:text-xs">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
         <span class="font-bold text-slate-300" id="top-symbol">BTCUSD</span>
         <span class="font-black text-emerald-400" id="top-price">$84,802.0</span>
-        <span class="text-[10px] text-emerald-400 font-semibold" id="top-change">+0.35%</span>
+        <span class="text-[9px] sm:text-[10px] text-emerald-400 font-semibold hidden md:inline" id="top-change">+0.35%</span>
         <span id="ws-status-indicator" class="hidden 2xl:inline-block text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">0ms</span>
       </div>
 
       <!-- Server Real-Time Sync Indicator Badge -->
-      <div id="server-sync-badge" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-[#060A12] border border-[#162033] rounded-xl text-[10px] text-emerald-400 font-mono shadow-sm">
+      <div id="server-sync-badge" class="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 bg-[#060A12] border border-[#162033] rounded-xl text-[10px] text-emerald-400 font-mono shadow-sm">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
         <span id="server-sync-text">⚡ ซิงค์เซิร์ฟเวอร์สด 24/7</span>
       </div>
 
       <!-- Master Auto-Trading Switch -->
-      <button onclick="toggleMasterAutoTrader()" id="btn-master-autotrade" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold flex items-center gap-1.5 hover:bg-emerald-500/25 transition-all text-xs shadow-sm">
+      <button onclick="toggleMasterAutoTrader()" id="btn-master-autotrade" class="px-2 sm:px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold flex items-center gap-1 sm:gap-1.5 hover:bg-emerald-500/25 transition-all text-[11px] sm:text-xs shadow-sm">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-        <span id="master-autotrade-text">⚡ รันเทรด: ACTIVE</span>
+        <span id="master-autotrade-text">⚡ <span class="hidden sm:inline">รันเทรด: </span>ACTIVE</span>
       </button>
 
       <!-- Settings & Tools Dropdown Menu -->
       <div class="relative inline-block text-left" id="settings-dropdown-wrapper">
-        <button onclick="toggleSettingsDropdown(event)" id="btn-settings-dropdown" class="px-3 py-1.5 rounded-xl bg-[#0C121F] hover:bg-[#141F36] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-1.5 text-xs border border-slate-700/50 shadow-sm">
-          <span>⚙️ เครื่องมือ</span>
+        <button onclick="toggleSettingsDropdown(event)" id="btn-settings-dropdown" class="px-2 sm:px-3 py-1.5 rounded-xl bg-[#0C121F] hover:bg-[#141F36] text-slate-300 hover:text-white transition-all font-semibold flex items-center gap-1 text-[11px] sm:text-xs border border-slate-700/50 shadow-sm">
+          <span>⚙️</span>
+          <span class="hidden sm:inline">เครื่องมือ</span>
           <span class="text-[9px] text-slate-400">▾</span>
         </button>
         
@@ -169,28 +178,27 @@
   <!-- ==================== VIEW PAGE 1: TERMINAL & CHART WORKSPACE ==================== -->
   <div id="view-page-terminal">
     <!-- 2. UNIFIED SUB-TOOLBAR: ASSET SELECTOR, TRADING STYLE & TIME FRAME -->
-    <div class="bg-[#0A0F1A] border-b border-[#162033] px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+    <div class="bg-[#0A0F1A] border-b border-[#162033] px-3 sm:px-4 py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-2 text-xs">
     
     <!-- Left Section: Asset & Trade Style Controls -->
-    <div class="flex items-center flex-wrap gap-2.5">
+    <div class="flex items-center overflow-x-auto no-scrollbar whitespace-nowrap gap-1.5 sm:gap-2 w-full lg:w-auto pb-1 lg:pb-0">
       <!-- 1. Asset Switcher -->
-      <div class="flex items-center bg-[#06090E] p-1 rounded-xl border border-[#1A2538]">
-        <button onclick="selectAsset('BTCUSD')" id="btn-btc" class="px-3 py-1.5 rounded-lg font-bold border border-amber-500/50 bg-amber-500/10 text-amber-300 transition-all flex items-center gap-1.5 shadow-sm">
-          <span>₿ BTCUSD บิตคอยน์</span>
+      <div class="flex items-center bg-[#06090E] p-0.5 sm:p-1 rounded-xl border border-[#1A2538] shrink-0">
+        <button onclick="selectAsset('BTCUSD')" id="btn-btc" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg font-bold border border-amber-500/50 bg-amber-500/10 text-amber-300 transition-all flex items-center gap-1 shadow-sm text-xs">
+          <span>₿ BTCUSD</span>
         </button>
-        <button onclick="selectAsset('XAUUSD')" id="btn-xau" class="px-3 py-1.5 rounded-lg font-bold border border-transparent text-slate-400 hover:text-white transition-all flex items-center gap-1.5">
-          <span>🪙 XAUUSD ทองคำ</span>
+        <button onclick="selectAsset('XAUUSD')" id="btn-xau" class="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg font-bold border border-transparent text-slate-400 hover:text-white transition-all flex items-center gap-1 text-xs">
+          <span>🪙 XAUUSD</span>
         </button>
       </div>
 
       <!-- 2. Trade Style Switcher (Scalp M1/M5 vs Swing H1/H4) -->
-      <div class="flex items-center bg-[#06090E] p-1 rounded-xl border border-[#1A2538]">
-        <span class="text-slate-400 font-semibold px-2 text-[11px]">สไตล์:</span>
-        <button onclick="setTradingStyle('scalping')" id="btn-style-scalp" class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm flex items-center gap-1 transition-all">
-          <span>⚡ เทรดสั้น (M1/M5)</span>
+      <div class="flex items-center bg-[#06090E] p-0.5 sm:p-1 rounded-xl border border-[#1A2538] shrink-0">
+        <button onclick="setTradingStyle('scalping')" id="btn-style-scalp" class="px-2 sm:px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm flex items-center gap-1 transition-all text-[11px] sm:text-xs">
+          <span>⚡ สั้น M5</span>
         </button>
-        <button onclick="setTradingStyle('swing')" id="btn-style-swing" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all">
-          <span>🌊 เทรดยาว (H1/H4)</span>
+        <button onclick="setTradingStyle('swing')" id="btn-style-swing" class="px-2 sm:px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-medium flex items-center gap-1 transition-all text-[11px] sm:text-xs">
+          <span>🌊 ยาว H1</span>
         </button>
       </div>
 
@@ -207,27 +215,27 @@
     </div>
 
     <!-- Right Section: Timeframe & Quick Action Buttons -->
-    <div class="flex items-center flex-wrap gap-2">
+    <div class="flex items-center overflow-x-auto no-scrollbar whitespace-nowrap gap-1.5 w-full lg:w-auto justify-between lg:justify-end pb-1 lg:pb-0">
       <!-- Timeframe Selector -->
-      <div class="flex items-center bg-[#06090E] p-1 rounded-xl border border-[#1A2538]">
-        <button onclick="setTimeframe('1')" class="tf-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">1m</button>
-        <button onclick="setTimeframe('5')" class="tf-btn px-2.5 py-1 rounded-lg bg-amber-500 text-black font-black shadow transition-all">5m</button>
-        <button onclick="setTimeframe('15')" class="tf-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">15m</button>
-        <button onclick="setTimeframe('60')" class="tf-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">1h</button>
-        <button onclick="setTimeframe('240')" class="tf-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">4h</button>
-        <button onclick="setTimeframe('D')" class="tf-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">1D</button>
+      <div class="flex items-center bg-[#06090E] p-0.5 sm:p-1 rounded-xl border border-[#1A2538] shrink-0 text-xs">
+        <button onclick="setTimeframe('1')" class="tf-btn px-2 py-0.5 sm:py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">1m</button>
+        <button onclick="setTimeframe('5')" class="tf-btn px-2 py-0.5 sm:py-1 rounded-lg bg-amber-500 text-black font-black shadow transition-all">5m</button>
+        <button onclick="setTimeframe('15')" class="tf-btn px-2 py-0.5 sm:py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">15m</button>
+        <button onclick="setTimeframe('60')" class="tf-btn px-2 py-0.5 sm:py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">1h</button>
+        <button onclick="setTimeframe('240')" class="tf-btn px-2 py-0.5 sm:py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">4h</button>
+        <button onclick="setTimeframe('D')" class="tf-btn px-2 py-0.5 sm:py-1 rounded-lg text-slate-400 hover:text-white font-bold transition-all">1D</button>
       </div>
 
       <!-- Quick Test Execution Actions (ให้เห็นการเทรดทั้งสั้นและยาวทันที) -->
-      <div class="flex items-center gap-1.5">
-        <button onclick="triggerScalpDemoTrade()" class="px-3 py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 rounded-xl border border-amber-500/40 font-bold flex items-center gap-1.5 transition-all shadow-sm">
-          <span>⚡ ยิงทดสอบเทรดสั้น (0.02)</span>
+      <div class="flex items-center gap-1 shrink-0">
+        <button onclick="triggerScalpDemoTrade()" class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 rounded-xl border border-amber-500/40 font-bold flex items-center gap-1 transition-all shadow-sm text-[11px] sm:text-xs">
+          <span>⚡ สั้น</span>
         </button>
-        <button onclick="triggerSwingDemoTrade()" class="px-3 py-1.5 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 rounded-xl border border-cyan-500/40 font-bold flex items-center gap-1.5 transition-all shadow-sm">
-          <span>🌊 ยิงทดสอบเทรดยาว (0.02)</span>
+        <button onclick="triggerSwingDemoTrade()" class="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 rounded-xl border border-cyan-500/40 font-bold flex items-center gap-1 transition-all shadow-sm text-[11px] sm:text-xs">
+          <span>🌊 ยาว</span>
         </button>
         <button onclick="triggerSignalPopupDemo()" class="hidden md:flex px-2.5 py-1.5 bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 rounded-xl border border-emerald-500/40 font-bold items-center gap-1 transition-all">
-          <span>🔔 สัญญาณ Alert</span>
+          <span>🔔 สัญญาณ</span>
         </button>
       </div>
     </div>
@@ -241,10 +249,10 @@
          ondragover="handlePanelDragOver(event)" 
          ondragleave="handlePanelDragLeave(event, 'chart-panel')" 
          ondrop="handlePanelDrop(event, 'chart')"
-         class="xl:col-span-8 2xl:col-span-8 relative bg-[#06090E] h-[640px] border-r border-[#161F2E] flex flex-col justify-between order-1 transition-all duration-200">
+         class="xl:col-span-8 2xl:col-span-8 relative bg-[#06090E] h-[440px] sm:h-[540px] xl:h-[640px] border-r border-[#161F2E] flex flex-col justify-between order-1 transition-all duration-200">
       
       <!-- Top Chart Toolbar Header with Layout Controls -->
-      <div class="h-9 px-3 bg-[#0A0F1A] border-b border-[#161F2E] flex items-center justify-between text-[11px]">
+      <div class="h-9 px-2 sm:px-3 bg-[#0A0F1A] border-b border-[#161F2E] flex items-center justify-between text-[11px] overflow-x-auto no-scrollbar whitespace-nowrap">
         <div class="flex items-center gap-2">
           <!-- Drag Handle -->
           <div draggable="true" ondragstart="handlePanelDragStart(event, 'chart')" title="คลิกค้างแล้วลากไปวางเพื่อสลับฝั่ง" class="cursor-grab active:cursor-grabbing px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1 hover:bg-amber-500/25 select-none transition-all">
@@ -282,7 +290,7 @@
         <!-- Mode 1: Native Institutional AI Canvas (EMA Ribbon + MACD + RSI Subcharts) -->
         <div id="native_chart_container" class="w-full h-full flex flex-col bg-[#06090E]">
           <!-- Indicator Legend Bar -->
-          <div class="h-6 px-3 bg-[#0A0E1A] border-b border-[#161F2E] flex items-center justify-between text-[10px]">
+          <div class="h-6 px-3 bg-[#0A0E1A] border-b border-[#161F2E] flex items-center justify-between text-[10px] overflow-x-auto no-scrollbar whitespace-nowrap">
             <div class="flex items-center gap-3">
               <span class="font-bold text-white font-mono" id="lw-legend-symbol">BTCUSD · M5</span>
               <span class="text-cyan-400 font-mono font-semibold flex items-center gap-1"><span class="w-2 h-0.5 bg-cyan-400 inline-block"></span> EMA 20: <span id="val-ema20">$84,780</span></span>
@@ -337,17 +345,17 @@
          ondragover="handlePanelDragOver(event)" 
          ondragleave="handlePanelDragLeave(event, 'cockpit-panel')" 
          ondrop="handlePanelDrop(event, 'cockpit')"
-         class="xl:col-span-4 2xl:col-span-4 bg-[#090D15] h-[640px] flex flex-col justify-between border-l border-[#161F2E] overflow-y-auto order-2 transition-all duration-200">
+         class="xl:col-span-4 2xl:col-span-4 bg-[#090D15] min-h-[500px] xl:h-[640px] flex flex-col justify-between border-t xl:border-t-0 border-l-0 xl:border-l border-[#161F2E] overflow-y-auto order-2 transition-all duration-200">
       
       <!-- Top Cockpit Navigation Tabs with Drag Handle -->
-      <div class="sticky top-0 z-10 bg-[#0B0F19] border-b border-[#1A2333] px-3 pt-2 pb-1.5 flex items-center justify-between gap-1">
-        <div class="flex items-center gap-1">
+      <div class="sticky top-0 z-10 bg-[#0B0F19] border-b border-[#1A2333] px-2 sm:px-3 pt-2 pb-1.5 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar whitespace-nowrap">
+        <div class="flex items-center gap-1 shrink-0">
           <!-- Cockpit Drag Handle -->
           <div draggable="true" ondragstart="handlePanelDragStart(event, 'cockpit')" title="คลิกค้างแล้วลากไปวางเพื่อสลับฝั่ง" class="cursor-grab active:cursor-grabbing px-1.5 py-0.5 mr-1 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1 hover:bg-amber-500/25 select-none transition-all text-[11px]">
             <span>⠿ ลากสลับ</span>
           </div>
           <button onclick="switchCockpitTab('signals')" id="tab-c-signals" class="px-2 py-1 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center gap-1 shadow-sm transition-all">
-            <span>⚡ สัญญาณ AI (90%+)</span>
+            <span>⚡ สัญญาณ AI</span>
           </button>
           <button onclick="switchCockpitTab('positions')" id="tab-c-positions" class="px-2 py-1 rounded-lg text-slate-400 hover:text-white font-medium text-xs flex items-center gap-1 transition-all">
             <span>📋 ออเดอร์ (<span id="cockpit-pos-count">0</span>)</span>
@@ -356,7 +364,7 @@
             <span>📰 ข่าวสด</span>
           </button>
         </div>
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1 shrink-0">
           <button onclick="toggleSwapPanels()" title="สลับฝั่ง ซ้าย-ขวา" class="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold text-[10px] transition-all">
             <span>⇄ สลับ</span>
           </button>
@@ -1069,148 +1077,148 @@
           <span class="text-base">💼</span>
           <div>
             <span class="font-bold text-white text-xs block">รวม 4 พอร์ตจำลองสถาบัน (Multi-Portfolio AUM)</span>
-            <span class="text-[11px] text-slate-400">ทุนเริ่มต้นรวม $4,000.00 USD (พอร์ตละ $1,000.00)</span>
+            <span class="text-[10px] sm:text-[11px] text-slate-400">ทุนเริ่มต้นรวม $4,000.00 USD (พอร์ตละ $1,000.00)</span>
           </div>
         </div>
-        <div class="flex items-center flex-wrap gap-4 text-xs">
-          <div>
+        <div class="grid grid-cols-2 sm:flex sm:items-center flex-wrap gap-2.5 sm:gap-4 text-xs w-full md:w-auto">
+          <div class="bg-[#080D18] sm:bg-transparent p-2 sm:p-0 rounded-xl border border-slate-800 sm:border-0">
             <span class="text-slate-400 block text-[10px]">ยอดรวม Balance:</span>
-            <strong id="grand-bal-val" class="text-white font-bold text-sm">$4,000.00</strong>
+            <strong id="grand-bal-val" class="text-white font-bold text-xs sm:text-sm">$4,000.00</strong>
           </div>
-          <div>
+          <div class="bg-[#080D18] sm:bg-transparent p-2 sm:p-0 rounded-xl border border-slate-800 sm:border-0">
             <span class="text-slate-400 block text-[10px]">Equity รวมสุทธิ:</span>
-            <strong id="grand-equity-val" class="text-emerald-400 font-black text-sm">$4,007.80</strong>
+            <strong id="grand-equity-val" class="text-emerald-400 font-black text-xs sm:text-sm">$4,007.80</strong>
           </div>
-          <div>
+          <div class="bg-[#080D18] sm:bg-transparent p-2 sm:p-0 rounded-xl border border-slate-800 sm:border-0">
             <span class="text-slate-400 block text-[10px]">ผลตอบแทนรวม:</span>
-            <strong id="grand-pnl-val" class="text-emerald-400 font-bold text-sm">+$7.80 (+0.20%)</strong>
+            <strong id="grand-pnl-val" class="text-emerald-400 font-bold text-xs sm:text-sm">+$7.80 (+0.20%)</strong>
           </div>
-          <div>
+          <div class="bg-[#080D18] sm:bg-transparent p-2 sm:p-0 rounded-xl border border-slate-800 sm:border-0">
             <span class="text-slate-400 block text-[10px]">ออเดอร์สดทั้งหมด:</span>
-            <strong id="grand-orders-val" class="text-amber-300 font-bold text-sm">2 ไม้</strong>
+            <strong id="grand-orders-val" class="text-amber-300 font-bold text-xs sm:text-sm">2 ไม้</strong>
           </div>
         </div>
       </div>
 
       <!-- Real-Time 4 Institutional Master Portfolio Cards ($1,000 USD Capital Each) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 text-xs">
         
         <!-- Card 1: 🟡 ทองคำ เทรดสั้น (M5 Scalp) -->
-        <div onclick="switchPortfolioFilter('xau_scalp')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-amber-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+        <div onclick="switchPortfolioFilter('xau_scalp')" class="cursor-pointer p-3 sm:p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-amber-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
           <div>
             <div class="flex justify-between items-center text-slate-400 mb-1">
-              <span class="font-bold text-amber-300 flex items-center gap-1.5 text-xs">
-                <span>🟡 ทองคำ สั้น M5</span>
+              <span class="font-bold text-amber-300 flex items-center gap-1 text-[11px] sm:text-xs">
+                <span>🟡 ทองสั้น M5</span>
               </span>
-              <span class="text-[10px] font-mono text-amber-300 bg-amber-950/70 px-2 py-0.5 rounded border border-amber-500/30">ทุน $1,000</span>
+              <span class="text-[9px] sm:text-[10px] font-mono text-amber-300 bg-amber-950/70 px-1.5 py-0.5 rounded border border-amber-500/30">$1,000</span>
             </div>
-            <div class="flex justify-between items-baseline my-1.5 font-mono">
-              <span class="text-[11px] text-slate-400">Equity สด:</span>
-              <strong id="card-xau_scalp-eq" class="text-base text-emerald-400 font-black">$1,000.00</strong>
+            <div class="flex justify-between items-baseline my-1 font-mono">
+              <span class="text-[10px] sm:text-[11px] text-slate-400">Equity:</span>
+              <strong id="card-xau_scalp-eq" class="text-sm sm:text-base text-emerald-400 font-black">$1,000.00</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>Balance:</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>Bal:</span>
               <strong id="card-xau_scalp-bal" class="text-slate-200">$1,000.00</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>ไม้ที่รันอยู่:</span>
-              <span id="card-xau_scalp-cnt" class="text-amber-300 font-bold">0 ไม้ ($0.00)</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>ไม้สด:</span>
+              <span id="card-xau_scalp-cnt" class="text-amber-300 font-bold">0 ไม้</span>
             </div>
           </div>
           <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
-            <span id="card-xau_scalp-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.00%</span>
-            <button onclick="event.stopPropagation(); triggerPortfolioTrade('xau_scalp')" class="py-1 px-2.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 text-[10px] transition-all">
-              ⚡ + เปิดไม้ M5
+            <span id="card-xau_scalp-ret" class="text-[10px] sm:text-[11px] font-bold font-mono text-emerald-400">+0.00%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('xau_scalp')" class="py-1 px-1.5 sm:px-2.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold border border-amber-500/40 text-[9px] sm:text-[10px] transition-all">
+              ⚡ + ไม้ M5
             </button>
           </div>
         </div>
 
         <!-- Card 2: 🟡 ทองคำ เทรดยาว (H1 Swing) -->
-        <div onclick="switchPortfolioFilter('xau_swing')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-yellow-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+        <div onclick="switchPortfolioFilter('xau_swing')" class="cursor-pointer p-3 sm:p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-yellow-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
           <div>
             <div class="flex justify-between items-center text-slate-400 mb-1">
-              <span class="font-bold text-yellow-300 flex items-center gap-1.5 text-xs">
-                <span>🟡 ทองคำ ยาว H1</span>
+              <span class="font-bold text-yellow-300 flex items-center gap-1 text-[11px] sm:text-xs">
+                <span>🟡 ทองยาว H1</span>
               </span>
-              <span class="text-[10px] font-mono text-yellow-300 bg-yellow-950/70 px-2 py-0.5 rounded border border-yellow-500/30">ทุน $1,000</span>
+              <span class="text-[9px] sm:text-[10px] font-mono text-yellow-300 bg-yellow-950/70 px-1.5 py-0.5 rounded border border-yellow-500/30">$1,000</span>
             </div>
-            <div class="flex justify-between items-baseline my-1.5 font-mono">
-              <span class="text-[11px] text-slate-400">Equity สด:</span>
-              <strong id="card-xau_swing-eq" class="text-base text-emerald-400 font-black">$1,005.40</strong>
+            <div class="flex justify-between items-baseline my-1 font-mono">
+              <span class="text-[10px] sm:text-[11px] text-slate-400">Equity:</span>
+              <strong id="card-xau_swing-eq" class="text-sm sm:text-base text-emerald-400 font-black">$1,005.40</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>Balance:</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>Bal:</span>
               <strong id="card-xau_swing-bal" class="text-slate-200">$1,000.00</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>ไม้ที่รันอยู่:</span>
-              <span id="card-xau_swing-cnt" class="text-cyan-300 font-bold">1 ไม้ (+$5.40)</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>ไม้สด:</span>
+              <span id="card-xau_swing-cnt" class="text-cyan-300 font-bold">1 ไม้</span>
             </div>
           </div>
           <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
-            <span id="card-xau_swing-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.54%</span>
-            <button onclick="event.stopPropagation(); triggerPortfolioTrade('xau_swing')" class="py-1 px-2.5 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 font-bold border border-yellow-500/40 text-[10px] transition-all">
-              🌊 + เปิดไม้ยาว H1
+            <span id="card-xau_swing-ret" class="text-[10px] sm:text-[11px] font-bold font-mono text-emerald-400">+0.54%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('xau_swing')" class="py-1 px-1.5 sm:px-2.5 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 font-bold border border-yellow-500/40 text-[9px] sm:text-[10px] transition-all">
+              🌊 + ไม้ H1
             </button>
           </div>
         </div>
 
         <!-- Card 3: 🟠 บิตคอยน์ เทรดสั้น (M5 Scalp) -->
-        <div onclick="switchPortfolioFilter('btc_scalp')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-orange-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+        <div onclick="switchPortfolioFilter('btc_scalp')" class="cursor-pointer p-3 sm:p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-orange-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
           <div>
             <div class="flex justify-between items-center text-slate-400 mb-1">
-              <span class="font-bold text-orange-400 flex items-center gap-1.5 text-xs">
-                <span>🟠 บิตคอยน์ สั้น M5</span>
+              <span class="font-bold text-orange-400 flex items-center gap-1 text-[11px] sm:text-xs">
+                <span>🟠 บิตสั้น M5</span>
               </span>
-              <span class="text-[10px] font-mono text-orange-300 bg-orange-950/70 px-2 py-0.5 rounded border border-orange-500/30">ทุน $1,000</span>
+              <span class="text-[9px] sm:text-[10px] font-mono text-orange-300 bg-orange-950/70 px-1.5 py-0.5 rounded border border-orange-500/30">$1,000</span>
             </div>
-            <div class="flex justify-between items-baseline my-1.5 font-mono">
-              <span class="text-[11px] text-slate-400">Equity สด:</span>
-              <strong id="card-btc_scalp-eq" class="text-base text-emerald-400 font-black">$1,002.40</strong>
+            <div class="flex justify-between items-baseline my-1 font-mono">
+              <span class="text-[10px] sm:text-[11px] text-slate-400">Equity:</span>
+              <strong id="card-btc_scalp-eq" class="text-sm sm:text-base text-emerald-400 font-black">$1,002.40</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>Balance:</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>Bal:</span>
               <strong id="card-btc_scalp-bal" class="text-slate-200">$1,000.00</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>ไม้ที่รันอยู่:</span>
-              <span id="card-btc_scalp-cnt" class="text-orange-300 font-bold">1 ไม้ (+$2.40)</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>ไม้สด:</span>
+              <span id="card-btc_scalp-cnt" class="text-orange-300 font-bold">1 ไม้</span>
             </div>
           </div>
           <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
-            <span id="card-btc_scalp-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.24%</span>
-            <button onclick="event.stopPropagation(); triggerPortfolioTrade('btc_scalp')" class="py-1 px-2.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 font-bold border border-orange-500/40 text-[10px] transition-all">
-              ⚡ + เปิดไม้ M5
+            <span id="card-btc_scalp-ret" class="text-[10px] sm:text-[11px] font-bold font-mono text-emerald-400">+0.24%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('btc_scalp')" class="py-1 px-1.5 sm:px-2.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 font-bold border border-orange-500/40 text-[9px] sm:text-[10px] transition-all">
+              ⚡ + ไม้ M5
             </button>
           </div>
         </div>
 
         <!-- Card 4: 🟠 บิตคอยน์ เทรดยาว (H1 Swing) -->
-        <div onclick="switchPortfolioFilter('btc_swing')" class="cursor-pointer p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-cyan-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
+        <div onclick="switchPortfolioFilter('btc_swing')" class="cursor-pointer p-3 sm:p-4 rounded-2xl bg-[#0B101D] hover:bg-[#0D1424] border border-cyan-500/40 flex flex-col justify-between shadow-xl transition-all hover:scale-[1.01]">
           <div>
             <div class="flex justify-between items-center text-slate-400 mb-1">
-              <span class="font-bold text-cyan-300 flex items-center gap-1.5 text-xs">
-                <span>🟠 บิตคอยน์ ยาว H1</span>
+              <span class="font-bold text-cyan-300 flex items-center gap-1 text-[11px] sm:text-xs">
+                <span>🟠 บิตยาว H1</span>
               </span>
-              <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/70 px-2 py-0.5 rounded border border-cyan-500/30">ทุน $1,000</span>
+              <span class="text-[9px] sm:text-[10px] font-mono text-cyan-300 bg-cyan-950/70 px-1.5 py-0.5 rounded border border-cyan-500/30">$1,000</span>
             </div>
-            <div class="flex justify-between items-baseline my-1.5 font-mono">
-              <span class="text-[11px] text-slate-400">Equity สด:</span>
-              <strong id="card-btc_swing-eq" class="text-base text-emerald-400 font-black">$1,000.00</strong>
+            <div class="flex justify-between items-baseline my-1 font-mono">
+              <span class="text-[10px] sm:text-[11px] text-slate-400">Equity:</span>
+              <strong id="card-btc_swing-eq" class="text-sm sm:text-base text-emerald-400 font-black">$1,000.00</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>Balance:</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>Bal:</span>
               <strong id="card-btc_swing-bal" class="text-slate-200">$1,000.00</strong>
             </div>
-            <div class="flex justify-between items-baseline text-[11px] font-mono text-slate-400">
-              <span>ไม้ที่รันอยู่:</span>
-              <span id="card-btc_swing-cnt" class="text-cyan-300 font-bold">0 ไม้ ($0.00)</span>
+            <div class="flex justify-between items-baseline text-[10px] sm:text-[11px] font-mono text-slate-400">
+              <span>ไม้สด:</span>
+              <span id="card-btc_swing-cnt" class="text-cyan-300 font-bold">0 ไม้</span>
             </div>
           </div>
           <div class="pt-2 mt-2 border-t border-slate-800 flex justify-between items-center">
-            <span id="card-btc_swing-ret" class="text-[11px] font-bold font-mono text-emerald-400">+0.00%</span>
-            <button onclick="event.stopPropagation(); triggerPortfolioTrade('btc_swing')" class="py-1 px-2.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 text-[10px] transition-all">
-              🌊 + เปิดไม้ยาว H1
+            <span id="card-btc_swing-ret" class="text-[10px] sm:text-[11px] font-bold font-mono text-emerald-400">+0.00%</span>
+            <button onclick="event.stopPropagation(); triggerPortfolioTrade('btc_swing')" class="py-1 px-1.5 sm:px-2.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold border border-cyan-500/40 text-[9px] sm:text-[10px] transition-all">
+              🌊 + ไม้ H1
             </button>
           </div>
         </div>
@@ -1218,35 +1226,35 @@
       </div>
 
       <!-- Dedicated Portfolio Switcher & Order Filter Bar -->
-      <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3 p-3 bg-[#080C16] rounded-2xl border border-[#162136]">
-        <div class="flex items-center flex-wrap gap-1.5 text-xs">
-          <span class="text-[11px] text-slate-400 font-bold px-1.5 flex items-center gap-1">
-            <span>📁 เลือกพอร์ต:</span>
+      <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3 p-2.5 sm:p-3 bg-[#080C16] rounded-2xl border border-[#162136]">
+        <div class="flex items-center overflow-x-auto no-scrollbar whitespace-nowrap gap-1.5 text-xs w-full xl:w-auto pb-1 xl:pb-0">
+          <span class="text-[11px] text-slate-400 font-bold px-1.5 flex items-center gap-1 shrink-0">
+            <span>📁 พอร์ต:</span>
           </span>
-          <button onclick="switchPortfolioFilter('all')" id="portbtn-all" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all text-xs">
-            <span>🌐 รวมทุกพอร์ต ($4,000)</span>
+          <button onclick="switchPortfolioFilter('all')" id="portbtn-all" class="shrink-0 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all text-xs">
+            <span>🌐 รวมทุกพอร์ต ($4k)</span>
             <span id="pbadge-all" class="px-1.5 py-0.2 rounded-full bg-black/30 text-white font-mono text-[10px]">2</span>
           </button>
-          <button onclick="switchPortfolioFilter('xau_scalp')" id="portbtn-xau_scalp" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
-            <span>🟡 ทองคำ สั้น M5 ($1,000)</span>
+          <button onclick="switchPortfolioFilter('xau_scalp')" id="portbtn-xau_scalp" class="shrink-0 px-3 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟡 ทองสั้น M5</span>
             <span id="pbadge-xau_scalp" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-amber-300 font-mono text-[10px]">0</span>
           </button>
-          <button onclick="switchPortfolioFilter('xau_swing')" id="portbtn-xau_swing" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
-            <span>🟡 ทองคำ ยาว H1 ($1,000)</span>
+          <button onclick="switchPortfolioFilter('xau_swing')" id="portbtn-xau_swing" class="shrink-0 px-3 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟡 ทองยาว H1</span>
             <span id="pbadge-xau_swing" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-yellow-300 font-mono text-[10px]">1</span>
           </button>
-          <button onclick="switchPortfolioFilter('btc_scalp')" id="portbtn-btc_scalp" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
-            <span>🟠 บิตคอยน์ สั้น M5 ($1,000)</span>
+          <button onclick="switchPortfolioFilter('btc_scalp')" id="portbtn-btc_scalp" class="shrink-0 px-3 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟠 บิตสั้น M5</span>
             <span id="pbadge-btc_scalp" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-orange-300 font-mono text-[10px]">1</span>
           </button>
-          <button onclick="switchPortfolioFilter('btc_swing')" id="portbtn-btc_swing" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
-            <span>🟠 บิตคอยน์ ยาว H1 ($1,000)</span>
+          <button onclick="switchPortfolioFilter('btc_swing')" id="portbtn-btc_swing" class="shrink-0 px-3 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all text-xs">
+            <span>🟠 บิตยาว H1</span>
             <span id="pbadge-btc_swing" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-cyan-300 font-mono text-[10px]">0</span>
           </button>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="closeAllPositions()" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/30 text-xs transition-all flex items-center gap-1">
+        <div class="flex items-center gap-2 w-full xl:w-auto justify-end">
+          <button onclick="closeAllPositions()" class="w-full xl:w-auto px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500 text-rose-300 hover:text-white font-bold border border-rose-500/30 text-xs transition-all flex items-center justify-center gap-1">
             <span>❌ ปิดออเดอร์ในมุมมองนี้</span>
           </button>
         </div>
@@ -1254,36 +1262,42 @@
 
       <!-- Sub-Menu Filter Tabs & Controls -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 p-2.5 bg-[#0A0F1D] rounded-2xl border border-[#182338]">
-        <div class="flex items-center flex-wrap gap-1.5 text-xs">
-          <button onclick="switchOrderFilter('all')" id="subtab-all" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all">
-            <span>⚡ ออเดอร์ทั้งหมด</span>
+        <div class="flex items-center overflow-x-auto no-scrollbar whitespace-nowrap gap-1.5 text-xs w-full sm:w-auto pb-1 sm:pb-0">
+          <button onclick="switchOrderFilter('all')" id="subtab-all" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black shadow-md flex items-center gap-1.5 transition-all">
+            <span>⚡ ทั้งหมด</span>
             <span id="sub-all-count" class="px-1.5 py-0.2 rounded-full bg-black/30 text-white font-mono text-[10px]">2</span>
           </button>
-          <button onclick="switchOrderFilter('scalping')" id="subtab-scalping" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>⚡ เทรดสั้น (M1/M5)</span>
+          <button onclick="switchOrderFilter('scalping')" id="subtab-scalping" class="shrink-0 px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>⚡ สั้น (M1/M5)</span>
             <span id="sub-scalp-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-amber-300 font-mono text-[10px]">1</span>
           </button>
-          <button onclick="switchOrderFilter('swing')" id="subtab-swing" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>🌊 เทรดยาว (H1/H4)</span>
+          <button onclick="switchOrderFilter('swing')" id="subtab-swing" class="shrink-0 px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>🌊 ยาว (H1/H4)</span>
             <span id="sub-swing-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-cyan-300 font-mono text-[10px]">1</span>
           </button>
-          <button onclick="switchOrderFilter('matrix')" id="subtab-matrix" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>📊 เมทริกซ์ประเมินผล AI</span>
+          <button onclick="switchOrderFilter('matrix')" id="subtab-matrix" class="shrink-0 px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>📊 เมทริกซ์ AI</span>
           </button>
-          <button onclick="switchOrderFilter('journal')" id="subtab-journal" class="px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
-            <span>📔 บันทึกประวัติ (Journal)</span>
+          <button onclick="switchOrderFilter('journal')" id="subtab-journal" class="shrink-0 px-3.5 py-1.5 rounded-xl text-slate-400 hover:text-white font-bold flex items-center gap-1.5 transition-all">
+            <span>📔 บันทึกประวัติ</span>
             <span id="sub-journal-count" class="px-1.5 py-0.2 rounded-full bg-slate-800 text-purple-300 font-mono text-[10px]">0</span>
           </button>
         </div>
-        <span class="text-[11px] text-slate-400 font-mono flex items-center gap-1.5 px-3">
+        <span class="text-[11px] text-slate-400 font-mono hidden sm:flex items-center gap-1.5 px-3">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           <span>WebSocket Real-Time Sync (0ms)</span>
         </span>
       </div>
 
-      <!-- MAIN TAB 1: LIVE ACTIVE ORDERS TABLE (แสดงผลออเดอร์เทรดสั้น / เทรดยาว แบบ Real-Time) -->
+      <!-- MAIN TAB 1: LIVE ACTIVE ORDERS (แสดงผลออเดอร์เทรดสั้น / เทรดยาว แบบ Real-Time) -->
       <div id="subtab-content-orders" class="rounded-2xl border border-[#1A2538] bg-[#0A0F1A] overflow-hidden shadow-2xl">
-        <div class="overflow-x-auto">
+        <!-- Mobile Cards View (< 768px: Native Mobile Trading App Look & Feel) -->
+        <div id="active-orders-mobile-cards" class="md:hidden space-y-3 p-3">
+          <!-- Dynamically Populated by renderPositions() -->
+        </div>
+
+        <!-- Desktop Full Institutional Table (>= 768px) -->
+        <div class="hidden md:block overflow-x-auto">
           <table class="w-full text-left text-xs font-mono">
             <thead class="bg-[#0D1424] text-slate-400 uppercase text-[10px] border-b border-[#182338]">
               <tr>
@@ -1422,107 +1436,107 @@
         </div>
 
         <!-- Broker Financial Statement Overview (4 Master KPI Cards - เสมือนดูพอร์ตจริง) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 text-xs font-mono">
         <!-- 1. Account Balance Card -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
+        <div class="p-3 sm:p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
-            <span class="font-bold flex items-center gap-1.5">
-              <span>💰 Balance (ยอดเงินในบัญชี)</span>
+            <span class="font-bold flex items-center gap-1 text-[11px] sm:text-xs">
+              <span>💰 Balance</span>
             </span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300" id="port-initial-cap-label">ทุนตั้งต้น $1,000</span>
+            <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-300" id="port-initial-cap-label">$1,000</span>
           </div>
-          <div class="my-2.5">
-            <strong class="text-2xl text-white font-black" id="port-bal-val">$1,000.00</strong>
+          <div class="my-1.5 sm:my-2.5">
+            <strong class="text-lg sm:text-2xl text-white font-black" id="port-bal-val">$1,000.00</strong>
           </div>
-          <div class="pt-2 border-t border-slate-800/80 flex justify-between text-[11px]">
-            <span class="text-slate-400">กำไรสุทธิที่ปิดแล้ว:</span>
-            <strong id="port-realized-pnl" class="text-emerald-400">+$0.00 (+0.00%)</strong>
+          <div class="pt-2 border-t border-slate-800/80 flex justify-between text-[10px] sm:text-[11px]">
+            <span class="text-slate-400">กำไรที่ปิด:</span>
+            <strong id="port-realized-pnl" class="text-emerald-400">+$0.00</strong>
           </div>
         </div>
 
         <!-- 2. Account Equity Card -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-emerald-500/30 shadow-xl flex flex-col justify-between">
+        <div class="p-3 sm:p-4 rounded-2xl bg-[#0B101D] border border-emerald-500/30 shadow-xl flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
-            <span class="font-bold text-emerald-400 flex items-center gap-1.5">
-              <span>📈 Equity (มูลค่าสินทรัพย์สด)</span>
+            <span class="font-bold text-emerald-400 flex items-center gap-1 text-[11px] sm:text-xs">
+              <span>📈 Equity</span>
             </span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 font-bold">Real-Time WS</span>
+            <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 font-bold">Live</span>
           </div>
-          <div class="my-2.5">
-            <strong class="text-2xl text-emerald-400 font-black" id="port-equity-val">$1,007.80</strong>
+          <div class="my-1.5 sm:my-2.5">
+            <strong class="text-lg sm:text-2xl text-emerald-400 font-black" id="port-equity-val">$1,007.80</strong>
           </div>
-          <div class="pt-2 border-t border-slate-800/80 flex justify-between text-[11px]">
-            <span class="text-slate-400">กำไรลอยตัว (Floating):</span>
-            <strong id="port-floating-pnl" class="text-emerald-400 font-bold">+$7.80 (+0.78%)</strong>
+          <div class="pt-2 border-t border-slate-800/80 flex justify-between text-[10px] sm:text-[11px]">
+            <span class="text-slate-400">Floating:</span>
+            <strong id="port-floating-pnl" class="text-emerald-400 font-bold">+$7.80</strong>
           </div>
         </div>
 
         <!-- 3. Margin & Safety Card -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
+        <div class="p-3 sm:p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
-            <span class="font-bold flex items-center gap-1.5">
-              <span>🛡️ Margin & Free Margin</span>
+            <span class="font-bold flex items-center gap-1 text-[11px] sm:text-xs">
+              <span>🛡️ Margin</span>
             </span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Margin Level: 5,039%</span>
+            <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold hidden sm:inline">5,039%</span>
           </div>
-          <div class="my-2 text-[11px] space-y-1">
+          <div class="my-1 sm:my-2 text-[10px] sm:text-[11px] space-y-0.5 sm:space-y-1">
             <div class="flex justify-between">
-              <span class="text-slate-400">Margin ที่ใช้:</span>
-              <strong class="text-amber-300" id="port-margin-val">$20.00 (0.02 Lot)</strong>
+              <span class="text-slate-400">ใช้ไป:</span>
+              <strong class="text-amber-300" id="port-margin-val">$20.00</strong>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Free Margin ว่าง:</span>
+              <span class="text-slate-400">ว่าง:</span>
               <strong class="text-white" id="port-free-margin">$987.80</strong>
             </div>
           </div>
-          <div class="pt-1.5 border-t border-slate-800/80 text-[10px] text-emerald-400 font-bold">
-            ✓ สถานะพอร์ต: ปลอดภัยระดับสูงสุด ไร้ความเสี่ยง Margin Call
+          <div class="pt-1.5 border-t border-slate-800/80 text-[9px] sm:text-[10px] text-emerald-400 font-bold truncate">
+            ✓ ปลอดภัยสูงสุด
           </div>
         </div>
 
         <!-- 4. Institutional Health Score Card -->
-        <div class="p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
+        <div class="p-3 sm:p-4 rounded-2xl bg-[#0B101D] border border-[#1A253A] shadow-xl flex flex-col justify-between">
           <div class="flex justify-between items-center text-slate-400">
-            <span class="font-bold flex items-center gap-1.5">
-              <span>🎯 Institutional Health</span>
+            <span class="font-bold flex items-center gap-1 text-[11px] sm:text-xs">
+              <span>🎯 Health</span>
             </span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">AI Confluence</span>
+            <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">AI</span>
           </div>
-          <div class="my-2 grid grid-cols-2 gap-2 text-[11px]">
+          <div class="my-1 sm:my-2 grid grid-cols-2 gap-1 text-[10px] sm:text-[11px]">
             <div>
-              <span class="text-slate-400 block text-[10px]">Win Rate รวม:</span>
-              <strong class="text-emerald-400 font-bold text-sm" id="port-stat-winrate">89.5%</strong>
+              <span class="text-slate-400 block text-[9px] sm:text-[10px]">Win Rate:</span>
+              <strong class="text-emerald-400 font-bold text-xs sm:text-sm" id="port-stat-winrate">89.5%</strong>
             </div>
             <div>
-              <span class="text-slate-400 block text-[10px]">Profit Factor:</span>
-              <strong class="text-amber-300 font-bold text-sm" id="port-stat-pf">2.85</strong>
+              <span class="text-slate-400 block text-[9px] sm:text-[10px]">Profit Factor:</span>
+              <strong class="text-amber-300 font-bold text-xs sm:text-sm" id="port-stat-pf">2.85</strong>
             </div>
           </div>
-          <div class="pt-1.5 border-t border-slate-800/80 flex justify-between text-[10px]">
+          <div class="pt-1.5 border-t border-slate-800/80 flex justify-between text-[9px] sm:text-[10px]">
             <span class="text-slate-400">Max DD: <strong class="text-white">1.2%</strong></span>
-            <span class="text-slate-400">Risk / ไม้: <strong class="text-emerald-400">0.8%</strong></span>
+            <span class="text-slate-400">Risk: <strong class="text-emerald-400">0.8%</strong></span>
           </div>
         </div>
       </div>
 
       <!-- Portfolio Dedicated Tabs (แยกการประเมินตามความเหมาะสมใช้งาน 4 หมวดหมู่) -->
-      <div class="rounded-2xl border border-[#1A2538] bg-[#0A0F1A] p-4 md:p-6 space-y-6 shadow-2xl">
+      <div class="rounded-2xl border border-[#1A2538] bg-[#0A0F1A] p-3 sm:p-6 space-y-4 sm:space-y-6 shadow-2xl">
         
         <!-- Tab Navigation Bar -->
-        <div class="flex items-center flex-wrap gap-2 border-b border-[#182338] pb-3 text-xs font-semibold">
-          <button onclick="switchPortTab('scalp')" id="btn-ptab-scalp" class="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 shadow-sm transition-all">
-            <span>⚡ 1. พอร์ตเทรดสั้น (M1/M5 Scalping Portfolio)</span>
+        <div class="flex items-center overflow-x-auto no-scrollbar whitespace-nowrap gap-2 border-b border-[#182338] pb-3 text-xs font-semibold">
+          <button onclick="switchPortTab('scalp')" id="btn-ptab-scalp" class="shrink-0 px-3.5 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold flex items-center gap-2 shadow-sm transition-all text-xs">
+            <span>⚡ 1. พอร์ตสั้น (M1/M5)</span>
             <span id="ptab-scalp-cnt" class="px-2 py-0.5 rounded-full bg-amber-950 text-amber-200 text-[10px] font-mono">1</span>
           </button>
-          <button onclick="switchPortTab('swing')" id="btn-ptab-swing" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all">
-            <span>🌊 2. พอร์ตเทรดยาว (H1/H4 Swing Trading Portfolio)</span>
+          <button onclick="switchPortTab('swing')" id="btn-ptab-swing" class="shrink-0 px-3.5 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all text-xs">
+            <span>🌊 2. พอร์ตยาว (H1/H4)</span>
             <span id="ptab-swing-cnt" class="px-2 py-0.5 rounded-full bg-slate-800 text-cyan-200 text-[10px] font-mono">1</span>
           </button>
-          <button onclick="switchPortTab('hybrid')" id="btn-ptab-hybrid" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all">
-            <span>⚖️ 3. กลยุทธ์สถาบัน & การเติบโตของพอร์ต (Institutional Hybrid Growth)</span>
+          <button onclick="switchPortTab('hybrid')" id="btn-ptab-hybrid" class="shrink-0 px-3.5 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all text-xs">
+            <span>⚖️ 3. กลยุทธ์สถาบัน</span>
           </button>
-          <button onclick="switchPortTab('statement')" id="btn-ptab-statement" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all">
-            <span>📜 4. รายงานประวัติคำสั่งทั้งหมด (Account Statement)</span>
+          <button onclick="switchPortTab('statement')" id="btn-ptab-statement" class="shrink-0 px-3.5 py-2 rounded-xl text-slate-400 hover:text-white font-medium flex items-center gap-2 transition-all text-xs">
+            <span>📜 4. รายงาน Statement</span>
             <span id="ptab-stmt-cnt" class="px-2 py-0.5 rounded-full bg-slate-800 text-purple-200 text-[10px] font-mono">0</span>
           </button>
         </div>
@@ -1737,6 +1751,7 @@
       </div>
 
     </div>
+  </div>
   </div> <!-- ==================== END VIEW PAGE 2: PORTFOLIO & EVALUATION ==================== -->
 
   <!-- ==================== VIEW PAGE 4: WORLD-CLASS MASTER TRADERS COUNCIL & GLOBAL MACRO RADAR ==================== -->
@@ -2100,6 +2115,11 @@
           <p class="text-slate-400 text-[11px] mt-1">
             ราคามักเกิดการกวาดสภาพคล่อง (Liquidity Hunt) นอกกรอบ High/Low ภายใน 15 นาทีแรก
           </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: REAL-TIME SIGNAL TRIGGER ALERT (POPUP NOTIFICATION) -->
   <div id="signal-popup-modal" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
     <div class="card-box w-full max-w-lg rounded-2xl p-6 border-2 border-emerald-500 shadow-2xl glow-accent">
@@ -2160,6 +2180,27 @@
       </div>
     </div>
   </div>
+
+  <!-- ==================== MOBILE APP BOTTOM NAVIGATION DOCK (Native Trading App Feel) ==================== -->
+  <nav id="mobile-bottom-dock" class="fixed bottom-0 left-0 right-0 z-50 bg-[#080C14]/95 border-t border-[#182338] px-2 py-1.5 backdrop-blur-xl shadow-2xl xl:hidden flex items-center justify-around text-[10px] font-medium safe-area-bottom">
+    <button onclick="switchMainTab('terminal')" id="mob-nav-terminal" class="flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-amber-300 font-bold bg-amber-500/15 border border-amber-500/30 transition-all shadow-sm">
+      <span class="text-base leading-none">📊</span>
+      <span>เทอร์มินอล</span>
+    </button>
+    <button onclick="switchMainTab('livetrade')" id="mob-nav-livetrade" class="relative flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent">
+      <span class="text-base leading-none">⚡</span>
+      <span>พอร์ต & สเตตเมนต์</span>
+      <span id="mob-live-count-badge" class="absolute -top-1 right-1 px-1.5 py-0.2 rounded-full bg-amber-500 text-black font-mono text-[9px] font-black shadow">2</span>
+    </button>
+    <button onclick="switchMainTab('council')" id="mob-nav-council" class="flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent">
+      <span class="text-base leading-none">🧠</span>
+      <span>สภา AI</span>
+    </button>
+    <button onclick="switchMainTab('signals')" id="mob-nav-signals" class="flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent">
+      <span class="text-base leading-none">🎯</span>
+      <span>เรดาร์</span>
+    </button>
+  </nav>
 
   <!-- JAVASCRIPT APP LOGIC -->
   <script>
@@ -3076,7 +3117,7 @@
       if (!toast) {
         toast = document.createElement('div');
         toast.id = 'app-toast';
-        toast.className = "fixed top-16 right-4 z-50 px-4 py-2.5 rounded-xl bg-emerald-950 border border-emerald-500/60 text-emerald-200 font-bold text-xs shadow-2xl transition-all duration-300 flex items-center gap-2";
+        toast.className = "fixed top-16 left-3 right-3 sm:left-auto sm:right-4 z-50 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#091510]/95 backdrop-blur-md border border-emerald-500/60 text-emerald-200 font-bold text-[11px] sm:text-xs shadow-2xl transition-all duration-300 flex items-center gap-2";
         document.body.appendChild(toast);
       }
       toast.innerHTML = `<span class="animate-bounce">⚡</span> <span>${msg}</span>`;
@@ -3597,6 +3638,8 @@
       if (bSwing) bSwing.innerText = swingCount;
       if (bHeader) bHeader.innerText = `${totalCount} ไม้`;
       if (bLiveNav) bLiveNav.innerText = `${totalCount} ไม้`;
+      const bMobNav = document.getElementById('mob-live-count-badge');
+      if (bMobNav) bMobNav.innerText = totalCount;
       if (bTerminalBottom) bTerminalBottom.innerText = `กำลังรัน ${totalCount} ไม้`;
       if (bPosCount) bPosCount.innerText = `${totalCount} ไม้`;
       if (bCockpit) bCockpit.innerText = totalCount;
@@ -3732,6 +3775,92 @@
                   </button>
                 </td>
               </tr>
+            `;
+          }).join('');
+        }
+      }
+
+      // 1.1 Render Mobile Cards View (< 768px: Native Mobile Trading App Style)
+      const mobileCards = document.getElementById('active-orders-mobile-cards');
+      if (mobileCards) {
+        if (filteredPositions.length === 0) {
+          mobileCards.innerHTML = `
+            <div class="p-6 text-center text-slate-500 font-mono text-xs bg-[#080D17] rounded-xl border border-slate-800">
+              ไม่มีออเดอร์ในพอร์ตหรือหมวดหมู่นี้ (ระบบพร้อมเปิดอัตโนมัติเมื่อสัญญาณ AI ตรงตามเงื่อนไข)
+            </div>
+          `;
+        } else {
+          mobileCards.innerHTML = filteredPositions.map(pos => {
+            const currentP = pos.symbol === 'XAUUSD' ? livePrices.XAUUSD : livePrices.BTCUSD;
+            const isGold = pos.symbol === 'XAUUSD';
+            const dec = isGold ? 2 : 1;
+            const isProfit = pos.pnl >= 0;
+
+            const portId = pos.portfolioId || getPortfolioId(pos.symbol, pos.style);
+            const portCfg = PORTFOLIO_CONFIGS[portId] || { name: pos.styleName, badgeClass: 'bg-slate-800 text-slate-300' };
+            const portBal = getPortfolioBalance(portId);
+
+            return `
+              <div class="p-3.5 rounded-xl bg-[#0B101D] border ${isProfit ? 'border-emerald-500/30' : 'border-rose-500/30'} space-y-2.5 shadow-xl">
+                <!-- Top Row: Style & Symbol + Lot + Action -->
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded font-black text-xs ${pos.type === 'BUY' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'}">
+                      ${pos.type}
+                    </span>
+                    <strong class="text-white text-xs font-mono font-bold">${pos.symbol}</strong>
+                    <span class="text-amber-300 font-mono text-xs font-semibold">${pos.lot ? pos.lot.toFixed(2) : '0.02'} Lot</span>
+                  </div>
+                  <button onclick="closePosition(this, ${pos.id})" class="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white font-bold text-[10px] border border-rose-500/40 transition-colors">
+                    ปิดออเดอร์
+                  </button>
+                </div>
+
+                <!-- Sub-badge & Open Time -->
+                <div class="flex items-center justify-between text-[10px]">
+                  <span class="px-1.5 py-0.2 rounded ${portCfg.badgeClass} font-semibold">${portCfg.name}</span>
+                  <span class="text-slate-500 font-mono">#${pos.ticket} · ${pos.timeOpen}</span>
+                </div>
+
+                <!-- Prices & Floating PnL Highlight Box -->
+                <div class="grid grid-cols-2 gap-2 p-2.5 bg-[#06090F] rounded-lg border border-[#162033] font-mono">
+                  <div>
+                    <span class="text-[10px] text-slate-400 block">เข้า ➔ ตลาดสด:</span>
+                    <div class="text-[11px] text-slate-300 font-semibold mt-0.5">
+                      $${pos.entry.toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec})}
+                      <span class="text-slate-500">➔</span>
+                      <strong class="text-white">$${currentP.toLocaleString('en-US', {minimumFractionDigits: dec, maximumFractionDigits: dec})}</strong>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-[10px] text-slate-400 block">กำไรสด (PnL):</span>
+                    <strong class="text-sm font-black ${isProfit ? 'text-emerald-400' : 'text-rose-400'} block mt-0.5">
+                      ${isProfit ? '+' : ''}$${pos.pnl.toFixed(2)}
+                    </strong>
+                    <span class="text-[9px] ${isProfit ? 'text-emerald-400/80' : 'text-rose-400/80'}">
+                      ${isProfit ? '+' : ''}${((pos.pnl / portBal) * 100).toFixed(2)}% (${pos.pips >= 0 ? '+' : ''}${pos.pips.toFixed(1)} Pips)
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Targets: SL / TP / BE -->
+                <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 px-0.5">
+                  <span>SL: <strong class="text-rose-400">$${pos.sl}</strong> ${pos.breakevenLocked ? '<span class="text-emerald-400 font-bold ml-0.5">✓ BE</span>' : ''}</span>
+                  <span>TP1: <strong class="text-emerald-400">$${pos.tp1}</strong></span>
+                  <span>TP2: <strong class="text-cyan-400">$${pos.tp2}</strong></span>
+                </div>
+
+                <!-- AI Evaluation Snippet & Modal Trigger -->
+                <div class="pt-1.5 border-t border-slate-800 flex items-center justify-between text-[10px]">
+                  <span class="text-purple-300 font-mono font-semibold flex items-center gap-1">
+                    <span>🧠 AI: ${pos.evalScore || '94%'}</span>
+                    ${pos.breakevenLocked ? '<span class="text-emerald-400">· กันทุนแล้ว</span>' : ''}
+                  </span>
+                  <button onclick="openTradeRationaleModal(${pos.id})" class="text-purple-400 hover:text-purple-300 font-semibold underline text-[10px]">
+                    ดูตรรกะ AI ➔
+                  </button>
+                </div>
+              </div>
             `;
           }).join('');
         }
@@ -4343,6 +4472,11 @@
       const navSignals = document.getElementById('nav-signals');
       const navCouncil = document.getElementById('nav-council');
 
+      const mobTerminal = document.getElementById('mob-nav-terminal');
+      const mobLiveTrade = document.getElementById('mob-nav-livetrade');
+      const mobSignals = document.getElementById('mob-nav-signals');
+      const mobCouncil = document.getElementById('mob-nav-council');
+
       const pageTerminal = document.getElementById('view-page-terminal');
       const pageLiveTrade = document.getElementById('view-page-livetrade');
       const pageCouncil = document.getElementById('view-page-council');
@@ -4351,10 +4485,19 @@
       const actClass = "px-3 py-1.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1.5 text-xs shadow-sm transition-all";
       const actPurpleClass = "px-3 py-1.5 rounded-lg bg-purple-500/15 text-purple-300 border border-purple-500/30 font-bold flex items-center gap-1.5 text-xs shadow-sm transition-all";
 
+      const mobDefClass = "relative flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-slate-400 hover:text-white transition-all border border-transparent";
+      const mobActClass = "relative flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-amber-300 font-bold bg-amber-500/15 border border-amber-500/30 transition-all shadow-sm";
+      const mobActPurpleClass = "relative flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-purple-300 font-bold bg-purple-500/15 border border-purple-500/30 transition-all shadow-sm";
+
       if (navTerminal) navTerminal.className = tab === 'terminal' ? actClass : defClass;
       if (navLiveTrade) navLiveTrade.className = (tab === 'livetrade' || tab === 'portfolio') ? actClass : defClass;
       if (navSignals) navSignals.className = tab === 'signals' ? actClass : defClass;
       if (navCouncil) navCouncil.className = tab === 'council' ? actPurpleClass : defClass;
+
+      if (mobTerminal) mobTerminal.className = tab === 'terminal' ? mobActClass : mobDefClass;
+      if (mobLiveTrade) mobLiveTrade.className = (tab === 'livetrade' || tab === 'portfolio') ? mobActClass : mobDefClass;
+      if (mobSignals) mobSignals.className = tab === 'signals' ? mobActClass : mobDefClass;
+      if (mobCouncil) mobCouncil.className = tab === 'council' ? mobActPurpleClass : mobDefClass;
 
       // Hide all pages by default
       if (pageTerminal) pageTerminal.classList.add('hidden');
@@ -5053,6 +5196,25 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       try { calculateLotDynamically(); } catch (e) { console.warn("Init lot notice:", e); }
+
+      // Check URL query param or hash for direct tab navigation (e.g. ?tab=livetrade or #portfolio)
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialTab = urlParams.get('tab') || window.location.hash.replace('#', '');
+        if (initialTab && ['terminal', 'livetrade', 'portfolio', 'council', 'signals'].includes(initialTab)) {
+          setTimeout(() => {
+            switchMainTab(initialTab);
+            const scrollTo = urlParams.get('scroll');
+            if (scrollTo === 'orders') {
+              const el = document.getElementById('subtab-content-orders');
+              if (el) el.scrollIntoView();
+            } else if (scrollTo === 'statement') {
+              const el = document.getElementById('historical-portfolio-section');
+              if (el) el.scrollIntoView();
+            }
+          }, 150);
+        }
+      } catch (e) { console.warn("Initial tab parse error:", e); }
 
       // Initialize default AI Indicators Chart
       try {
