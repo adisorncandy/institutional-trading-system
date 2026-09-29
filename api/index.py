@@ -366,6 +366,20 @@ class handler(BaseHTTPRequestHandler):
                 "has_token": bool(new_token)
             }).encode("utf-8"))
 
+        # 2.9 Setup / Refresh LINE Rich Menu
+        elif path == "/api/line/richmenu/setup" or path.endswith("/line/richmenu/setup"):
+            try:
+                from setup_line_rich_menu import setup_rich_menu
+                ok = setup_rich_menu()
+                self._set_headers(200 if ok else 500)
+                self.wfile.write(json.dumps({
+                    "status": "success" if ok else "error",
+                    "message": "ติดตั้งริชเมนูบน LINE Bot (@733ajjvt) สำเร็จเรียบร้อย!" if ok else "เกิดข้อผิดพลาดในการติดตั้งริชเมนู"
+                }).encode("utf-8"))
+            except Exception as e:
+                self._set_headers(500)
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode("utf-8"))
+
         # 3. Send LINE Alert
         elif path == "/api/line/send" or path.endswith("/line/send"):
             content_length = int(self.headers.get('Content-Length', 0))
@@ -450,6 +464,24 @@ class handler(BaseHTTPRequestHandler):
                     total_pips=420,
                     max_drawdown=0.62
                 )
+            elif alert_type in ("portal", "web", "card"):
+                ports = compute_authoritative_portfolio_balances()
+                tot_bal = round(sum(p["balance"] for p in ports.values()), 2)
+                trades = []
+                for check_dir in [os.path.dirname(__file__), "/tmp", root_dir]:
+                    p = os.path.join(check_dir, "ai_trade_journal.json")
+                    if os.path.exists(p):
+                        try:
+                            with open(p, "r", encoding="utf-8") as f:
+                                trades = json.load(f)
+                            break
+                        except Exception:
+                            pass
+                payload = LineFlexService.create_portal_card_message({
+                    "total_balance": tot_bal,
+                    "total_trades": len(trades),
+                    "portfolios": {k: v["balance"] for k, v in ports.items()}
+                })
             else:
                 payload = LineFlexService.create_signal_message(symbol=symbol)
 

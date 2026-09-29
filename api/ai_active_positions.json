@@ -17,8 +17,8 @@
       "sl": 84115.1,
       "tp1": 81865.1,
       "tp2": 80165.1,
-      "pnl": -2.6,
-      "pips": -13.0,
+      "pnl": 4.26,
+      "pips": 21.3,
       "timeOpen": "02:35:23",
       "tp1Hit": false,
       "breakevenLocked": false,
@@ -27,30 +27,82 @@
       "evalStatus": "⏳ อยู่ในโซนทดสอบแนวรับ/ต้าน (Pullback โซนปลอดภัย) มี SL คอยควบคุมความเสี่ยงอย่างเข้มงวด"
     },
     {
-      "id": 1790636468405,
-      "ticket": 636468,
+      "id": 1790645138601,
+      "ticket": 645138,
       "symbol": "BTCUSD",
-      "type": "BUY",
+      "type": "SELL",
       "style": "scalping",
       "portfolioId": "btc_scalp",
       "portfolioName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)",
       "styleName": "🟠 บิตคอยน์ เทรดสั้น (M5 Scalp)",
       "lot": 0.04,
       "riskPct": 1.4,
-      "riskDollar": 10.60808,
-      "riskRationale": "คุมความเสี่ยง 1.4% ($10.61) / SL 30 Pips ➔ คำนวณ Lot 0.04",
-      "entry": 83636.2,
-      "sl": 83336.2,
-      "tp1": 84136.2,
-      "tp2": 84436.2,
-      "pnl": -5.64,
-      "pips": -14.1,
-      "timeOpen": "06:01:08",
+      "riskDollar": 10.59548,
+      "riskRationale": "คุมความเสี่ยง 1.4% ($10.60) / SL 30 Pips ➔ คำนวณ Lot 0.04",
+      "entry": 82943.8,
+      "sl": 83243.8,
+      "tp1": 82443.8,
+      "tp2": 82143.8,
+      "pnl": -8.33,
+      "pips": -20.8,
+      "timeOpen": "08:25:38",
       "tp1Hit": false,
       "breakevenLocked": false,
-      "reason": "SMC M5 FVG Demand + Fast Momentum [คุมความเสี่ยง 1.4% ($10.61) / SL 30 Pips ➔ คำนวณ Lot 0.04] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
+      "reason": "SMC M5 Bearish Supply FVG Rejection [คุมความเสี่ยง 1.4% ($10.60) / SL 30 Pips ➔ คำนวณ Lot 0.04] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
       "evalScore": "95.6% Confluence",
-      "evalStatus": "⏳ อยู่ในโซนทดสอบแนวรับ/ต้าน (Pullback โซนปลอดภัย) มี SL คอยควบคุมความเสี่ยงอย่างเข้มงวด"
+      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: SELL BTCUSD (คุมความเสี่ยง 1.4% ($10.60) / SL 30 Pips ➔ คำนวณ Lot 0.04)"
+    },
+    {
+      "id": 1790646405972,
+      "ticket": 646405,
+      "symbol": "XAUUSD",
+      "type": "SELL",
+      "style": "swing",
+      "portfolioId": "xau_swing",
+      "portfolioName": "🟡 ทองคำ เทรดยาว (H1 Swing)",
+      "styleName": "🟡 ทองคำ เทรดยาว (H1 Swing)",
+      "lot": 0.04,
+      "riskPct": 1.8,
+      "riskDollar": 34.80444,
+      "riskRationale": "คุมความเสี่ยง 1.8% ($34.80) / SL 80 Pips ➔ คำนวณ Lot 0.04",
+      "entry": 4146.23,
+      "sl": 4154.23,
+      "tp1": 4128.23,
+      "tp2": 4111.23,
+      "pnl": -17.36,
+      "pips": -43.4,
+      "timeOpen": "08:46:45",
+      "tp1Hit": false,
+      "breakevenLocked": false,
+      "reason": "H4 Supply Pool Sweep + Wyckoff UTAD [คุมความเสี่ยง 1.8% ($34.80) / SL 80 Pips ➔ คำนวณ Lot 0.04] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
+      "evalScore": "95.6% Confluence",
+      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: SELL XAUUSD (คุมความเสี่ยง 1.8% ($34.80) / SL 80 Pips ➔ คำนวณ Lot 0.04)"
+    },
+    {
+      "id": 1790653115896,
+      "ticket": 653115,
+      "symbol": "XAUUSD",
+      "type": "BUY",
+      "style": "scalping",
+      "portfolioId": "xau_scalp",
+      "portfolioName": "🟡 ทองคำ เทรดสั้น (M5 Scalp)",
+      "styleName": "🟡 ทองคำ เทรดสั้น (M5 Scalp)",
+      "lot": 0.06,
+      "riskPct": 1.4,
+      "riskDollar": 23.175739999999998,
+      "riskRationale": "คุมความเสี่ยง 1.4% ($23.18) / SL 35 Pips ➔ คำนวณ Lot 0.06",
+      "entry": 4150.0,
+      "sl": 4146.5,
+      "tp1": 4156.0,
+      "tp2": 4160.0,
+      "pnl": 3.42,
+      "pips": 5.7,
+      "timeOpen": "10:38:35",
+      "tp1Hit": false,
+      "breakevenLocked": false,
+      "reason": "SMC M5 FVG Demand + Fast Momentum [คุมความเสี่ยง 1.4% ($23.18) / SL 35 Pips ➔ คำนวณ Lot 0.06] • 🏛️ มติสภา 5 ปรมาจารย์เห็นพ้องเอกฉันท์ (ระบบเทรดอัตโนมัติ 24/7)",
+      "evalScore": "95.6% Confluence",
+      "evalStatus": "⚡ ระบบ AI 24/7 เปิดคำสั่งอัตโนมัติ: BUY XAUUSD (คุมความเสี่ยง 1.4% ($23.18) / SL 35 Pips ➔ คำนวณ Lot 0.06)"
     }
   ],
   "portfolios": {
@@ -60,7 +112,7 @@
       "symbol": "XAUUSD",
       "style": "scalping",
       "initialBalance": 1000.0,
-      "balance": 1700.1
+      "balance": 1655.41
     },
     "xau_swing": {
       "id": "xau_swing",
@@ -68,7 +120,7 @@
       "symbol": "XAUUSD",
       "style": "swing",
       "initialBalance": 1000.0,
-      "balance": 2312.82
+      "balance": 1933.58
     },
     "btc_scalp": {
       "id": "btc_scalp",
@@ -76,7 +128,7 @@
       "symbol": "BTCUSD",
       "style": "scalping",
       "initialBalance": 1000.0,
-      "balance": 757.72
+      "balance": 756.82
     },
     "btc_swing": {
       "id": "btc_swing",
@@ -87,7 +139,7 @@
       "balance": 984.55
     }
   },
-  "total_balance": 5755.19,
+  "total_balance": 5330.36,
   "balance": 5755.19,
-  "updated_at": "2026-09-29T07:01:15.506806"
+  "updated_at": "2026-09-29T10:39:49.755119"
 }

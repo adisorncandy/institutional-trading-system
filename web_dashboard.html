@@ -1945,19 +1945,29 @@
 
         <!-- Action Buttons -->
         <div>
-          <div class="text-slate-400 font-semibold mb-2">ทดสอบยิง Flex Message เข้า LINE:</div>
-          <div class="grid grid-cols-3 gap-2">
-            <button onclick="testLineSend('signal')" class="p-2.5 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1">
+          <div class="text-slate-400 font-semibold mb-2">ทดสอบยิง Flex Message Card เข้า LINE:</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button onclick="testLineSend('portal')" class="p-2.5 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/40 text-amber-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1 shadow-sm">
+              <span class="text-base">🏛️</span>
+              <span class="text-[11px]">การ์ดเข้าเว็บ</span>
+            </button>
+            <button onclick="testLineSend('signal')" class="p-2.5 bg-emerald-600/20 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1 shadow-sm">
               <span class="text-base">⚡</span>
-              <span>สัญญาณ Live</span>
+              <span class="text-[11px]">สัญญาณสด</span>
             </button>
-            <button onclick="testLineSend('blueprint')" class="p-2.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 text-blue-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1">
+            <button onclick="testLineSend('blueprint')" class="p-2.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/40 text-blue-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1 shadow-sm">
               <span class="text-base">🗺️</span>
-              <span>แผนผังราคา</span>
+              <span class="text-[11px]">แผนผังราคา</span>
             </button>
-            <button onclick="testLineSend('summary')" class="p-2.5 bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/40 text-purple-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1">
+            <button onclick="testLineSend('summary')" class="p-2.5 bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/40 text-purple-300 rounded-xl text-center font-bold transition-all flex flex-col items-center gap-1 shadow-sm">
               <span class="text-base">📊</span>
-              <span>สรุป 10 ปี</span>
+              <span class="text-[11px]">สรุปผลพอร์ต</span>
+            </button>
+          </div>
+          <div class="mt-2.5">
+            <button onclick="setupRichMenu()" class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600/30 via-teal-600/30 to-cyan-600/30 hover:from-emerald-600/40 hover:to-cyan-600/40 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm">
+              <span>📱</span>
+              <span>ติดตั้ง / รีเฟรชริชเมนู LINE อัตโนมัติ (Rich Menu ปุ่มลัดเข้าเว็บตลอด 24 ชม.)</span>
             </button>
           </div>
         </div>
@@ -4146,6 +4156,35 @@
     function sendLineAlertNow() {
       openModal('line-modal');
       testLineSend('signal');
+    }
+
+    async function setupRichMenu() {
+      const resultBox = document.getElementById('line-result-box');
+      const timeBox = document.getElementById('line-send-time');
+      const now = new Date();
+      if (timeBox) timeBox.innerText = now.toLocaleTimeString('th-TH');
+
+      if (resultBox) {
+        resultBox.innerHTML = `<span class="text-cyan-400 animate-pulse">⏳ กำลังเชื่อมต่อ LINE Messaging API เพื่อสร้างและเปิดใช้งาน Rich Menu...</span>`;
+      }
+      try {
+        const res = await fetch('/api/line/richmenu/setup', { method: 'POST' });
+        const data = await res.json();
+        if (data.status === 'success') {
+          if (resultBox) {
+            resultBox.innerHTML = `✅ <span class="text-emerald-400 font-bold">[สำเร็จ!]</span> ${data.message}\n\n📱 <span class="text-slate-300">เปิดแอป LINE ในมือถือ แล้วเข้าแชท @733ajjvt จะเห็นริชเมนู 3 ปุ่มแสดงที่แถบแป้นพิมพ์ด้านล่างทันที สามารถแตะเพื่อเข้าสู่เว็บได้ตลอด 24 ชม.</span>`;
+          }
+          showToastAlert('✅ ติดตั้งริชเมนู LINE สำเร็จเรียบร้อย');
+        } else {
+          if (resultBox) {
+            resultBox.innerHTML = `❌ <span class="text-rose-400 font-bold">[เกิดข้อผิดพลาด]</span> ${data.message || 'ไม่สามารถติดตั้งริชเมนูได้'}`;
+          }
+        }
+      } catch (err) {
+        if (resultBox) {
+          resultBox.innerHTML = `❌ ไม่สามารถเชื่อมต่อ API ได้: ${err.message}`;
+        }
+      }
     }
 
     // Cockpit Navigation Tabs Switcher
