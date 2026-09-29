@@ -453,6 +453,12 @@ class MT5LiveSynchronizer:
                 
                 # Send LINE notification
                 try:
+                    pos["isReal"] = True
+                    pos["broker"] = "IUX Markets"
+                    pos["accountType"] = "REAL"
+                    pos["accountLogin"] = acc.get("login", 1287041)
+                    pos["balance"] = acc.get("balance", 1036.79)
+                    pos["equity"] = acc.get("equity", 1036.79)
                     flex = LineFlexService.create_order_open_message(pos)
                     ok, msg = line_dispatcher.send_broadcast_flex(flex)
                     print(f"📲 [LINE Order Open Alert]: {msg}")
@@ -495,7 +501,13 @@ class MT5LiveSynchronizer:
                     "reason": "ปิดออเดอร์บน MT5 IUX Markets",
                     "timeOpen": cached_pos.get("timeOpen", ""),
                     "timeClose": datetime.now().strftime("%H:%M:%S"),
-                    "accountBalance": acc.get("balance", 0.0)
+                    "isReal": True,
+                    "broker": "IUX Markets",
+                    "accountType": "REAL",
+                    "accountLogin": acc.get("login", 1287041),
+                    "balance": acc.get("balance", 1036.79),
+                    "accountBalance": acc.get("balance", 1036.79),
+                    "equity": acc.get("equity", 1036.79)
                 }
 
                 # Send LINE notification

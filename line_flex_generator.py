@@ -589,14 +589,35 @@ class LineFlexService:
         is_buy = "BUY" in str(action).upper()
         header_color = "#059669" if is_buy else "#DC2626"
 
+        # Explicitly distinguish REAL IUX Markets (#1287041) vs DEMO
+        is_real = (
+            pos.get("isReal") is True or
+            pos.get("accountType") == "REAL" or
+            "IUX" in str(pos.get("broker", "")) or
+            "IUX" in str(pos.get("portfolioName", "")) or
+            "พอร์ตจริง" in str(pos.get("portfolioName", "")) or
+            str(pos.get("accountLogin", "")) == "1287041" or
+            "1287041" in str(pos.get("accountLogin", ""))
+        )
+
+        balance_val = float(pos.get("balance", 0.0) or pos.get("accountBalance", 0.0))
+        if balance_val <= 0:
+            balance_val = 1036.79 if is_real else 1000.0
+
+        account_badge = "🟢 [ พอร์ตจริง IUX MARKETS ]" if is_real else "🧪 [ พอร์ตจำลอง AI DEMO ]"
+        account_sub = "⭐ REAL ACCOUNT: IUX Live2 (#1287041)" if is_real else "💼 กองทุนจำลองสถาบัน (ทุน $1,000)"
+
         portfolio_name = pos.get("portfolioName")
         if not portfolio_name:
-            is_gold = "XAU" in symbol
-            is_scalp = "scalp" in str(pos.get("style", "scalping")).lower()
-            if is_gold:
-                portfolio_name = "🟡 พอร์ตทองคำ สั้น M5 ($1,000)" if is_scalp else "🟡 พอร์ตทองคำ ยาว H1 ($1,000)"
+            if is_real:
+                portfolio_name = "🟢 พอร์ตจริง IUX Markets (XAUUSD)"
             else:
-                portfolio_name = "🟠 พอร์ตบิตคอยน์ สั้น M5 ($1,000)" if is_scalp else "🟠 พอร์ตบิตคอยน์ ยาว H1 ($1,000)"
+                is_gold = "XAU" in symbol
+                is_scalp = "scalp" in str(pos.get("style", "scalping")).lower()
+                if is_gold:
+                    portfolio_name = "🟡 พอร์ตทองคำ สั้น M5 ($1,000)" if is_scalp else "🟡 พอร์ตทองคำ ยาว H1 ($1,000)"
+                else:
+                    portfolio_name = "🟠 พอร์ตบิตคอยน์ สั้น M5 ($1,000)" if is_scalp else "🟠 พอร์ตบิตคอยน์ ยาว H1 ($1,000)"
 
         flex_bubble = {
             "type": "bubble",
@@ -611,8 +632,22 @@ class LineFlexService:
                         "type": "box",
                         "layout": "horizontal",
                         "contents": [
-                            {"type": "text", "text": "⚡ 24/7 AUTO-TRADING", "color": "#ECFDF5", "size": "xxs", "weight": "bold"},
-                            {"type": "text", "text": f"LOT {lot:.2f}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end"}
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "backgroundColor": "#022C22" if is_real else "#312E81",
+                                "borderColor": "#34D399" if is_real else "#818CF8",
+                                "borderWidth": "1px",
+                                "cornerRadius": "4px",
+                                "paddingStart": "6px",
+                                "paddingEnd": "6px",
+                                "paddingTop": "2px",
+                                "paddingBottom": "2px",
+                                "contents": [
+                                    {"type": "text", "text": account_badge, "color": "#6EE7B7" if is_real else "#C7D2FE", "size": "xxs", "weight": "bold"}
+                                ]
+                            },
+                            {"type": "text", "text": f"LOT {lot:.2f}", "color": "#FEF08A", "size": "xs", "weight": "bold", "align": "end"}
                         ]
                     },
                     {
@@ -626,7 +661,7 @@ class LineFlexService:
                     },
                     {
                         "type": "text",
-                        "text": f"{portfolio_name} • ทุน $1,000",
+                        "text": f"{account_sub} • Balance: ${balance_val:,.2f} USD",
                         "color": "#FEF08A" if is_buy else "#FDE047",
                         "size": "xs",
                         "weight": "bold",
@@ -641,6 +676,42 @@ class LineFlexService:
                 "paddingAll": "16px",
                 "spacing": "md",
                 "contents": [
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "backgroundColor": "#022C22" if is_real else "#1E1B4B",
+                        "borderColor": "#059669" if is_real else "#6366F1",
+                        "borderWidth": "1.5px",
+                        "cornerRadius": "10px",
+                        "paddingAll": "12px",
+                        "spacing": "xs",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "💼 ประเภทพอร์ต:", "color": "#94A3B8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": "🟢 พอร์ตจริง IUX Markets" if is_real else "🧪 พอร์ตจำลอง AI Demo", "color": "#34D399" if is_real else "#A5B4FC", "size": "xs", "weight": "bold", "align": "end", "flex": 7}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "💰 ยอด Balance ล่าสุด:", "color": "#FDE047", "size": "xs", "weight": "bold", "flex": 6},
+                                    {"type": "text", "text": f"${balance_val:,.2f} USD", "color": "#FBBF24", "size": "sm", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "📌 บัญชี / เซิร์ฟเวอร์:", "color": "#64748B", "size": "xxs", "flex": 6},
+                                    {"type": "text", "text": "IUX Live2 #1287041 (1:3000)" if is_real else "4 กองทุนจำลอง ($4,000)", "color": "#CBD5E1", "size": "xxs", "align": "end", "flex": 6}
+                                ]
+                            }
+                        ]
+                    },
                     {
                         "type": "box",
                         "layout": "vertical",
@@ -731,7 +802,9 @@ class LineFlexService:
                 ]
             }
         }
-        return {"type": "flex", "altText": f"🚀 เปิดออเดอร์ใหม่: {symbol} {action} (Lot {lot:.2f}) #{ticket}", "contents": flex_bubble}
+        alt_prefix = "🟢 [พอร์ตจริง IUX #1287041]" if is_real else "🧪 [พอร์ตจำลอง DEMO]"
+        alt_text = f"{alt_prefix} เข้าออเดอร์ {symbol} {action} (Lot {lot:.2f}) | Balance: ${balance_val:,.2f} USD"
+        return {"type": "flex", "altText": alt_text, "contents": flex_bubble}
 
     @staticmethod
     def create_order_close_message(trade: Dict[str, Any]) -> Dict[str, Any]:
@@ -765,8 +838,19 @@ class LineFlexService:
         pnl_str = f"+${pnl:.2f}" if pnl >= 0 else f"-${abs(pnl):.2f}"
         pnl_color = "#34D399" if pnl >= 0 else "#F87171"
 
+        # Check if Real Account (IUX Markets) or Demo
+        is_real = (
+            trade.get("isReal") is True or
+            trade.get("accountType") == "REAL" or
+            "IUX" in str(trade.get("broker", "")) or
+            "IUX" in str(trade.get("portfolioName", "")) or
+            "พอร์ตจริง" in str(trade.get("portfolioName", "")) or
+            str(trade.get("accountLogin", "")) == "1287041" or
+            "1287041" in str(trade.get("accountLogin", ""))
+        )
+
         # Calculate or extract current net portfolio balance
-        balance = float(trade.get("balance", trade.get("accountBalance", 0.0)))
+        balance = float(trade.get("balance", 0.0) or trade.get("accountBalance", 0.0))
         if balance <= 0:
             try:
                 import os
@@ -774,20 +858,32 @@ class LineFlexService:
                 if os.path.exists(pos_file):
                     with open(pos_file, "r", encoding="utf-8") as f:
                         b_data = json.load(f)
-                        balance = float(b_data.get("balance", 1000.0))
+                        if is_real and b_data.get("account"):
+                            balance = float(b_data["account"].get("balance", 1036.79))
+                        else:
+                            balance = float(b_data.get("balance", 1000.0))
             except Exception:
-                balance = 1000.0
+                balance = 1036.79 if is_real else 1000.0
+
+        if balance <= 0:
+            balance = 1036.79 if is_real else 1000.0
+
+        account_badge = "🟢 [ พอร์ตจริง IUX MARKETS ]" if is_real else "🧪 [ พอร์ตจำลอง AI DEMO ]"
+        account_sub = "⭐ REAL ACCOUNT: IUX Live2 (#1287041)" if is_real else "💼 โหมดทดสอบจำลอง (Paper Trading)"
 
         reason_display = reason.split('[')[-1].replace(']', '') if '[' in reason else reason
 
         portfolio_name = trade.get("portfolioName")
         if not portfolio_name:
-            is_gold = "XAU" in symbol
-            is_scalp = "scalp" in str(trade.get("style", "scalping")).lower()
-            if is_gold:
-                portfolio_name = "🟡 พอร์ตทองคำ สั้น M5 ($1,000)" if is_scalp else "🟡 พอร์ตทองคำ ยาว H1 ($1,000)"
+            if is_real:
+                portfolio_name = "🟢 พอร์ตจริง IUX Markets (XAUUSD)"
             else:
-                portfolio_name = "🟠 พอร์ตบิตคอยน์ สั้น M5 ($1,000)" if is_scalp else "🟠 พอร์ตบิตคอยน์ ยาว H1 ($1,000)"
+                is_gold = "XAU" in symbol
+                is_scalp = "scalp" in str(trade.get("style", "scalping")).lower()
+                if is_gold:
+                    portfolio_name = "🟡 พอร์ตทองคำ สั้น M5 ($1,000)" if is_scalp else "🟡 พอร์ตทองคำ ยาว H1 ($1,000)"
+                else:
+                    portfolio_name = "🟠 พอร์ตบิตคอยน์ สั้น M5 ($1,000)" if is_scalp else "🟠 พอร์ตบิตคอยน์ ยาว H1 ($1,000)"
 
         flex_bubble = {
             "type": "bubble",
@@ -802,22 +898,36 @@ class LineFlexService:
                         "type": "box",
                         "layout": "horizontal",
                         "contents": [
-                            {"type": "text", "text": status_text, "color": "#FFFFFF", "size": "xxs", "weight": "bold"},
-                            {"type": "text", "text": f"#{ticket}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end"}
+                            {
+                                "type": "box",
+                                "layout": "vertical",
+                                "backgroundColor": "#022C22" if is_real else "#312E81",
+                                "borderColor": "#34D399" if is_real else "#818CF8",
+                                "borderWidth": "1px",
+                                "cornerRadius": "4px",
+                                "paddingStart": "6px",
+                                "paddingEnd": "6px",
+                                "paddingTop": "2px",
+                                "paddingBottom": "2px",
+                                "contents": [
+                                    {"type": "text", "text": account_badge, "color": "#6EE7B7" if is_real else "#C7D2FE", "size": "xxs", "weight": "bold"}
+                                ]
+                            },
+                            {"type": "text", "text": f"#{ticket}", "color": "#FEF08A", "size": "xs", "weight": "bold", "align": "end"}
                         ]
                     },
                     {
                         "type": "text",
-                        "text": f"{portfolio_name} • ทุนเริ่มต้น $1,000",
-                        "color": "#FEF08A",
-                        "size": "xxs",
+                        "text": status_text,
+                        "color": "#FFFFFF",
+                        "size": "xs",
                         "weight": "bold",
-                        "margin": "xs"
+                        "margin": "sm"
                     },
                     {
                         "type": "box",
                         "layout": "horizontal",
-                        "margin": "sm",
+                        "margin": "xs",
                         "contents": [
                             {"type": "text", "text": f"{symbol} {action} ({lot:.2f} Lot)", "color": "#FFFFFF", "size": "lg", "weight": "bold", "flex": 5},
                             {"type": "text", "text": pnl_str, "color": "#FFFFFF", "size": "lg", "weight": "bold", "align": "end", "flex": 4}
@@ -828,8 +938,8 @@ class LineFlexService:
                         "layout": "horizontal",
                         "margin": "xs",
                         "contents": [
-                            {"type": "text", "text": f"ผลตอบแทน: {pnl_pct}% ของพอร์ต", "color": "#E2E8F0", "size": "xxs", "flex": 6},
-                            {"type": "text", "text": f"ยอดพอร์ตนี้: ${balance:,.2f}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end", "flex": 6}
+                            {"type": "text", "text": f"{account_sub}", "color": "#E2E8F0", "size": "xxs", "flex": 6},
+                            {"type": "text", "text": f"ยอดคงเหลือ: ${balance:,.2f}", "color": "#FEF08A", "size": "xxs", "weight": "bold", "align": "end", "flex": 6}
                         ]
                     }
                 ]
@@ -843,31 +953,45 @@ class LineFlexService:
                 "contents": [
                     {
                         "type": "box",
-                        "layout": "horizontal",
-                        "backgroundColor": "#022C22" if balance >= 1000.0 else "#3B1115",
-                        "borderColor": "#059669" if balance >= 1000.0 else "#DC2626",
-                        "borderWidth": "1px",
-                        "cornerRadius": "8px",
-                        "paddingAll": "10px",
-                        "alignItems": "center",
+                        "layout": "vertical",
+                        "backgroundColor": "#022C22" if is_real else "#1E1B4B",
+                        "borderColor": "#059669" if is_real else "#6366F1",
+                        "borderWidth": "1.5px",
+                        "cornerRadius": "10px",
+                        "paddingAll": "12px",
+                        "spacing": "xs",
                         "contents": [
                             {
                                 "type": "box",
-                                "layout": "vertical",
-                                "flex": 6,
+                                "layout": "horizontal",
                                 "contents": [
-                                    {"type": "text", "text": f"💰 ยอดคงเหลือพอร์ตนี้:", "color": "#94A3B8", "size": "xxs"},
-                                    {"type": "text", "text": f"{portfolio_name}", "color": "#FEF08A", "size": "xxs", "weight": "bold"}
+                                    {"type": "text", "text": "💼 ประเภทพอร์ต:", "color": "#94A3B8", "size": "xs", "flex": 5},
+                                    {"type": "text", "text": "🟢 พอร์ตจริง IUX Markets" if is_real else "🧪 พอร์ตจำลอง AI Demo", "color": "#34D399" if is_real else "#A5B4FC", "size": "xs", "weight": "bold", "align": "end", "flex": 7}
                                 ]
                             },
                             {
-                                "type": "text",
-                                "text": f"${balance:,.2f} USD",
-                                "color": "#34D399" if balance >= 1000.0 else "#F87171",
-                                "size": "sm",
-                                "weight": "bold",
-                                "align": "end",
-                                "flex": 6
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "💵 ผลกำไรสุทธิ (Realized P/L):", "color": "#94A3B8", "size": "xs", "flex": 6},
+                                    {"type": "text", "text": pnl_str, "color": pnl_color, "size": "sm", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "💰 ยอด Balance สุทธิล่าสุด:", "color": "#FDE047", "size": "xs", "weight": "bold", "flex": 6},
+                                    {"type": "text", "text": f"${balance:,.2f} USD", "color": "#FBBF24", "size": "sm", "weight": "bold", "align": "end", "flex": 6}
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {"type": "text", "text": "📌 บัญชี / เซิร์ฟเวอร์:", "color": "#64748B", "size": "xxs", "flex": 6},
+                                    {"type": "text", "text": "IUX Live2 #1287041 (1:3000)" if is_real else "4 กองทุนจำลอง ($4,000)", "color": "#CBD5E1", "size": "xxs", "align": "end", "flex": 6}
+                                ]
                             }
                         ]
                     },
@@ -947,7 +1071,9 @@ class LineFlexService:
                 ]
             }
         }
-        return {"type": "flex", "altText": f"📊 ปิดออเดอร์ #{ticket} {symbol} ({pnl_str}) | ยอดคงเหลือ: ${balance:,.2f} USD", "contents": flex_bubble}
+        alt_prefix = "🟢 [พอร์ตจริง IUX #1287041]" if is_real else "🧪 [พอร์ตจำลอง DEMO]"
+        alt_text = f"🎯 {alt_prefix} ปิดออเดอร์ {symbol} ({pnl_str}) | Balance ล่าสุด: ${balance:,.2f} USD"
+        return {"type": "flex", "altText": alt_text, "contents": flex_bubble}
 
     @staticmethod
     def create_portal_card_message(metrics: Dict[str, Any] = None) -> Dict[str, Any]:
