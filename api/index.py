@@ -261,13 +261,17 @@ class handler(BaseHTTPRequestHandler):
         # 4.6 API: Active Live Positions State (Zero-Loss Persistence across Updates)
         elif path == "/api/positions" or path.endswith("/positions"):
             positions_data = {"positions": [], "balance": 1037.58}
-            for check_dir in ["/tmp", os.path.dirname(__file__), root_dir]:
+            newest_mtime = -1
+            for check_dir in [os.path.dirname(__file__), root_dir, "/tmp"]:
                 p = os.path.join(check_dir, "ai_active_positions.json")
                 if os.path.exists(p):
                     try:
+                        mtime = os.path.getmtime(p)
                         with open(p, "r", encoding="utf-8") as f:
-                            positions_data = json.load(f)
-                            break
+                            candidate = json.load(f)
+                        if mtime > newest_mtime or (candidate.get("positions") and not positions_data.get("positions")):
+                            newest_mtime = mtime
+                            positions_data = candidate
                     except Exception:
                         pass
             
