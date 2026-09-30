@@ -1,6 +1,7 @@
 {
   "notify_real_trades": true,
-  "notify_demo_trades": true,
+  "notify_demo_trades": false,
   "notify_signals": true,
-  "updated_at": "2026-09-30T09:09:47.050163"
+  "quota_budget_limit_per_day": 5,
+  "updated_at": "2026-09-30T18:07:20.000000"
 }

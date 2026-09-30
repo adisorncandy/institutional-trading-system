@@ -28,8 +28,50 @@ class LineBotDispatcher:
         self.broadcast_url = "https://api.line.me/v2/bot/message/broadcast"
         self.push_url = "https://api.line.me/v2/bot/message/push"
 
-    def send_broadcast_flex(self, flex_payload: Dict[str, Any]) -> tuple:
-        """Sends a flex message to all followers of ADStrade.bot."""
+        self.quota_tracker_file = os.path.join(os.path.dirname(__file__), "line_quota_tracker.json")
+
+    def _check_and_update_quota(self) -> bool:
+        """Tracks and guards against exceeding the 200 msg/month free tier."""
+        now = datetime.now()
+        month_key = now.strftime("%Y-%m")
+        day_key = now.strftime("%Y-%m-%d")
+        
+        data = {"month": month_key, "total_sent": 0, "days": {}}
+        if os.path.exists(self.quota_tracker_file):
+            try:
+                with open(self.quota_tracker_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+            except Exception:
+                pass
+
+        if data.get("month") != month_key:
+            data = {"month": month_key, "total_sent": 0, "days": {}}
+
+        total_month = data.get("total_sent", 0)
+        day_sent = data.get("days", {}).get(day_key, 0)
+
+        # Hard guard: Stop if reached 195 msgs (save 5 for emergencies)
+        if total_month >= 195:
+            print(f"⚠️ [LINE QUOTA GUARD] Monthly limit reached ({total_month}/200). Broadcast suppressed to preserve quota.")
+            return False
+
+        # Update counter
+        data["total_sent"] = total_month + 1
+        if "days" not in data:
+            data["days"] = {}
+        data["days"][day_key] = day_sent + 1
+        data["last_sent"] = now.isoformat()
+
+        try:
+            with open(self.quota_tracker_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+        except Exception:
+            pass
+
+        return True
+
+    def send_broadcast_flex(self, flex_payload: Dict[str, Any], bypass_quota: bool = False) -> tuple:
+        """Sends a flex message to all followers of ADStrade.bot with quota protection."""
         if not self.channel_access_token:
             msg = "ยังไม่ได้ระบุ LINE Channel Access Token (กรุณาใส่ Token ในหน้าตั้งค่า LINE Alert)"
             try:
@@ -37,6 +79,9 @@ class LineBotDispatcher:
             except Exception:
                 pass
             return False, msg
+
+        if not bypass_quota and not self._check_and_update_quota():
+            return False, "LINE Quota reached for this month (195/200 msgs)"
 
         headers = {
             "Content-Type": "application/json",
