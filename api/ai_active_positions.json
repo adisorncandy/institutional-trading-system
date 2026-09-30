@@ -1,50 +1,20 @@
 {
   "account": {
-    "login": 11364645,
+    "login": 1287041,
     "name": "Adisorn RAMTHIP",
-    "server": "IUXMarkets-Live3",
+    "server": "IUXMarkets-Live2",
     "company": "IUX Markets Limited",
     "currency": "USD",
     "leverage": 3000,
-    "balance": 1481.58,
-    "equity": 1507.23,
-    "profit": 25.65,
-    "margin": 4.17,
-    "margin_free": 1503.06,
-    "margin_level": 36144.6,
-    "timestamp": "2026-09-30T09:09:55.325634"
+    "balance": 1037.75,
+    "equity": 1037.75,
+    "profit": 0.0,
+    "margin": 0.0,
+    "margin_free": 1037.75,
+    "margin_level": 0.0,
+    "timestamp": "2026-09-30T17:59:57.402962"
   },
-  "positions": [
-    {
-      "id": 697995094,
-      "ticket": 697995094,
-      "symbol": "XAUUSD",
-      "raw_symbol": "XAUUSD.iux",
-      "type": "BUY",
-      "style": "scalping",
-      "portfolioId": "xau_scalp",
-      "portfolioName": "🟡 พอร์ตจริง IUX Markets (XAUUSD)",
-      "broker": "IUX Markets (Live3)",
-      "accountLogin": 11364645,
-      "lot": 0.03,
-      "riskPct": 1.4,
-      "riskDollar": 1.05,
-      "entry": 4169.63,
-      "currentPrice": 4178.18,
-      "sl": 0.0,
-      "tp1": 0.0,
-      "tp2": 0.0,
-      "pnl": 25.65,
-      "pips": 85.5,
-      "timeOpen": "09:49:14",
-      "dateOpen": "2026-09-30",
-      "tp1Hit": false,
-      "breakevenLocked": false,
-      "reason": "คำสั่งจริงบน MT5 IUX Markets #697995094",
-      "evalScore": "Real MT5 Trade (Live)",
-      "evalStatus": "🟢 ไม้สดใน MT5 IUX กำไร +25.65 USD"
-    }
-  ],
+  "positions": [],
   "portfolios": {
     "xau_scalp": {
       "id": "xau_scalp",
@@ -52,11 +22,11 @@
       "symbol": "XAUUSD",
       "style": "scalping",
       "broker": "IUX Markets",
-      "accountLogin": 11364645,
+      "accountLogin": 1287041,
       "initialBalance": 1036.79,
-      "balance": 1481.58,
-      "equity": 1507.23,
-      "floatingProfit": 25.65
+      "balance": 1037.75,
+      "equity": 1037.75,
+      "floatingProfit": 0.0
     },
     "xau_swing": {
       "id": "xau_swing",
@@ -83,10 +53,9 @@
       "balance": 1000.0
     }
   },
-  "total_balance": 1481.58,
-  "balance": 1481.58,
-  "equity": 1507.23,
-  "floating_profit": 25.65,
-  "total_active": 1,
-  "updated_at": "2026-09-30T09:09:55.325634"
+  "total_balance": 1037.75,
+  "balance": 1037.75,
+  "equity": 1037.75,
+  "floating_profit": 0.0,
+  "updated_at": "2026-09-30T17:59:57.411532"
 }

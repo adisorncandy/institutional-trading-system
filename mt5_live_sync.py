@@ -68,12 +68,34 @@ class MT5LiveSynchronizer:
         self.load_ticket_tracker()
 
     def connect(self) -> bool:
-        """Initializes connection to MT5 terminal."""
-        if not mt5.initialize(timeout=5000):
-            if not mt5.initialize(path=self.terminal_path, timeout=5000):
-                print(f"❌ [MT5 Sync] Failed to initialize MT5: {mt5.last_error()}")
-                self.is_connected = False
-                return False
+        """Initializes connection to MT5 terminal and configured account."""
+        cfg_file = os.path.join(SCRIPT_DIR, "iux_account_config.json")
+        login_kwargs = {}
+        if os.path.exists(cfg_file):
+            try:
+                with open(cfg_file, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+                if "login" in cfg and "password" in cfg and "server" in cfg:
+                    login_kwargs = {
+                        "login": int(cfg["login"]),
+                        "password": str(cfg["password"]),
+                        "server": str(cfg["server"])
+                    }
+            except Exception as e:
+                print(f"⚠️ [MT5 Sync] Warning reading config: {e}")
+
+        if login_kwargs:
+            if not mt5.initialize(path=self.terminal_path, timeout=5000, **login_kwargs):
+                if not mt5.initialize(timeout=5000, **login_kwargs):
+                    print(f"❌ [MT5 Sync] Failed to initialize MT5 with login {login_kwargs.get('login')}: {mt5.last_error()}")
+                    self.is_connected = False
+                    return False
+        else:
+            if not mt5.initialize(timeout=5000):
+                if not mt5.initialize(path=self.terminal_path, timeout=5000):
+                    print(f"❌ [MT5 Sync] Failed to initialize MT5: {mt5.last_error()}")
+                    self.is_connected = False
+                    return False
 
         acc = mt5.account_info()
         if acc is None:
