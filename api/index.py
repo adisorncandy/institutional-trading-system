@@ -305,6 +305,24 @@ class handler(BaseHTTPRequestHandler):
                 "persistence_safe": True
             }, ensure_ascii=False).encode("utf-8"))
 
+        # 4.7 API: Get Notification Settings
+        elif path == "/api/notifications/settings" or path.endswith("/notifications/settings"):
+            cfg = {"notify_real_trades": True, "notify_demo_trades": True, "notify_signals": True}
+            for check_dir in ["/tmp", os.path.dirname(__file__), root_dir]:
+                p = os.path.join(check_dir, "notification_settings.json")
+                if os.path.exists(p):
+                    try:
+                        with open(p, "r", encoding="utf-8") as f:
+                            cfg.update(json.load(f))
+                            break
+                    except Exception:
+                        pass
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "settings": cfg
+            }, ensure_ascii=False).encode("utf-8"))
+
         else:
             self._set_headers(404)
             self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode("utf-8"))
@@ -579,6 +597,42 @@ class handler(BaseHTTPRequestHandler):
                 "status": "success",
                 "message": "บันทึกสถานะไม้สดลง Safe Storage สำเร็จ",
                 "total_active": len(payload["positions"])
+            }, ensure_ascii=False).encode("utf-8"))
+
+        # 5. Save Notification Settings (Real / Demo / Signals)
+        elif path == "/api/notifications/settings" or path.endswith("/notifications/settings"):
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                payload = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                payload = {}
+            cfg = {"notify_real_trades": True, "notify_demo_trades": True, "notify_signals": True}
+            for check_dir in ["/tmp", os.path.dirname(__file__), root_dir]:
+                p = os.path.join(check_dir, "notification_settings.json")
+                if os.path.exists(p):
+                    try:
+                        with open(p, "r", encoding="utf-8") as f:
+                            cfg.update(json.load(f))
+                            break
+                    except Exception:
+                        pass
+            for k in ["notify_real_trades", "notify_demo_trades", "notify_signals"]:
+                if k in payload:
+                    cfg[k] = bool(payload[k])
+            cfg["updated_at"] = datetime.now().isoformat()
+            for save_dir in ["/tmp", os.path.dirname(__file__), root_dir]:
+                p = os.path.join(save_dir, "notification_settings.json")
+                try:
+                    with open(p, "w", encoding="utf-8") as f:
+                        json.dump(cfg, f, indent=2, ensure_ascii=False)
+                except Exception:
+                    pass
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "message": "Notification settings updated",
+                "settings": cfg
             }, ensure_ascii=False).encode("utf-8"))
 
         else:

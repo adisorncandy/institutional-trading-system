@@ -36,6 +36,32 @@ line_dispatcher = LineBotDispatcher()
 _price_cache = {}
 _notified_close_tickets = set()
 
+NOTIF_SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "notification_settings.json")
+
+def get_notification_settings():
+    defaults = {
+        "notify_real_trades": True,
+        "notify_demo_trades": True,
+        "notify_signals": True
+    }
+    if os.path.exists(NOTIF_SETTINGS_FILE):
+        try:
+            with open(NOTIF_SETTINGS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                defaults.update(data)
+        except Exception:
+            pass
+    return defaults
+
+def save_notification_settings(settings):
+    try:
+        with open(NOTIF_SETTINGS_FILE, "w", encoding="utf-8") as f:
+            json.dump(settings, f, indent=2, ensure_ascii=False)
+        return True
+    except Exception as e:
+        print("Error saving notification settings:", e)
+        return False
+
 def get_live_market_price(symbol="XAUUSD"):
     symbol = symbol.upper()
     is_gold = "XAU" in symbol
@@ -289,13 +315,16 @@ def autonomous_247_trader_worker():
                     ai_engine.record_trade_feedback(journal_entry)
 
                     # Send LINE alert on close
-                    if line_dispatcher.channel_access_token:
+                    notif_cfg = get_notification_settings()
+                    if notif_cfg.get("notify_demo_trades", True) and line_dispatcher.channel_access_token:
                         try:
                             msg = LineFlexService.create_order_close_message(journal_entry)
                             line_dispatcher.send_broadcast_flex(msg)
                             print(f"[24/7 TRADER] LINE Alert dispatched: Closed #{pos.get('ticket')} PnL: ${pnl_dollar}")
                         except Exception as le:
                             print("Error sending LINE close alert:", le)
+                    else:
+                        print(f"[24/7 TRADER] Demo close alert skipped (notify_demo_trades is OFF)")
 
                     print(f"[24/7 TRADER] Auto-closed #{pos.get('ticket')} ({port_name}): PnL ${pnl_dollar} | New Balance: ${new_port_bal}")
                 else:
@@ -381,12 +410,15 @@ def autonomous_247_trader_worker():
                 print(f"[24/7 TRADER] Auto-entered #{new_pos['ticket']} {action} {sym} for {spec['name']} ({lot} Lot)")
 
                 # Dispatch LINE open alert
-                if line_dispatcher.channel_access_token:
+                notif_cfg = get_notification_settings()
+                if notif_cfg.get("notify_demo_trades", True) and line_dispatcher.channel_access_token:
                     try:
                         open_flex = LineFlexService.create_order_open_message(new_pos)
                         line_dispatcher.send_broadcast_flex(open_flex)
                     except Exception as oe:
                         print("Error sending LINE open alert:", oe)
+                else:
+                    print(f"[24/7 TRADER] Demo open alert skipped (notify_demo_trades is OFF)")
 
                 break # Open one position per cycle to space them out
 
@@ -696,6 +728,15 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 "persistence_safe": True
             }, ensure_ascii=False).encode("utf-8"))
 
+        # 4.7 API: Get Notification Settings (Real / Demo / Signals)
+        elif path == "/api/notifications/settings":
+            settings = get_notification_settings()
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "settings": settings
+            }, ensure_ascii=False).encode("utf-8"))
+
         # 5. Web Dashboard UI
         elif path == "/" or path == "/dashboard":
             try:
@@ -870,6 +911,27 @@ class InstitutionalAPIHandler(BaseHTTPRequestHandler):
                 "message": "บันทึกสถานะไม้สดลง Safe Storage สำเร็จ (ไร้ผลกระทบเมื่ออัพเดตระบบ)",
                 "total_active": len(payload["positions"])
             }).encode("utf-8"))
+
+        # 1.6 Save Notification Settings (Real / Demo / Signal toggles)
+        elif path == "/api/notifications/settings":
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            try:
+                payload = json.loads(post_data.decode('utf-8'))
+            except Exception:
+                payload = {}
+            current_settings = get_notification_settings()
+            for k in ["notify_real_trades", "notify_demo_trades", "notify_signals"]:
+                if k in payload:
+                    current_settings[k] = bool(payload[k])
+            current_settings["updated_at"] = datetime.now().isoformat()
+            save_notification_settings(current_settings)
+            self._set_headers(200)
+            self.wfile.write(json.dumps({
+                "status": "success",
+                "message": "Notification settings updated successfully",
+                "settings": current_settings
+            }, ensure_ascii=False).encode("utf-8"))
 
         # Feedback endpoint for Self-Learning loop
         elif path == "/api/feedback":

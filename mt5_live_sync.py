@@ -40,6 +40,22 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATE_FILE = os.path.join(SCRIPT_DIR, "ai_active_positions.json")
 API_STATE_FILE = os.path.join(SCRIPT_DIR, "api", "ai_active_positions.json")
 TRACKER_FILE = os.path.join(SCRIPT_DIR, "mt5_ticket_tracker.json")
+NOTIF_SETTINGS_FILE = os.path.join(SCRIPT_DIR, "notification_settings.json")
+
+def get_notification_settings() -> Dict[str, Any]:
+    defaults = {
+        "notify_real_trades": True,
+        "notify_demo_trades": True,
+        "notify_signals": True
+    }
+    if os.path.exists(NOTIF_SETTINGS_FILE):
+        try:
+            with open(NOTIF_SETTINGS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                defaults.update(data)
+        except Exception:
+            pass
+    return defaults
 
 line_dispatcher = LineBotDispatcher()
 
@@ -452,18 +468,22 @@ class MT5LiveSynchronizer:
                 self.save_ticket_tracker()
                 
                 # Send LINE notification
-                try:
-                    pos["isReal"] = True
-                    pos["broker"] = "IUX Markets"
-                    pos["accountType"] = "REAL"
-                    pos["accountLogin"] = acc.get("login", 1287041)
-                    pos["balance"] = acc.get("balance", 1036.79)
-                    pos["equity"] = acc.get("equity", 1036.79)
-                    flex = LineFlexService.create_order_open_message(pos)
-                    ok, msg = line_dispatcher.send_broadcast_flex(flex)
-                    print(f"📲 [LINE Order Open Alert]: {msg}")
-                except Exception as e:
-                    print(f"❌ [LINE Order Open Error]: {e}")
+                notif_cfg = get_notification_settings()
+                if not notif_cfg.get("notify_real_trades", True):
+                    print(f"⏸️ [LINE Real Trade Open Alert Skipped: notify_real_trades is OFF]")
+                else:
+                    try:
+                        pos["isReal"] = True
+                        pos["broker"] = "IUX Markets"
+                        pos["accountType"] = "REAL"
+                        pos["accountLogin"] = acc.get("login", 1287041)
+                        pos["balance"] = acc.get("balance", 1036.79)
+                        pos["equity"] = acc.get("equity", 1036.79)
+                        flex = LineFlexService.create_order_open_message(pos)
+                        ok, msg = line_dispatcher.send_broadcast_flex(flex)
+                        print(f"📲 [LINE Order Open Alert]: {msg}")
+                    except Exception as e:
+                        print(f"❌ [LINE Order Open Error]: {e}")
 
         # 2. Detect Closed Orders
         closed_tickets = [t for t in self.last_known_tickets if t not in current_ticket_map]
@@ -511,12 +531,16 @@ class MT5LiveSynchronizer:
                 }
 
                 # Send LINE notification
-                try:
-                    flex = LineFlexService.create_order_close_message(closed_trade)
-                    ok, msg = line_dispatcher.send_broadcast_flex(flex)
-                    print(f"📲 [LINE Order Close Alert]: {msg}")
-                except Exception as e:
-                    print(f"❌ [LINE Order Close Error]: {e}")
+                notif_cfg = get_notification_settings()
+                if not notif_cfg.get("notify_real_trades", True):
+                    print(f"⏸️ [LINE Real Trade Close Alert Skipped: notify_real_trades is OFF]")
+                else:
+                    try:
+                        flex = LineFlexService.create_order_close_message(closed_trade)
+                        ok, msg = line_dispatcher.send_broadcast_flex(flex)
+                        print(f"📲 [LINE Order Close Alert]: {msg}")
+                    except Exception as e:
+                        print(f"❌ [LINE Order Close Error]: {e}")
 
     def run_cycle(self):
         """Runs a single sync cycle."""

@@ -212,6 +212,66 @@
     </div>
   </div>
 
+  <!-- ==================== LINE NOTIFICATION INDEPENDENT CONTROLS BAR ==================== -->
+  <div class="px-2.5 sm:px-6 py-2 bg-[#060B16] border-b border-[#131D31]">
+    <div class="flex flex-wrap items-center justify-between gap-3 p-3 bg-gradient-to-r from-[#080E1C] via-[#0C152B] to-[#080E1C] border border-slate-800/80 rounded-2xl shadow-lg">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm shadow-inner shrink-0">
+          🔔
+        </div>
+        <div>
+          <div class="text-xs font-bold text-white flex items-center gap-2 flex-wrap">
+            <span>ตั้งค่าการแจ้งเตือน LINE Bot (@733ajjvt)</span>
+            <span id="notif-master-status" class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-mono border border-emerald-500/30 font-bold">🟢 เปิดครบ 3/3 ระบบ</span>
+          </div>
+          <div class="text-[10px] text-slate-400">ควบคุมเปิด / ปิด สัญญาณเตือนเข้าแอป LINE แยกอิสระตามความต้องการ</div>
+        </div>
+      </div>
+      
+      <!-- 3 Independent Toggle Controls -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <!-- Toggle 1: Real Trades -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#040813] border border-emerald-500/30 shadow-inner">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="dot-notif-real"></span>
+          <div class="flex flex-col">
+            <span class="font-bold text-emerald-300 text-[11px] leading-tight">🟢 พอร์ตจริง IUX</span>
+            <span class="text-[9px] text-slate-400 leading-tight">เปิด/ปิดไม้ & TP/SL</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer ml-1">
+            <input type="checkbox" id="toggle-notif-real" onchange="updateNotifSetting('notify_real_trades', this.checked)" class="sr-only peer" checked>
+            <div class="w-8 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-500"></div>
+          </label>
+        </div>
+
+        <!-- Toggle 2: Demo Trades -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#040813] border border-purple-500/30 shadow-inner">
+          <span class="w-2 h-2 rounded-full bg-purple-400" id="dot-notif-demo"></span>
+          <div class="flex flex-col">
+            <span class="font-bold text-purple-300 text-[11px] leading-tight">🧪 พอร์ตจำลอง Demo</span>
+            <span class="text-[9px] text-slate-400 leading-tight">บอท AI 4 พอร์ตย่อย</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer ml-1">
+            <input type="checkbox" id="toggle-notif-demo" onchange="updateNotifSetting('notify_demo_trades', this.checked)" class="sr-only peer" checked>
+            <div class="w-8 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-purple-500"></div>
+          </label>
+        </div>
+
+        <!-- Toggle 3: Signals -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#040813] border border-amber-500/30 shadow-inner">
+          <span class="w-2 h-2 rounded-full bg-amber-400" id="dot-notif-signals"></span>
+          <div class="flex flex-col">
+            <span class="font-bold text-amber-300 text-[11px] leading-tight">🎯 สัญญาณเข้าออเดอร์</span>
+            <span class="text-[9px] text-slate-400 leading-tight">มติสภา 5 ปรมาจารย์</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer ml-1">
+            <input type="checkbox" id="toggle-notif-signals" onchange="updateNotifSetting('notify_signals', this.checked)" class="sr-only peer" checked>
+            <div class="w-8 h-4 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-amber-500"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== VIEW PAGE 1: TERMINAL & CHART WORKSPACE ==================== -->
   <div id="view-page-terminal">
     <!-- 2. UNIFIED SUB-TOOLBAR: ASSET SELECTOR, TRADING STYLE & TIME FRAME -->
@@ -2083,6 +2143,40 @@
           </div>
           <div id="line-token-status-badge" class="px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 font-medium text-[11px]">
             ⚡ ตรวจสอบการตั้งค่า...
+          </div>
+        </div>
+
+        <!-- Independent Notification Toggles inside Modal -->
+        <div class="p-3 bg-[#080D17] rounded-xl border border-slate-800 space-y-2">
+          <div class="font-bold text-white text-xs flex justify-between items-center">
+            <span>⚙️ เปิด / ปิด การแจ้งเตือนแยกประเภท (อิสระ):</span>
+            <span id="modal-notif-status-badge" class="text-[10px] text-emerald-400 font-mono">🟢 พร้อมใช้งาน</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <!-- Modal Toggle 1 -->
+            <label class="p-2.5 rounded-xl bg-[#040813] border border-emerald-500/30 flex items-center justify-between cursor-pointer hover:bg-[#060c1d] transition-colors">
+              <div>
+                <div class="text-[11px] font-bold text-emerald-300">🟢 พอร์ตจริง IUX</div>
+                <div class="text-[9px] text-slate-400">เปิด/ปิดไม้ & สรุปยอด</div>
+              </div>
+              <input type="checkbox" id="modal-toggle-notif-real" onchange="updateNotifSetting('notify_real_trades', this.checked)" class="accent-emerald-500 w-4 h-4 cursor-pointer" checked>
+            </label>
+            <!-- Modal Toggle 2 -->
+            <label class="p-2.5 rounded-xl bg-[#040813] border border-purple-500/30 flex items-center justify-between cursor-pointer hover:bg-[#060c1d] transition-colors">
+              <div>
+                <div class="text-[11px] font-bold text-purple-300">🧪 พอร์ตจำลอง Demo</div>
+                <div class="text-[9px] text-slate-400">บอท AI 4 พอร์ตย่อย</div>
+              </div>
+              <input type="checkbox" id="modal-toggle-notif-demo" onchange="updateNotifSetting('notify_demo_trades', this.checked)" class="accent-purple-500 w-4 h-4 cursor-pointer" checked>
+            </label>
+            <!-- Modal Toggle 3 -->
+            <label class="p-2.5 rounded-xl bg-[#040813] border border-amber-500/30 flex items-center justify-between cursor-pointer hover:bg-[#060c1d] transition-colors">
+              <div>
+                <div class="text-[11px] font-bold text-amber-300">🎯 สัญญาณเทรด</div>
+                <div class="text-[9px] text-slate-400">มติสภา 5 ปรมาจารย์</div>
+              </div>
+              <input type="checkbox" id="modal-toggle-notif-signals" onchange="updateNotifSetting('notify_signals', this.checked)" class="accent-amber-500 w-4 h-4 cursor-pointer" checked>
+            </label>
           </div>
         </div>
 
@@ -4526,6 +4620,121 @@
       }
     }
 
+    // ==================== INDEPENDENT LINE NOTIFICATION CONTROLS ====================
+    let notificationSettings = {
+      notify_real_trades: true,
+      notify_demo_trades: true,
+      notify_signals: true
+    };
+
+    function renderNotificationToggles() {
+      // 1. Top Quick Controls Bar
+      const toggleReal = document.getElementById('toggle-notif-real');
+      const toggleDemo = document.getElementById('toggle-notif-demo');
+      const toggleSignals = document.getElementById('toggle-notif-signals');
+      const dotReal = document.getElementById('dot-notif-real');
+      const dotDemo = document.getElementById('dot-notif-demo');
+      const dotSignals = document.getElementById('dot-notif-signals');
+
+      if (toggleReal) toggleReal.checked = !!notificationSettings.notify_real_trades;
+      if (toggleDemo) toggleDemo.checked = !!notificationSettings.notify_demo_trades;
+      if (toggleSignals) toggleSignals.checked = !!notificationSettings.notify_signals;
+
+      if (dotReal) {
+        dotReal.className = notificationSettings.notify_real_trades 
+          ? "w-2 h-2 rounded-full bg-emerald-400 animate-pulse" 
+          : "w-2 h-2 rounded-full bg-slate-600";
+      }
+      if (dotDemo) {
+        dotDemo.className = notificationSettings.notify_demo_trades 
+          ? "w-2 h-2 rounded-full bg-purple-400 animate-pulse" 
+          : "w-2 h-2 rounded-full bg-slate-600";
+      }
+      if (dotSignals) {
+        dotSignals.className = notificationSettings.notify_signals 
+          ? "w-2 h-2 rounded-full bg-amber-400 animate-pulse" 
+          : "w-2 h-2 rounded-full bg-slate-600";
+      }
+
+      // 2. Modal Controls
+      const modalToggleReal = document.getElementById('modal-toggle-notif-real');
+      const modalToggleDemo = document.getElementById('modal-toggle-notif-demo');
+      const modalToggleSignals = document.getElementById('modal-toggle-notif-signals');
+      const modalStatusBadge = document.getElementById('modal-notif-status-badge');
+
+      if (modalToggleReal) modalToggleReal.checked = !!notificationSettings.notify_real_trades;
+      if (modalToggleDemo) modalToggleDemo.checked = !!notificationSettings.notify_demo_trades;
+      if (modalToggleSignals) modalToggleSignals.checked = !!notificationSettings.notify_signals;
+
+      if (modalStatusBadge) {
+        const activeCount = [
+          notificationSettings.notify_real_trades,
+          notificationSettings.notify_demo_trades,
+          notificationSettings.notify_signals
+        ].filter(Boolean).length;
+        if (activeCount === 3) {
+          modalStatusBadge.innerHTML = `<span class="text-emerald-400 font-mono">🟢 เปิดแจ้งเตือนครบทั้ง 3 ช่องทาง</span>`;
+        } else if (activeCount > 0) {
+          modalStatusBadge.innerHTML = `<span class="text-amber-400 font-mono">🟡 เปิดใช้งาน ${activeCount}/3 ช่องทาง</span>`;
+        } else {
+          modalStatusBadge.innerHTML = `<span class="text-rose-400 font-mono">🔴 ปิดการแจ้งเตือนทั้งหมด</span>`;
+        }
+      }
+    }
+
+    async function loadNotificationSettings() {
+      try {
+        const local = localStorage.getItem('notif_settings');
+        if (local) {
+          notificationSettings = Object.assign(notificationSettings, JSON.parse(local));
+          renderNotificationToggles();
+        }
+      } catch (e) {}
+
+      try {
+        const res = await fetch('/api/notifications/settings');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.settings) {
+            notificationSettings = Object.assign(notificationSettings, data.settings);
+            localStorage.setItem('notif_settings', JSON.stringify(notificationSettings));
+            renderNotificationToggles();
+          }
+        }
+      } catch (e) {
+        console.warn("Could not fetch remote notification settings:", e);
+      }
+    }
+
+    async function updateNotifSetting(key, enabled) {
+      notificationSettings[key] = enabled;
+      localStorage.setItem('notif_settings', JSON.stringify(notificationSettings));
+      renderNotificationToggles();
+
+      try {
+        const payload = {};
+        payload[key] = enabled;
+        const res = await fetch('/api/notifications/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data && data.status === 'success') {
+          const labels = {
+            notify_real_trades: 'พอร์ตจริง IUX',
+            notify_demo_trades: 'พอร์ตจำลอง Demo',
+            notify_signals: 'สัญญาณเข้าออเดอร์'
+          };
+          const name = labels[key] || key;
+          const statusText = enabled ? 'เปิดใช้งาน' : 'ปิดการแจ้งเตือน';
+          showToastAlert(`🔔 ${statusText} [${name}] เรียบร้อย`);
+        }
+      } catch (e) {
+        console.error("Error updating notification setting:", e);
+      }
+    }
+
     function sendLineAlertNow() {
       openModal('line-modal');
       testLineSend('signal');
@@ -5468,6 +5677,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       try { calculateLotDynamically(); } catch (e) { console.warn("Init lot notice:", e); }
+      try { loadNotificationSettings(); } catch (e) { console.warn("Init notif settings notice:", e); }
 
       try {
         const urlParams = new URLSearchParams(window.location.search);
