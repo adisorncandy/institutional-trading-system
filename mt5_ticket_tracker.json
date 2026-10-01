@@ -1,1 +1,35 @@
-{}
+{
+  "482230896": {
+    "id": 482230896,
+    "ticket": 482230896,
+    "symbol": "XAUUSD",
+    "raw_symbol": "XAUUSD",
+    "type": "SELL",
+    "style": "scalping",
+    "portfolioId": "xau_scalp",
+    "portfolioName": "🟡 พอร์ตจริง IUX Markets (XAUUSD)",
+    "broker": "IUX Markets (Live2)",
+    "accountLogin": 1287041,
+    "lot": 0.02,
+    "riskPct": 2.0,
+    "riskDollar": 0.7,
+    "entry": 4165.4,
+    "currentPrice": 4144.19,
+    "sl": 4179.07,
+    "tp1": 4138.05,
+    "tp2": 4138.05,
+    "pnl": 42.42,
+    "pips": 212.1,
+    "timeOpen": "23:00:00",
+    "dateOpen": "2026-09-30",
+    "tp1Hit": false,
+    "breakevenLocked": false,
+    "reason": "Golden Trend Rider V4 SELL • พอร์ตจริง #1287041",
+    "evalScore": "Real MT5 Trade (Live)",
+    "evalStatus": "🟢 ไม้สดใน MT5 IUX กำไร +42.42 USD",
+    "isReal": true,
+    "accountType": "REAL",
+    "balance": 1037.61,
+    "equity": 1080.03
+  }
+}

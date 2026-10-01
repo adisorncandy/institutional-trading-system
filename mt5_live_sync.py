@@ -518,8 +518,22 @@ class MT5LiveSynchronizer:
                     except Exception as e:
                         print(f"❌ [LINE Order Open Error]: {e}")
 
-        # 2. Detect Closed Orders
-        closed_tickets = [t for t in self.last_known_tickets if t not in current_ticket_map]
+        # 2. Detect Closed Orders (Only for tickets belonging to this specific account)
+        closed_tickets = [
+            t for t, p in self.last_known_tickets.items() 
+            if t not in current_ticket_map and p.get("accountLogin") == acc.get("login", 1287041)
+        ]
+        
+        # Remove orphan tickets from other accounts silently
+        orphan_tickets = [
+            t for t, p in self.last_known_tickets.items()
+            if p.get("accountLogin") != acc.get("login", 1287041)
+        ]
+        for ot in orphan_tickets:
+            self.last_known_tickets.pop(ot, None)
+        if orphan_tickets:
+            self.save_ticket_tracker()
+
         if closed_tickets:
             # Check deals in MT5 to get actual exit price and profit
             from_time = datetime.now() - timedelta(hours=2)

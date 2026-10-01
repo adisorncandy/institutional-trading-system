@@ -7,12 +7,12 @@
     "currency": "USD",
     "leverage": 3000,
     "balance": 1037.61,
-    "equity": 1052.39,
-    "profit": 14.78,
-    "margin": 2.78,
-    "margin_free": 1049.61,
-    "margin_level": 37855.76,
-    "timestamp": "2026-09-30T23:10:35.794690"
+    "equity": 1083.25,
+    "profit": 45.64,
+    "margin": 2.77,
+    "margin_free": 1080.48,
+    "margin_level": 39106.5,
+    "timestamp": "2026-10-01T07:49:07.171816"
   },
   "positions": [
     {
@@ -30,19 +30,19 @@
       "riskPct": 1.4,
       "riskDollar": 0.7,
       "entry": 4165.4,
-      "currentPrice": 4158.01,
+      "currentPrice": 4142.58,
       "sl": 4179.07,
       "tp1": 4138.05,
       "tp2": 4138.05,
-      "pnl": 14.78,
-      "pips": 73.9,
+      "pnl": 45.64,
+      "pips": 228.2,
       "timeOpen": "23:00:00",
       "dateOpen": "2026-09-30",
       "tp1Hit": false,
       "breakevenLocked": false,
       "reason": "คำสั่งจริงบน MT5 IUX Markets #482230896",
       "evalScore": "Real MT5 Trade (Live)",
-      "evalStatus": "🟢 ไม้สดใน MT5 IUX กำไร +14.78 USD"
+      "evalStatus": "🟢 ไม้สดใน MT5 IUX กำไร +45.64 USD"
     }
   ],
   "portfolios": {
@@ -55,8 +55,8 @@
       "accountLogin": 1287041,
       "initialBalance": 1036.79,
       "balance": 1037.61,
-      "equity": 1052.39,
-      "floatingProfit": 14.78
+      "equity": 1083.25,
+      "floatingProfit": 45.64
     },
     "xau_swing": {
       "id": "xau_swing",
@@ -85,8 +85,8 @@
   },
   "total_balance": 1037.61,
   "balance": 1037.61,
-  "equity": 1052.39,
-  "floating_profit": 14.78,
+  "equity": 1083.25,
+  "floating_profit": 45.64,
   "total_active": 1,
-  "updated_at": "2026-09-30T23:10:35.794690"
+  "updated_at": "2026-10-01T07:49:07.171816"
 }
