@@ -170,6 +170,16 @@ class MT5LiveSynchronizer:
             pips_gain = (p.price_current - p.price_open) if is_buy else (p.price_open - p.price_current)
             pips_val = round(pips_gain * point_mult, 1)
 
+            acc_login = 1287041
+            acc_server = "IUXMarkets-Live2"
+            try:
+                cur_acc = mt5.account_info()
+                if cur_acc:
+                    acc_login = cur_acc.login
+                    acc_server = cur_acc.server
+            except Exception:
+                pass
+
             pos_dict = {
                 "id": p.ticket,
                 "ticket": p.ticket,
@@ -178,11 +188,12 @@ class MT5LiveSynchronizer:
                 "type": "BUY" if is_buy else "SELL",
                 "style": "scalping",
                 "portfolioId": "xau_scalp" if "XAU" in symbol_clean else "btc_scalp",
-                "portfolioName": "🟡 พอร์ตจริง IUX Markets (XAUUSD)" if "XAU" in symbol_clean else "🟠 พอร์ตจริง IUX Markets (BTCUSD)",
-                "broker": "IUX Markets (Live3)",
-                "accountLogin": 11364645,
+                "portfolioName": f"🟡 พอร์ตจริง IUX Markets #{acc_login} ({symbol_clean})",
+                "broker": f"IUX Markets ({acc_server})",
+                "accountLogin": acc_login,
+                "accountServer": acc_server,
                 "lot": round(p.volume, 2),
-                "riskPct": 1.4,
+                "riskPct": 2.0,
                 "riskDollar": round(p.volume * 35.0, 2),
                 "entry": round(p.price_open, 2),
                 "currentPrice": round(p.price_current, 2),
@@ -205,9 +216,9 @@ class MT5LiveSynchronizer:
 
     def create_iux_account_status_flex(self, acc: Dict[str, Any], positions: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Creates an ultra-premium LINE Flex Message representing the real IUX account."""
-        login = acc.get("login", 11364645)
+        login = acc.get("login", 1287041)
         name = acc.get("name", "Adisorn RAMTHIP")
-        server = acc.get("server", "IUXMarkets-Live3")
+        server = acc.get("server", "IUXMarkets-Live2")
         bal = acc.get("balance", 0.0)
         eq = acc.get("equity", 0.0)
         float_pnl = acc.get("profit", 0.0)
