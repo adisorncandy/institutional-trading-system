@@ -70,9 +70,10 @@ input double       InpMinATRPrice        = 5.0;              // Skip Dead Market
 input double       InpMaxATRPrice        = 80.0;             // Skip Extreme Volatility Spikes (ATR > $80.00)
 input double       InpMaxSpreadPips      = 4.0;              // Max Allowable Spread (Pips)
 
-input group "=== 🌐 Hybrid Mode Webhook Integration ==="
-input string       InpServerURL          = "http://127.0.0.1:8000/api/signal"; // Local AI REST Bridge
-input int          InpPollingSeconds     = 10;               // Web Signal Poll Frequency (Seconds)
+input group "=== 🌐 Cloud Dashboard Webhook (Vercel Live Sync) ==="
+input bool         InpEnableCloudSync    = true;             // Auto-Sync Positions to Cloud Website
+input string       InpCloudURL           = "https://institutional-trading-system.vercel.app"; // Cloud Webhook URL
+input int          InpSyncSeconds        = 3;                // Position Sync Frequency (Seconds)
 
 //+------------------------------------------------------------------+
 //| GLOBAL VARIABLES & INDICATOR HANDLES                             |
@@ -80,6 +81,8 @@ input int          InpPollingSeconds     = 10;               // Web Signal Poll 
 CTrade         m_trade;
 CPositionInfo  m_position;
 CAccountInfo   m_account;
+
+datetime       g_last_cloud_sync = 0;
 
 // H1 Handles
 int            h_ema21_h1   = INVALID_HANDLE;
@@ -215,14 +218,10 @@ void OnTick()
       }
    }
 
-   // 3. Hybrid Webhook Polling
-   if(InpEAMode == MODE_HYBRID_WEB)
+   // 3. Auto-Sync Live Positions to Cloud Webhook
+   if(InpEnableCloudSync)
    {
-      if(TimeCurrent() - g_last_poll_time >= InpPollingSeconds)
-      {
-         g_last_poll_time = TimeCurrent();
-         CheckSignalsFromServer();
-      }
+      SyncPositionsToCloud();
    }
 }
 
@@ -538,11 +537,80 @@ bool CheckDailyLossLimit()
 }
 
 //+------------------------------------------------------------------+
-//| Hybrid Server Polling                                            |
+//| Auto-Sync Positions & Balance to Vercel Cloud Webhook            |
 //+------------------------------------------------------------------+
-void CheckSignalsFromServer()
+void SyncPositionsToCloud()
 {
-   // Standalone fallback handles primary execution
+   if(TimeCurrent() - g_last_cloud_sync < InpSyncSeconds) return;
+   g_last_cloud_sync = TimeCurrent();
+
+   string cleanURL = InpCloudURL;
+   while(StringSubstr(cleanURL, StringLen(cleanURL) - 1, 1) == "/")
+      cleanURL = StringSubstr(cleanURL, 0, StringLen(cleanURL) - 1);
+
+   string url = cleanURL + "/api/positions";
+   string headers = "Content-Type: application/json\r\n";
+
+   double bal = m_account.Balance();
+   double eq = m_account.Equity();
+   double profit = m_account.Profit();
+   double margin = m_account.Margin();
+   double freeMargin = m_account.FreeMargin();
+
+   string json = "{";
+   json += "\"account\":{";
+   json += "\"login\":" + IntegerToString(m_account.Login()) + ",";
+   json += "\"name\":\"" + m_account.Name() + "\",";
+   json += "\"server\":\"" + m_account.Server() + "\",";
+   json += "\"currency\":\"" + m_account.Currency() + "\",";
+   json += "\"balance\":" + DoubleToString(bal, 2) + ",";
+   json += "\"equity\":" + DoubleToString(eq, 2) + ",";
+   json += "\"profit\":" + DoubleToString(profit, 2) + ",";
+   json += "\"margin\":" + DoubleToString(margin, 2) + ",";
+   json += "\"margin_free\":" + DoubleToString(freeMargin, 2);
+   json += "},";
+
+   json += "\"positions\":[";
+   int count = 0;
+   for(int i = 0; i < PositionsTotal(); i++)
+   {
+      if(m_position.SelectByIndex(i))
+      {
+         if(count > 0) json += ",";
+         bool isBuy = (m_position.PositionType() == POSITION_TYPE_BUY);
+         json += "{";
+         json += "\"id\":" + IntegerToString(m_position.Ticket()) + ",";
+         json += "\"ticket\":" + IntegerToString(m_position.Ticket()) + ",";
+         json += "\"symbol\":\"" + m_position.Symbol() + "\",";
+         json += "\"type\":\"" + (isBuy ? "BUY" : "SELL") + "\",";
+         json += "\"style\":\"scalping\",";
+         json += "\"lot\":" + DoubleToString(m_position.Volume(), 2) + ",";
+         json += "\"entry\":" + DoubleToString(m_position.PriceOpen(), _Digits) + ",";
+         json += "\"currentPrice\":" + DoubleToString(m_position.PriceCurrent(), _Digits) + ",";
+         json += "\"sl\":" + DoubleToString(m_position.StopLoss(), _Digits) + ",";
+         json += "\"tp1\":" + DoubleToString(m_position.TakeProfit(), _Digits) + ",";
+         json += "\"tp2\":" + DoubleToString(m_position.TakeProfit(), _Digits) + ",";
+         json += "\"pnl\":" + DoubleToString(m_position.Profit(), 2) + ",";
+         json += "\"pips\":" + DoubleToString((isBuy ? (m_position.PriceCurrent() - m_position.PriceOpen()) : (m_position.PriceOpen() - m_position.PriceCurrent())) * 10.0, 1) + ",";
+         json += "\"timeOpen\":\"" + TimeToString((datetime)PositionGetInteger(POSITION_TIME), TIME_MINUTES|TIME_SECONDS) + "\",";
+         json += "\"reason\":\"" + m_position.Comment() + "\"";
+         json += "}";
+         count++;
+      }
+   }
+   json += "]}";
+
+   char postData[];
+   StringToCharArray(json, postData, 0, WHOLE_ARRAY, CP_UTF8);
+   ArrayResize(postData, ArraySize(postData) - 1);
+
+   char result[];
+   string resultHeaders;
+   int res = WebRequest("POST", url, headers, 3000, postData, result, resultHeaders);
+   if(res == 200)
+   {
+      // Sync OK
+   }
 }
 
 //+------------------------------------------------------------------+
